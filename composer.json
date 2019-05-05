@@ -2,13 +2,15 @@
     "type": "project",
     "license": "proprietary",
     "require": {
-        "php": "^7.0.8",
+        "php": "^7.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "symfony/console": "3.4.*",
         "symfony/dotenv": "3.4.*",
+        "symfony/event-dispatcher": "3.4.*",
         "symfony/flex": "^1.1",
         "symfony/framework-bundle": "3.4.*",
+        "symfony/orm-pack": "^1.0",
         "symfony/yaml": "3.4.*"
     },
     "config": {
