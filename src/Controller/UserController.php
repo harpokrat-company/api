@@ -6,6 +6,7 @@ use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserController extends AbstractController
@@ -13,8 +14,8 @@ class UserController extends AbstractController
     public function createUser(Request $request, UserPasswordEncoderInterface $passwordEncoder)
     {
         // TODO
-        if (!$request->getContentType() === 'application/json')
-            return new JsonResponse([], 400);
+        if ($request->getContentType() !== 'application/json')
+            throw new BadRequestHttpException('Aled'); // TODO
         $userData = json_decode($request->getContent(), true);
         $user = new User();
         $user->setEmail($userData['email']);

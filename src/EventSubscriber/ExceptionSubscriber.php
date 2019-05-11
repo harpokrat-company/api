@@ -2,12 +2,12 @@
 
 namespace App\EventSubscriber;
 
-use Symfony\Component\EventDispatcher\Tests\Debug\EventSubscriber;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-class ExceptionSubscriber extends EventSubscriber
+class ExceptionSubscriber implements EventSubscriberInterface
 {
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
