@@ -1,0 +1,5 @@
+v1_users_create:
+    path: /
+    methods:
+      - POST
+    controller: App\Controller\UserController::createUser

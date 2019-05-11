@@ -1,0 +1,6 @@
+v1_json_web_tokens_create:
+    path: /
+    methods:
+      - POST
+      - GET
+    controller: App\Controller\SecurityController::createJsonWebToken

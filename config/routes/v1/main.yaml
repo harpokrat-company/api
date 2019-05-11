@@ -1,0 +1,13 @@
+v1_root:
+  path: /
+  methods:
+      - GET
+  controller: App\Controller\DefaultController::index
+
+v1_json_web_tokens:
+  prefix: /json-web-tokens
+  resource: json-web-tokens.yaml
+
+v1_users:
+  prefix: /users
+  resource: users.yaml

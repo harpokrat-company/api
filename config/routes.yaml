@@ -1,3 +1,0 @@
-root_v1:
-  prefix: /api/v1/
-  resource: routing/main.yaml
