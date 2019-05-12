@@ -55,6 +55,20 @@ class JsonApiError implements JsonApiErrorInterface
     private $meta;
 
     /**
+     * JsonApiError constructor.
+     *
+     * @param string      $status
+     * @param string|null $detail
+     * @param string|null $title
+     */
+    public function __construct(string $status, string $detail = null, string $title = null)
+    {
+        $this->setStatus($status);
+        $this->setDetail($detail);
+        $this->setTitle($title);
+    }
+
+    /**
      * @return string|null
      */
     public function getAbout(): ?string
@@ -93,6 +107,17 @@ class JsonApiError implements JsonApiErrorInterface
     public function getStatus(): ?string
     {
         return $this->status;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getHttpStatus(): ?int
+    {
+        $status = intval($this->getStatus());
+        if ($status <= 0)
+            return null;
+        return $status;
     }
 
     /**

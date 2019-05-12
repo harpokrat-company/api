@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Model;
-
 
 use JMS\Serializer\Annotation as Serializer;
 
@@ -54,6 +52,8 @@ class JsonApiDocument implements JsonApiDocumentInterface
      */
     public function getErrors()
     {
+        if (empty($this->errors))
+            return null;
         return $this->errors;
     }
 

@@ -6,6 +6,8 @@ use JsonSerializable;
 
 interface JsonApiErrorInterface
 {
+    public function __construct(string $status, string $detail, string $title);
+
     /**
      * @return string|null
      */
@@ -27,6 +29,11 @@ interface JsonApiErrorInterface
      * @return string|null
      */
     public function getStatus(): ?string;
+
+    /**
+     * @return int|null
+     */
+    public function getHttpStatus(): ?int;
 
     /**
      * @param string|null $status
