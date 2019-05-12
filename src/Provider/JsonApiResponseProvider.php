@@ -5,7 +5,6 @@ namespace App\Provider;
 
 
 use App\Model\JsonApiError;
-use App\Model\JsonApiErrorInterface;
 use App\Model\JsonApiResponse;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,7 +29,16 @@ class JsonApiResponseProvider implements JsonApiResponseProviderInterface
         return 500; // TODO
     }
 
-    public function createResponse($data = null, $errors = null, $meta = null, $links = null, $included = null)
+    /**
+     * @param null $data
+     * @param null $errors
+     * @param null $meta
+     * @param null $links
+     * @param null $included
+     *
+     * @return Response
+     */
+    public function createResponse($data = null, $errors = null, $meta = null, $links = null, $included = null): Response
     {
         $jsonApiResponse = new JsonApiResponse($data, $errors, $meta, $links, $included);
         return new Response(
@@ -42,8 +50,18 @@ class JsonApiResponseProvider implements JsonApiResponseProviderInterface
         );
     }
 
+    /**
+     * @param null $status
+     * @param null $message
+     * @param null $errors
+     * @param null $meta
+     * @param null $links
+     * @param null $included
+     *
+     * @return Response
+     */
     public function createErrorResponse($status = null, $message = null, $errors = null, $meta = null, $links = null,
-                                        $included = null)
+                                        $included = null): Response
     {
         if (is_null($errors)) {
             if (is_array($status)) {

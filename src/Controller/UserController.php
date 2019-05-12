@@ -2,29 +2,21 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Provider\UserProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class UserController extends AbstractController
+class UserController extends AbstractJsonApiController
 {
-    public function createUser(Request $request, UserPasswordEncoderInterface $passwordEncoder)
+    public function createUser(Request $request, UserProviderInterface $userProvider)
     {
         // TODO
-        if ($request->getContentType() !== 'application/json')
+        if ($request->getContentType() !== 'json')
             throw new BadRequestHttpException('Aled'); // TODO
         $userData = json_decode($request->getContent(), true);
-        $user = new User();
-        $user->setEmail($userData['email']);
-        $user->setPassword($passwordEncoder->encodePassword($user, $userData['password']));
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($user);
-        $em->flush();
-        return new JsonResponse([
-            'user' => $user,
+        $user = $userProvider->createUser($userData['email'], $userData['password']);
+        return $this->jsonApiResponseProvider->createResponse([
+            'user' => $user
         ]);
     }
 }
