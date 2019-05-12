@@ -2,6 +2,8 @@
 
 namespace App\Model;
 
+use JsonSerializable;
+
 interface JsonApiErrorInterface
 {
     /**
@@ -12,9 +14,9 @@ interface JsonApiErrorInterface
     /**
      * @param string|null $about
      *
-     * @return JsonApiError
+     * @return JsonApiErrorInterface
      */
-    public function setAbout(?string $about): JsonApiError;
+    public function setAbout(?string $about): JsonApiErrorInterface;
 
     /**
      * @return array|null
@@ -29,9 +31,9 @@ interface JsonApiErrorInterface
     /**
      * @param string|null $status
      *
-     * @return JsonApiError
+     * @return JsonApiErrorInterface
      */
-    public function setStatus(?string $status): JsonApiError;
+    public function setStatus(?string $status): JsonApiErrorInterface;
 
     /**
      * @return string|null
@@ -41,9 +43,9 @@ interface JsonApiErrorInterface
     /**
      * @param string|null $code
      *
-     * @return JsonApiError
+     * @return JsonApiErrorInterface
      */
-    public function setCode(?string $code): JsonApiError;
+    public function setCode(?string $code): JsonApiErrorInterface;
 
     /**
      * @return string|null
@@ -53,9 +55,9 @@ interface JsonApiErrorInterface
     /**
      * @param string|null $title
      *
-     * @return JsonApiError
+     * @return JsonApiErrorInterface
      */
-    public function setTitle(?string $title): JsonApiError;
+    public function setTitle(?string $title): JsonApiErrorInterface;
 
     /**
      * @return string|null
@@ -65,9 +67,9 @@ interface JsonApiErrorInterface
     /**
      * @param string|null $detail
      *
-     * @return JsonApiError
+     * @return JsonApiErrorInterface
      */
-    public function setDetail(?string $detail): JsonApiError;
+    public function setDetail(?string $detail): JsonApiErrorInterface;
 
     /**
      * @return string|null
@@ -77,9 +79,9 @@ interface JsonApiErrorInterface
     /**
      * @param string|null $pointer
      *
-     * @return JsonApiError
+     * @return JsonApiErrorInterface
      */
-    public function setPointer(?string $pointer): JsonApiError;
+    public function setPointer(?string $pointer): JsonApiErrorInterface;
 
     /**
      * @return string|null
@@ -89,9 +91,9 @@ interface JsonApiErrorInterface
     /**
      * @param string|null $parameter
      *
-     * @return JsonApiError
+     * @return JsonApiErrorInterface
      */
-    public function setParameter(?string $parameter): JsonApiError;
+    public function setParameter(?string $parameter): JsonApiErrorInterface;
 
     /**
      * @return array|null
@@ -106,7 +108,7 @@ interface JsonApiErrorInterface
     /**
      * @param array|null $meta
      *
-     * @return JsonApiError
+     * @return JsonApiErrorInterface
      */
-    public function setMeta(?array $meta): JsonApiError;
+    public function setMeta(?array $meta): JsonApiErrorInterface;
 }
