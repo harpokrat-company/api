@@ -13,7 +13,7 @@ class UserController extends AbstractJsonApiController
         // TODO
         if ($request->getContentType() !== 'json')
             throw new BadRequestHttpException('Aled'); // TODO
-        $userData = json_decode($request->getContent(), true);
+        $userData = json_decode($request->getContent(), true)['data']['attributes'];
         $user = $userProvider->createUser($userData['email'], $userData['password']);
         return $this->jsonApiResponseProvider->createResponse([
             'user' => $user

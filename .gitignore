@@ -1,6 +1,7 @@
 .idea/
 
 .env
+.env.bak
 
 ###> symfony/framework-bundle ###
 /.env.local
