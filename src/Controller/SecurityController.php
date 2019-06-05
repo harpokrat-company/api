@@ -3,15 +3,13 @@
 namespace App\Controller;
 
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class SecurityController extends AbstractController
+class SecurityController extends AbstractJsonApiController
 {
     public function createJsonWebToken(Request $request, JWTTokenManagerInterface $jwtManager)
     {
-        return new JsonResponse([
+        return $this->jsonApiResponseProvider->createResponse([
             'token' => $jwtManager->create($this->getUser()),
         ]);
     }
