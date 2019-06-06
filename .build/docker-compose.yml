@@ -32,7 +32,7 @@ services:
       - "./nginx/conf:/etc/nginx/conf.d"
   composer:
     image: composer
-      restart: 'no'
+    restart: 'no'
     command: install
     volumes:
       - "../:/app"
