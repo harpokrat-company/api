@@ -36,4 +36,10 @@ class SecretProvider implements SecretProviderInterface
         $this->entityManager->flush();
         return $secret;
     }
+
+    public function delete(Secret $secret)
+    {
+        $this->entityManager->remove($secret);
+        $this->entityManager->flush();
+    }
 }
