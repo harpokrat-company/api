@@ -10,7 +10,14 @@ class SecurityController extends AbstractJsonApiController
     public function createJsonWebToken(Request $request, JWTTokenManagerInterface $jwtManager)
     {
         return $this->jsonApiResponseProvider->createResponse([
-            'token' => $jwtManager->create($this->getUser()),
+            'type' => 'json-web-tokens',
+            'id' => '0',
+            'attributes' => [
+                'token' => $jwtManager->create($this->getUser()),
+            ],
+            'relationships' => [
+                'user' => $this->getUser(),
+            ]
         ]);
     }
 }
