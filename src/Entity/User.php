@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -16,12 +18,13 @@ class User implements UserInterface
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      * @Serializer\Accessor(getter="getId")
+     * @Serializer\Type("string")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Serializer\Accessor(getter="getEmail")
+     * @Serializer\Exclude()
      */
     private $email;
 
@@ -37,6 +40,17 @@ class User implements UserInterface
      * @Serializer\Exclude()
      */
     private $password;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Secret", mappedBy="owner", orphanRemoval=true)
+     * @Serializer\Exclude()
+     */
+    private $secrets;
+
+    public function __construct()
+    {
+        $this->secrets = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -114,5 +128,56 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return array
+     * @Serializer\VirtualProperty(name="attributes")
+     */
+    public function getAttributes()
+    {
+        return [
+            'email' => $this->getEmail(),
+        ];
+    }
+
+    /**
+     * @return string
+     * @Serializer\VirtualProperty(name="type")
+     */
+    public function getType()
+    {
+        return 'users';
+    }
+
+    /**
+     * @return Collection|Secret[]
+     */
+    public function getSecrets(): Collection
+    {
+        return $this->secrets;
+    }
+
+    public function addSecret(Secret $secret): self
+    {
+        if (!$this->secrets->contains($secret)) {
+            $this->secrets[] = $secret;
+            $secret->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSecret(Secret $secret): self
+    {
+        if ($this->secrets->contains($secret)) {
+            $this->secrets->removeElement($secret);
+            // set the owning side to null (unless already changed)
+            if ($secret->getOwner() === $this) {
+                $secret->setOwner(null);
+            }
+        }
+
+        return $this;
     }
 }
