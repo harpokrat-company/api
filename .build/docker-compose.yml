@@ -30,3 +30,9 @@ services:
     volumes:
       - "../:/var/www"
       - "./nginx/conf:/etc/nginx/conf.d"
+  composer:
+    image: composer
+    restart: 'no'
+    command: install
+    volumes:
+      - "../:/app"
