@@ -9,3 +9,6 @@ v1_json_web_tokens:
 
 v1_users:
   resource: users.yaml
+
+v1_secrets:
+  resource: secrets.yaml

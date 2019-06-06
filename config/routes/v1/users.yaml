@@ -2,4 +2,10 @@ v1_users_create:
     path: /users
     methods:
       - POST
-    controller: App\Controller\UserController::createUser
+    controller: App\Controller\UserController::create
+
+v1_users_get:
+    path: /users/{id}
+    methods:
+      - GET
+    controller: App\Controller\UserController::getResource
