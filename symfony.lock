@@ -78,6 +78,9 @@
     "doctrine/reflection": {
         "version": "v1.0.0"
     },
+    "egulias/email-validator": {
+        "version": "2.1.11"
+    },
     "hoa/compiler": {
         "version": "3.17.08.08"
     },
@@ -158,6 +161,18 @@
     "namshi/jose": {
         "version": "7.2.3"
     },
+    "nelmio/cors-bundle": {
+        "version": "1.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.5",
+            "ref": "f0436fc35fca88eada758311f8de43bfb61f1980"
+        },
+        "files": [
+            "config/packages/nelmio_cors.yaml"
+        ]
+    },
     "nikic/php-parser": {
         "version": "v4.2.1"
     },
@@ -178,6 +193,9 @@
     },
     "psr/simple-cache": {
         "version": "1.0.1"
+    },
+    "swiftmailer/swiftmailer": {
+        "version": "v6.2.1"
     },
     "symfony/cache": {
         "version": "v3.4.27"
@@ -277,8 +295,14 @@
     "symfony/polyfill-apcu": {
         "version": "v1.11.0"
     },
+    "symfony/polyfill-intl-idn": {
+        "version": "v1.12.0"
+    },
     "symfony/polyfill-mbstring": {
         "version": "v1.11.0"
+    },
+    "symfony/polyfill-php72": {
+        "version": "v1.12.0"
     },
     "symfony/property-access": {
         "version": "v3.4.27"
@@ -315,6 +339,20 @@
     },
     "symfony/stopwatch": {
         "version": "v3.4.27"
+    },
+    "symfony/swiftmailer-bundle": {
+        "version": "2.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "2.5",
+            "ref": "429afc6c6778a1fdddb52a4f708cd94ff2c9960f"
+        },
+        "files": [
+            "config/packages/dev/swiftmailer.yaml",
+            "config/packages/swiftmailer.yaml",
+            "config/packages/test/swiftmailer.yaml"
+        ]
     },
     "symfony/yaml": {
         "version": "v3.4.27"
