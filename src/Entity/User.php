@@ -47,6 +47,28 @@ class User implements UserInterface
      */
     private $secrets;
 
+    /**
+     * @var \DateTime
+     * @ORM\Column(type="datetime", nullable=true)
+     * @Serializer\Exclude()
+     */
+    private $emailValidationDate;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(type="datetime", nullable=true)
+     * @Serializer\Exclude()
+     */
+    private $emailValidationMailSentDate;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", nullable=true)
+     * @Serializer\Exclude()
+     */
+    private $emailValidationCode;
+
+
     public function __construct()
     {
         $this->secrets = new ArrayCollection();
@@ -138,6 +160,7 @@ class User implements UserInterface
     {
         return [
             'email' => $this->getEmail(),
+            'emailValidationDate' => $this->getEmailValidationDate(),
         ];
     }
 
@@ -177,6 +200,66 @@ class User implements UserInterface
                 $secret->setOwner(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getEmailValidationDate(): ?\DateTime
+    {
+        return $this->emailValidationDate;
+    }
+
+    /**
+     * @param \DateTime $emailValidationDate
+     *
+     * @return User
+     */
+    public function setEmailValidationDate(?\DateTime $emailValidationDate): User
+    {
+        $this->emailValidationDate = $emailValidationDate;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getEmailValidationMailSentDate(): ?\DateTime
+    {
+        return $this->emailValidationMailSentDate;
+    }
+
+    /**
+     * @param \DateTime $emailValidationMailSentDate
+     *
+     * @return User
+     */
+    public function setEmailValidationMailSentDate(?\DateTime $emailValidationMailSentDate): User
+    {
+        $this->emailValidationMailSentDate = $emailValidationMailSentDate;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmailValidationCode(): ?string
+    {
+        return $this->emailValidationCode;
+    }
+
+    /**
+     * @param string $emailValidationCode
+     *
+     * @return User
+     */
+    public function setEmailValidationCode(?string $emailValidationCode): User
+    {
+        $this->emailValidationCode = $emailValidationCode;
 
         return $this;
     }

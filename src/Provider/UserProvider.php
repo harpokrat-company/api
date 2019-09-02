@@ -5,6 +5,7 @@ namespace App\Provider;
 
 
 use App\Entity\User;
+use App\Service\EmailValidationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -21,10 +22,20 @@ class UserProvider implements UserProviderInterface
      */
     private $passwordEncoder;
 
-    public function __construct(EntityManagerInterface $entityManager, UserPasswordEncoderInterface $passwordEncoder)
+    /**
+     * @var EmailValidationService
+     */
+    private $emailValidationService;
+
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        UserPasswordEncoderInterface $passwordEncoder,
+        EmailValidationService $emailValidationService
+    )
     {
         $this->entityManager = $entityManager;
         $this->passwordEncoder = $passwordEncoder;
+        $this->emailValidationService = $emailValidationService;
     }
 
     public function createUser(string $email, string $password): UserInterface
@@ -35,6 +46,7 @@ class UserProvider implements UserProviderInterface
         $user->setPassword($password);
         $this->entityManager->persist($user);
         $this->entityManager->flush();
+        $this->emailValidationService->sendValidationMail($user);
         return $user;
     }
 }
