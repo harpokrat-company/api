@@ -38,6 +38,13 @@ class UserProvider implements UserProviderInterface
         $this->emailValidationService = $emailValidationService;
     }
 
+    /**
+     * @param string $email
+     * @param string $password
+     *
+     * @return UserInterface
+     * @throws \Exception
+     */
     public function createUser(string $email, string $password): UserInterface
     {
         $user = new User();

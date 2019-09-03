@@ -5,17 +5,24 @@ namespace App\Service;
 
 
 use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 
 class EmailValidationService
 {
     /**
-     * @var \Swift_Mailer
+     * @var EmailSenderService
      */
     private $mailer;
 
-    public function __construct(\Swift_Mailer $mailer)
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
+    public function __construct(EmailSenderService $mailer, EntityManagerInterface $entityManager)
     {
         $this->mailer = $mailer;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -28,18 +35,15 @@ class EmailValidationService
         $emailValidationCode = bin2hex(random_bytes(64));
         $user->setEmailValidationCode($emailValidationCode);
         $user->setEmailValidationMailSentDate(new \DateTime());
-        // TODO
-        $mail = new \Swift_Message('Harpokrat: Action required - Email validation'); // TODO Clean mail service && translation
-        $mail->setFrom('noreply@harpokrat.com');
-        $mail->setTo($user->getEmail());
-        $mail->setBody( // TODO Clean renderer using twig with mail service
-            '<html><body>Aled oskour !! Validation code: '.$emailValidationCode.'</body></html>',
-            'text/html'
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+        $this->mailer->sendMail(
+            $user->getEmail(),
+            'Harpokrat: Action needed, email address validation',
+            'email_address_validation',
+            [
+                'validation_code' => $emailValidationCode,
+            ]
         );
-        $mail->addPart( // TODO Clean renderer using twig with mail service
-            'Aled oskour !! Validation code: '.$emailValidationCode,
-            'text/plain'
-        );
-        $this->mailer->send($mail);
     }
 }
