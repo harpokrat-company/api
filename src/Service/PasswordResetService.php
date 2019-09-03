@@ -7,7 +7,7 @@ namespace App\Service;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
-class EmailValidationService
+class PasswordResetService
 {
     /**
      * @var EmailSenderService
@@ -30,19 +30,16 @@ class EmailValidationService
      *
      * @throws \Exception
      */
-    public function sendValidationMail(User $user)
+    public function sendPasswordResetMail(User $user)
     {
-        $emailValidationCode = bin2hex(random_bytes(32));
-        $user->setEmailValidationCode($emailValidationCode);
-        $user->setEmailValidationMailSentDate(new \DateTime());
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
+        $passwordResetToken = bin2hex(random_bytes(32));
+        // TODO stuff using token to later use it (Request for action or something. Change in Email validation too)
         $this->mailer->sendMail(
             $user->getEmail(),
-            'Action needed: email address validation',
-            'email_address_validation',
+            'Password reset request',
+            'password_reset',
             [
-                'validation_code' => $emailValidationCode,
+                'reset_token' => $passwordResetToken,
             ]
         );
     }

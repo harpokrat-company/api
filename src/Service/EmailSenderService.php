@@ -43,7 +43,7 @@ class EmailSenderService
     {
         // TODO Translation
         $mail = new \Swift_Message($subject);
-        $mail->setFrom(self::SENDER_EMAIL_ADDRESS);
+        $mail->setFrom(self::SENDER_EMAIL_ADDRESS, 'Harpokrat');
         $mail->setTo($sendTo);
         // TODO Cleaner way to do the following ?
         if ($this->twig->getLoader()->exists('mails/' . $template . '.html.twig')) {
