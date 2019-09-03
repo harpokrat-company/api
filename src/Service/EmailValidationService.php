@@ -32,7 +32,7 @@ class EmailValidationService
      */
     public function sendValidationMail(User $user)
     {
-        $emailValidationCode = bin2hex(random_bytes(64));
+        $emailValidationCode = bin2hex(random_bytes(32));
         $user->setEmailValidationCode($emailValidationCode);
         $user->setEmailValidationMailSentDate(new \DateTime());
         $this->entityManager->persist($user);

@@ -1,10 +1,63 @@
+<!doctype html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>{% block title %}Harpokrat{% endblock %}</title>
 </head>
-<body>
-    {% block content %}
-        <p style="color:red;font-weight:bold;">Aled oskour</p>
+<body style="font-family:Helvetica,Arial,sans-serif;">
+    {% block body %}
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;">
+            <tr><td height="10" style="height:10px" colspan="2"><br></td></tr>
+            <tr>
+                <td bgcolor="#DDDDDD" style="background-color:#DDDDDD;">
+                    <table width="500" cellpadding="0" cellspacing="0" border="0" align="center" bgcolor="#FFFFFF"
+                           style="width:500px;border-collapse:collapse;background-color:#FFFFFF;">
+                        <tr>
+                            <td width="250" bgcolor="#005387" style="background-color:#005387;vertical-align:center;">
+                                {% block header_logo %}
+                                    <h1 align="center" style="color:#FFFFFF;font-weight:bold;">
+                                        Harpokrat
+                                    </h1>
+                                {% endblock %}
+                            </td>
+                            <td width="250" style="vertical-align:center;">
+                                {% block header_subject_container %}
+                                    <h3 align="center" style="color:#333333;font-weight:bold;">
+                                        {% block header_subject %}
+                                        {% endblock %}
+                                    </h3>
+                                {% endblock %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:20px 20px 0 20px;" colspan="2">
+                                {% block content %}
+                                    <p style="font-weight:bold;color:red;">
+                                        This is a test mail, please ignore it
+                                    </p>
+                                    <p style="color:darkred">
+                                        Sorry for the inconvenience
+                                    </p>
+                                {% endblock %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:0 20px 20px 20px;" colspan="2">
+                                {% block footer %}
+                                    <hr/>
+                                    <p style="color:#555555;text-align:center;">
+                                        Email sent by <a href="https://www.harpokrat.com/">Harpokat</a><br>
+                                        https://www.harpokrat.com/<br>
+                                        Blabla legal stuff... {# TODO #}
+                                    </p>
+                                {% endblock %}
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr><td height="10" style="height:10px" colspan="2"><br></td></tr>
+        </table>
     {% endblock %}
 </body>
 </html>
