@@ -32,11 +32,9 @@ class EmailValidationService
      */
     public function sendValidationMail(User $user)
     {
+        // TODO Listener to auto send validation mail
         $emailValidationCode = bin2hex(random_bytes(32));
-        $user->setEmailValidationCode($emailValidationCode);
-        $user->setEmailValidationMailSentDate(new \DateTime());
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
+        // TODO use validation code somehow
         $this->mailer->sendMail(
             $user->getEmail(),
             'Action needed: email address validation',

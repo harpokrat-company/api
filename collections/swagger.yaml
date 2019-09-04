@@ -1,0 +1,996 @@
+swagger: '2.0'
+info:
+  description: ''
+  version: 1.0.0
+  title: 'Swagger JsonApi'
+  termsOfService: 'http://swagger.io/terms/'
+  license:
+    name: 'Apache 2.0'
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: localhost
+schemes:
+  - https
+  - http
+paths:
+  /users/:
+    get:
+      tags:
+        - users
+      summary: 'User List'
+      operationId: listUser
+      produces:
+        - application/json
+      parameters: {  }
+      responses:
+        200:
+          description: 'successful operation'
+          schema:
+            type: object
+            properties:
+              jsonapi:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    example: '1.0'
+              links:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    example: '/users?page[number]=1&page[size]=100'
+                  first:
+                    type: string
+                    example: '/users?page[number]=1&page[size]=100'
+                  last:
+                    type: string
+                    example: '/users?page[number]=1&page[size]=100'
+                  prev:
+                    type: string
+                    example: 'null'
+                  next:
+                    type: string
+                    example: 'null'
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                      example: 12
+                    type:
+                      type: string
+                      example: users
+                    attributes:
+                      $ref: '#/definitions/User'
+                    relationships:
+                      properties:
+                        secrets:
+                          type: array
+                          items:
+                            $ref: '#/definitions/Secret_relation'
+                        logs:
+                          type: array
+                          items:
+                            $ref: '#/definitions/Log_relation'
+    post:
+      tags:
+        - users
+      summary: 'Add User'
+      operationId: addUser
+      produces:
+        - application/json
+      parameters:
+        -
+          in: body
+          name: body
+          description: addUser
+          required: true
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: users
+                  attributes:
+                    $ref: '#/definitions/User'
+                  relationships:
+                    properties:
+                      secrets:
+                        type: array
+                        items:
+                          $ref: '#/definitions/Secret_relation'
+                      logs:
+                        type: array
+                        items:
+                          $ref: '#/definitions/Log_relation'
+      responses:
+        200:
+          description: 'successful operation'
+          schema:
+            type: object
+            properties:
+              jsonapi:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    example: '1.0'
+              links:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    example: /users
+              data:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    example: 12
+                  type:
+                    type: string
+                    example: users
+                  attributes:
+                    $ref: '#/definitions/User'
+                  relationships:
+                    properties:
+                      secrets:
+                        type: array
+                        items:
+                          $ref: '#/definitions/Secret_relation'
+                      logs:
+                        type: array
+                        items:
+                          $ref: '#/definitions/Log_relation'
+  '/users/{User_id}':
+    patch:
+      tags:
+        - users
+      summary: 'Edit User'
+      operationId: editUser
+      produces:
+        - application/json
+      parameters:
+        -
+          in: body
+          name: body
+          description: editUser
+          required: true
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    example: 12
+                  type:
+                    type: string
+                    example: users
+                  attributes:
+                    $ref: '#/definitions/User'
+                  relationships:
+                    properties:
+                      secrets:
+                        type: array
+                        items:
+                          $ref: '#/definitions/Secret_relation'
+                      logs:
+                        type: array
+                        items:
+                          $ref: '#/definitions/Log_relation'
+        -
+          name: User_id
+          in: path
+          required: true
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: 'successful operation'
+          schema:
+            type: object
+            properties:
+              jsonapi:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    example: '1.0'
+              links:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    example: /users
+              data:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    example: 12
+                  type:
+                    type: string
+                    example: users
+                  attributes:
+                    $ref: '#/definitions/User'
+                  relationships:
+                    properties:
+                      secrets:
+                        type: array
+                        items:
+                          $ref: '#/definitions/Secret_relation'
+                      logs:
+                        type: array
+                        items:
+                          $ref: '#/definitions/Log_relation'
+    delete:
+      tags:
+        - users
+      summary: 'Delete User'
+      operationId: deleteUser
+      produces:
+        - application/json
+      parameters:
+        -
+          name: User_id
+          in: path
+          required: true
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: 'successful operation'
+          schema:
+            type: object
+            properties:
+              jsonapi:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    example: '1.0'
+              links:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    example: /users
+              data:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    example: 12
+                  type:
+                    type: string
+                    example: users
+                  attributes:
+                    $ref: '#/definitions/User'
+                  relationships:
+                    properties:
+                      secrets:
+                        type: array
+                        items:
+                          $ref: '#/definitions/Secret_relation'
+                      logs:
+                        type: array
+                        items:
+                          $ref: '#/definitions/Log_relation'
+    get:
+      tags:
+        - users
+      summary: 'Get User'
+      operationId: viewUser
+      produces:
+        - application/json
+      parameters:
+        -
+          name: User_id
+          in: path
+          required: true
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: 'successful operation'
+          schema:
+            type: object
+            properties:
+              jsonapi:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    example: '1.0'
+              links:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    example: /users
+              data:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    example: 12
+                  type:
+                    type: string
+                    example: users
+                  attributes:
+                    $ref: '#/definitions/User'
+                  relationships:
+                    properties:
+                      secrets:
+                        type: array
+                        items:
+                          $ref: '#/definitions/Secret_relation'
+                      logs:
+                        type: array
+                        items:
+                          $ref: '#/definitions/Log_relation'
+  /secrets/:
+    get:
+      tags:
+        - secrets
+      summary: 'Secret List'
+      operationId: listSecret
+      produces:
+        - application/json
+      parameters: {  }
+      responses:
+        200:
+          description: 'successful operation'
+          schema:
+            type: object
+            properties:
+              jsonapi:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    example: '1.0'
+              links:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    example: '/secrets?page[number]=1&page[size]=100'
+                  first:
+                    type: string
+                    example: '/secrets?page[number]=1&page[size]=100'
+                  last:
+                    type: string
+                    example: '/secrets?page[number]=1&page[size]=100'
+                  prev:
+                    type: string
+                    example: 'null'
+                  next:
+                    type: string
+                    example: 'null'
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                      example: 12
+                    type:
+                      type: string
+                      example: secrets
+                    attributes:
+                      $ref: '#/definitions/Secret'
+                    relationships:
+                      properties:
+                        owner:
+                          $ref: '#/definitions/User_relation'
+    post:
+      tags:
+        - secrets
+      summary: 'Add Secret'
+      operationId: addSecret
+      produces:
+        - application/json
+      parameters:
+        -
+          in: body
+          name: body
+          description: addSecret
+          required: true
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: secrets
+                  attributes:
+                    $ref: '#/definitions/Secret'
+                  relationships:
+                    properties:
+                      owner:
+                        $ref: '#/definitions/User_relation'
+      responses:
+        200:
+          description: 'successful operation'
+          schema:
+            type: object
+            properties:
+              jsonapi:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    example: '1.0'
+              links:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    example: /secrets
+              data:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    example: 12
+                  type:
+                    type: string
+                    example: secrets
+                  attributes:
+                    $ref: '#/definitions/Secret'
+                  relationships:
+                    properties:
+                      owner:
+                        $ref: '#/definitions/User_relation'
+  '/secrets/{Secret_id}':
+    patch:
+      tags:
+        - secrets
+      summary: 'Edit Secret'
+      operationId: editSecret
+      produces:
+        - application/json
+      parameters:
+        -
+          in: body
+          name: body
+          description: editSecret
+          required: true
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    example: 12
+                  type:
+                    type: string
+                    example: secrets
+                  attributes:
+                    $ref: '#/definitions/Secret'
+                  relationships:
+                    properties:
+                      owner:
+                        $ref: '#/definitions/User_relation'
+        -
+          name: Secret_id
+          in: path
+          required: true
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: 'successful operation'
+          schema:
+            type: object
+            properties:
+              jsonapi:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    example: '1.0'
+              links:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    example: /secrets
+              data:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    example: 12
+                  type:
+                    type: string
+                    example: secrets
+                  attributes:
+                    $ref: '#/definitions/Secret'
+                  relationships:
+                    properties:
+                      owner:
+                        $ref: '#/definitions/User_relation'
+    delete:
+      tags:
+        - secrets
+      summary: 'Delete Secret'
+      operationId: deleteSecret
+      produces:
+        - application/json
+      parameters:
+        -
+          name: Secret_id
+          in: path
+          required: true
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: 'successful operation'
+          schema:
+            type: object
+            properties:
+              jsonapi:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    example: '1.0'
+              links:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    example: /secrets
+              data:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    example: 12
+                  type:
+                    type: string
+                    example: secrets
+                  attributes:
+                    $ref: '#/definitions/Secret'
+                  relationships:
+                    properties:
+                      owner:
+                        $ref: '#/definitions/User_relation'
+    get:
+      tags:
+        - secrets
+      summary: 'Get Secret'
+      operationId: viewSecret
+      produces:
+        - application/json
+      parameters:
+        -
+          name: Secret_id
+          in: path
+          required: true
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: 'successful operation'
+          schema:
+            type: object
+            properties:
+              jsonapi:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    example: '1.0'
+              links:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    example: /secrets
+              data:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    example: 12
+                  type:
+                    type: string
+                    example: secrets
+                  attributes:
+                    $ref: '#/definitions/Secret'
+                  relationships:
+                    properties:
+                      owner:
+                        $ref: '#/definitions/User_relation'
+  /logs/:
+    get:
+      tags:
+        - logs
+      summary: 'Log List'
+      operationId: listLog
+      produces:
+        - application/json
+      parameters: {  }
+      responses:
+        200:
+          description: 'successful operation'
+          schema:
+            type: object
+            properties:
+              jsonapi:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    example: '1.0'
+              links:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    example: '/logs?page[number]=1&page[size]=100'
+                  first:
+                    type: string
+                    example: '/logs?page[number]=1&page[size]=100'
+                  last:
+                    type: string
+                    example: '/logs?page[number]=1&page[size]=100'
+                  prev:
+                    type: string
+                    example: 'null'
+                  next:
+                    type: string
+                    example: 'null'
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                      example: 12
+                    type:
+                      type: string
+                      example: logs
+                    attributes:
+                      $ref: '#/definitions/Log'
+                    relationships:
+                      properties:
+                        user:
+                          $ref: '#/definitions/User_relation'
+    post:
+      tags:
+        - logs
+      summary: 'Add Log'
+      operationId: addLog
+      produces:
+        - application/json
+      parameters:
+        -
+          in: body
+          name: body
+          description: addLog
+          required: true
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: logs
+                  attributes:
+                    $ref: '#/definitions/Log'
+                  relationships:
+                    properties:
+                      user:
+                        $ref: '#/definitions/User_relation'
+      responses:
+        200:
+          description: 'successful operation'
+          schema:
+            type: object
+            properties:
+              jsonapi:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    example: '1.0'
+              links:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    example: /logs
+              data:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    example: 12
+                  type:
+                    type: string
+                    example: logs
+                  attributes:
+                    $ref: '#/definitions/Log'
+                  relationships:
+                    properties:
+                      user:
+                        $ref: '#/definitions/User_relation'
+  '/logs/{Log_id}':
+    patch:
+      tags:
+        - logs
+      summary: 'Edit Log'
+      operationId: editLog
+      produces:
+        - application/json
+      parameters:
+        -
+          in: body
+          name: body
+          description: editLog
+          required: true
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    example: 12
+                  type:
+                    type: string
+                    example: logs
+                  attributes:
+                    $ref: '#/definitions/Log'
+                  relationships:
+                    properties:
+                      user:
+                        $ref: '#/definitions/User_relation'
+        -
+          name: Log_id
+          in: path
+          required: true
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: 'successful operation'
+          schema:
+            type: object
+            properties:
+              jsonapi:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    example: '1.0'
+              links:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    example: /logs
+              data:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    example: 12
+                  type:
+                    type: string
+                    example: logs
+                  attributes:
+                    $ref: '#/definitions/Log'
+                  relationships:
+                    properties:
+                      user:
+                        $ref: '#/definitions/User_relation'
+    delete:
+      tags:
+        - logs
+      summary: 'Delete Log'
+      operationId: deleteLog
+      produces:
+        - application/json
+      parameters:
+        -
+          name: Log_id
+          in: path
+          required: true
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: 'successful operation'
+          schema:
+            type: object
+            properties:
+              jsonapi:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    example: '1.0'
+              links:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    example: /logs
+              data:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    example: 12
+                  type:
+                    type: string
+                    example: logs
+                  attributes:
+                    $ref: '#/definitions/Log'
+                  relationships:
+                    properties:
+                      user:
+                        $ref: '#/definitions/User_relation'
+    get:
+      tags:
+        - logs
+      summary: 'Get Log'
+      operationId: viewLog
+      produces:
+        - application/json
+      parameters:
+        -
+          name: Log_id
+          in: path
+          required: true
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: 'successful operation'
+          schema:
+            type: object
+            properties:
+              jsonapi:
+                type: object
+                properties:
+                  version:
+                    type: string
+                    example: '1.0'
+              links:
+                type: object
+                properties:
+                  self:
+                    type: string
+                    example: /logs
+              data:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    example: 12
+                  type:
+                    type: string
+                    example: logs
+                  attributes:
+                    $ref: '#/definitions/Log'
+                  relationships:
+                    properties:
+                      user:
+                        $ref: '#/definitions/User_relation'
+securityDefinitions:
+  api_key:
+    type: apiKey
+    name: api_key
+    in: header
+definitions:
+  User:
+    type: object
+    properties:
+      email:
+        type: string
+      roles:
+        type: object
+      password:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+  Secret_relation:
+    type: object
+    properties:
+      type:
+        type: string
+        enum:
+          - secrets
+        example: secrets
+      id:
+        type: integer
+        minimum: 1
+        description: 'Secret ID'
+        example: 41
+  Log_relation:
+    type: object
+    properties:
+      type:
+        type: string
+        enum:
+          - logs
+        example: logs
+      id:
+        type: integer
+        minimum: 1
+        description: 'Log ID'
+        example: 44
+  Secret:
+    type: object
+    properties:
+      content:
+        type: blob
+  Log:
+    type: object
+    properties:
+      date:
+        type: string
+        format: date-time
+      uri:
+        type: string
+      ip:
+        type: string
+  User_relation:
+    type: object
+    properties:
+      type:
+        type: string
+        enum:
+          - users
+        example: users
+      id:
+        type: integer
+        minimum: 1
+        description: 'User ID'
+        example: 50
+externalDocs:
+  description: 'Find out more about Swagger'
+  url: 'http://swagger.io'

@@ -1,0 +1,42 @@
+<?php
+
+namespace App\JsonApi\Document\Log;
+
+use WoohooLabs\Yin\JsonApi\Schema\Document\AbstractSingleResourceDocument;
+use WoohooLabs\Yin\JsonApi\Schema\JsonApiObject;
+use WoohooLabs\Yin\JsonApi\Schema\Link\Link;
+use WoohooLabs\Yin\JsonApi\Schema\Links;
+
+/**
+ * Log Document.
+ */
+class LogDocument extends AbstractSingleResourceDocument
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function getJsonApi(): JsonApiObject
+    {
+        return new JsonApiObject('1.0');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getMeta(): array
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getLinks(): Links
+    {
+        return Links::createWithoutBaseUri(
+            [
+                'self' => new Link('/v1/logs/'.$this->getResourceId()),
+            ]
+        );
+    }
+}

@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
-use App\JsonApi\Document\User\UserDocument;
-use App\JsonApi\Document\User\UsersDocument;
-use App\JsonApi\Hydrator\User\CreateUserHydrator;
-use App\JsonApi\Hydrator\User\UpdateUserHydrator;
-use App\JsonApi\Transformer\UserResourceTransformer;
-use App\Repository\UserRepository;
+use App\Entity\Log;
+use App\JsonApi\Document\Log\LogDocument;
+use App\JsonApi\Document\Log\LogsDocument;
+use App\JsonApi\Hydrator\Log\CreateLogHydrator;
+use App\JsonApi\Hydrator\Log\UpdateLogHydrator;
+use App\JsonApi\Transformer\LogResourceTransformer;
+use App\Repository\LogRepository;
 use Doctrine\ORM\EntityNotFoundException;
 use Paknahad\JsonApiBundle\Controller\Controller;
 use Paknahad\JsonApiBundle\Helper\ResourceCollection;
@@ -19,32 +19,32 @@ use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
- * @Route("/v1/users")
+ * @Route("/v1/logs")
  */
-class UserController extends Controller
+class LogController extends Controller
 {
     /**
-     * @Route("/", name="users_index", methods="GET")
-     * @param UserRepository     $userRepository
+     * @Route("/", name="logs_index", methods="GET")
+     * @param LogRepository      $logRepository
      * @param ResourceCollection $resourceCollection
      *
      * @return ResponseInterface
      * @throws EntityNotFoundException
      */
-    public function index(UserRepository $userRepository, ResourceCollection $resourceCollection): ResponseInterface
+    public function index(LogRepository $logRepository, ResourceCollection $resourceCollection): ResponseInterface
     {
-        $resourceCollection->setRepository($userRepository);
+        $resourceCollection->setRepository($logRepository);
 
         $resourceCollection->handleIndexRequest();
 
         return $this->jsonApi()->respond()->ok(
-            new UsersDocument(new UserResourceTransformer()),
+            new LogsDocument(new LogResourceTransformer()),
             $resourceCollection
         );
     }
 
     /**
-     * @Route("/", name="users_new", methods="POST")
+     * @Route("/", name="logs_new", methods="POST")
      * @param ValidatorInterface $validator
      * @return ResponseInterface
      */
@@ -52,50 +52,50 @@ class UserController extends Controller
     {
         $entityManager = $this->getDoctrine()->getManager();
 
-        $user = $this->jsonApi()->hydrate(new CreateUserHydrator($entityManager), new User());
+        $log = $this->jsonApi()->hydrate(new CreateLogHydrator($entityManager), new Log());
 
         /** @var ConstraintViolationList $errors */
-        $errors = $validator->validate($user);
+        $errors = $validator->validate($log);
         if ($errors->count() > 0) {
             return $this->validationErrorResponse($errors);
         }
 
-        $entityManager->persist($user);
+        $entityManager->persist($log);
         $entityManager->flush();
 
         return $this->jsonApi()->respond()->ok(
-            new UserDocument(new UserResourceTransformer()),
-            $user
+            new LogDocument(new LogResourceTransformer()),
+            $log
         );
     }
 
     /**
-     * @Route("/{id}", name="users_show", methods="GET")
-     * @param User $user
+     * @Route("/{id}", name="logs_show", methods="GET")
+     * @param Log $log
      * @return ResponseInterface
      */
-    public function show(User $user): ResponseInterface
+    public function show(Log $log): ResponseInterface
     {
         return $this->jsonApi()->respond()->ok(
-            new UserDocument(new UserResourceTransformer()),
-            $user
+            new LogDocument(new LogResourceTransformer()),
+            $log
         );
     }
 
     /**
-     * @Route("/{id}", name="users_edit", methods="PATCH")
-     * @param User               $user
+     * @Route("/{id}", name="logs_edit", methods="PATCH")
+     * @param Log                $log
      * @param ValidatorInterface $validator
      * @return ResponseInterface
      */
-    public function edit(User $user, ValidatorInterface $validator): ResponseInterface
+    public function edit(Log $log, ValidatorInterface $validator): ResponseInterface
     {
         $entityManager = $this->getDoctrine()->getManager();
 
-        $user = $this->jsonApi()->hydrate(new UpdateUserHydrator($entityManager), $user);
+        $log = $this->jsonApi()->hydrate(new UpdateLogHydrator($entityManager), $log);
 
         /** @var ConstraintViolationList $errors */
-        $errors = $validator->validate($user);
+        $errors = $validator->validate($log);
         if ($errors->count() > 0) {
             return $this->validationErrorResponse($errors);
         }
@@ -103,21 +103,21 @@ class UserController extends Controller
         $entityManager->flush();
 
         return $this->jsonApi()->respond()->ok(
-            new UserDocument(new UserResourceTransformer()),
-            $user
+            new LogDocument(new LogResourceTransformer()),
+            $log
         );
     }
 
     /**
-     * @Route("/{id}", name="users_delete", methods="DELETE")
+     * @Route("/{id}", name="logs_delete", methods="DELETE")
      * @param Request $request
-     * @param User    $user
+     * @param Log     $log
      * @return ResponseInterface
      */
-    public function delete(Request $request, User $user): ResponseInterface
+    public function delete(Request $request, Log $log): ResponseInterface
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->remove($user);
+        $entityManager->remove($log);
         $entityManager->flush();
 
         return $this->jsonApi()->respond()->genericSuccess(204);

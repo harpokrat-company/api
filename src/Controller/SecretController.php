@@ -2,58 +2,124 @@
 
 namespace App\Controller;
 
-use App\Provider\SecretProviderInterface;
+use App\Entity\Secret;
+use App\JsonApi\Document\Secret\SecretDocument;
+use App\JsonApi\Document\Secret\SecretsDocument;
+use App\JsonApi\Hydrator\Secret\CreateSecretHydrator;
+use App\JsonApi\Hydrator\Secret\UpdateSecretHydrator;
+use App\JsonApi\Transformer\SecretResourceTransformer;
 use App\Repository\SecretRepository;
+use Doctrine\ORM\EntityNotFoundException;
+use Paknahad\JsonApiBundle\Controller\Controller;
+use Paknahad\JsonApiBundle\Helper\ResourceCollection;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Routing\Annotation\Route;
+use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class SecretController extends AbstractJsonApiController
+/**
+ * @Route("/v1/secrets")
+ */
+class SecretController extends Controller
 {
-    public function create(Request $request, SecretProviderInterface $secretProvider)
+    /**
+     * @Route("/", name="secrets_index", methods="GET")
+     * @param SecretRepository   $secretRepository
+     * @param ResourceCollection $resourceCollection
+     *
+     * @return ResponseInterface
+     * @throws EntityNotFoundException
+     */
+    public function index(SecretRepository $secretRepository, ResourceCollection $resourceCollection): ResponseInterface
     {
-        if ($request->getContentType() !== 'json')
-            throw new BadRequestHttpException('Incorrect json'); // TODO
-        return $this->jsonApiResponseProvider->createResponse($secretProvider->createSecret($this->getUser(),
-            json_decode($request->getContent(), true)['data']['attributes']['content']));
+        $resourceCollection->setRepository($secretRepository);
+
+        $resourceCollection->handleIndexRequest();
+
+        return $this->jsonApi()->respond()->ok(
+            new SecretsDocument(new SecretResourceTransformer()),
+            $resourceCollection
+        );
     }
 
-    public function getResource(Request $request, int $id, SecretRepository $secretRepository)
+    /**
+     * @Route("/", name="secrets_new", methods="POST")
+     * @param ValidatorInterface $validator
+     * @return ResponseInterface
+     */
+    public function new(ValidatorInterface $validator): ResponseInterface
     {
-        $secret = $secretRepository->find($id);
-        if (is_null($secret))
-            throw new NotFoundHttpException();
-        if ($this->getUser() !== $secret->getOwner())
-            throw new UnauthorizedHttpException('Unauthorized');
-        return $this->jsonApiResponseProvider->createResponse($secret);
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $secret = $this->jsonApi()->hydrate(new CreateSecretHydrator($entityManager), new Secret());
+
+        /** @var ConstraintViolationList $errors */
+        $errors = $validator->validate($secret);
+        if ($errors->count() > 0) {
+            return $this->validationErrorResponse($errors);
+        }
+
+        $entityManager->persist($secret);
+        $entityManager->flush();
+
+        return $this->jsonApi()->respond()->ok(
+            new SecretDocument(new SecretResourceTransformer()),
+            $secret
+        );
     }
 
-    public function update(Request $request, int $id, SecretProviderInterface $secretProvider,
-                           SecretRepository $secretRepository)
+    /**
+     * @Route("/{id}", name="secrets_show", methods="GET")
+     * @param Secret $secret
+     * @return ResponseInterface
+     */
+    public function show(Secret $secret): ResponseInterface
     {
-        $secret = $secretRepository->find($id);
-        if ($this->getUser() !== $secret->getOwner())
-            throw new UnauthorizedHttpException('Unauthorized');
-        if ($request->getContentType() !== 'json')
-            throw new BadRequestHttpException('Incorrect json'); // TODO
-        $secretProvider->update($secret, json_decode($request->getContent(), true)['data']['attributes']['content']);
-        return $this->jsonApiResponseProvider->createResponse($secret);
+        return $this->jsonApi()->respond()->ok(
+            new SecretDocument(new SecretResourceTransformer()),
+            $secret
+        );
     }
 
-    public function delete(Request $request, int $id, SecretProviderInterface $secretProvider,
-                           SecretRepository $secretRepository)
+    /**
+     * @Route("/{id}", name="secrets_edit", methods="PATCH")
+     * @param Secret             $secret
+     * @param ValidatorInterface $validator
+     * @return ResponseInterface
+     */
+    public function edit(Secret $secret, ValidatorInterface $validator): ResponseInterface
     {
-        $secret = $secretRepository->find($id);
-        if ($this->getUser() !== $secret->getOwner())
-            throw new UnauthorizedHttpException('Unauthorized');
-        $secretProvider->delete($secret);
-        return $this->jsonApiResponseProvider->createResponse([]);
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $secret = $this->jsonApi()->hydrate(new UpdateSecretHydrator($entityManager), $secret);
+
+        /** @var ConstraintViolationList $errors */
+        $errors = $validator->validate($secret);
+        if ($errors->count() > 0) {
+            return $this->validationErrorResponse($errors);
+        }
+
+        $entityManager->flush();
+
+        return $this->jsonApi()->respond()->ok(
+            new SecretDocument(new SecretResourceTransformer()),
+            $secret
+        );
     }
 
-    public function list(Request $request, SecretRepository $secretRepository)
+    /**
+     * @Route("/{id}", name="secrets_delete", methods="DELETE")
+     * @param Request $request
+     * @param Secret  $secret
+     * @return ResponseInterface
+     */
+    public function delete(Request $request, Secret $secret): ResponseInterface
     {
-        return $this->jsonApiResponseProvider->createResponse($secretRepository->findBy(
-            ['owner' => $this->getUser()]));
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($secret);
+        $entityManager->flush();
+
+        return $this->jsonApi()->respond()->genericSuccess(204);
     }
 }
