@@ -4,7 +4,9 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
+use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\SecretRepository")
@@ -12,15 +14,18 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class Secret
 {
     /**
+     * @var UuidInterface
+     *
      * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      * @Serializer\Accessor(getter="getId")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="blob")
+     * @ORM\Column(type="text")
      * @Serializer\Exclude()
      */
     private $content;
@@ -32,7 +37,7 @@ class Secret
      */
     private $owner;
 
-    public function getId(): ?int
+    public function getId()
     {
         return $this->id;
     }
@@ -40,14 +45,6 @@ class Secret
     public function getContent()
     {
         return $this->content;
-    }
-
-    public function getContentAsString()
-    {
-        $content = $this->getContent();
-        if (is_string($content))
-            return $content;
-        return stream_get_contents($content);
     }
 
     public function setContent($content): self
@@ -85,7 +82,7 @@ class Secret
     public function getAttributes(): array
     {
         return [
-            'content' => $this->getContentAsString(),
+            'content' => $this->getContent(),
         ];
     }
 

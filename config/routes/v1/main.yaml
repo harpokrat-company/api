@@ -1,14 +1,2 @@
-v1_root:
-  path: /
-  methods:
-      - GET
-  controller: App\Controller\DefaultController::index
-
 v1_json_web_tokens:
   resource: json-web-tokens.yaml
-
-v1_users:
-  resource: users.yaml
-
-v1_secrets:
-  resource: secrets.yaml
