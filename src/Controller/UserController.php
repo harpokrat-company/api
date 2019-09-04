@@ -22,8 +22,6 @@ class UserController extends AbstractJsonApiController
 
     public function getResource(Request $request, int $id, UserRepository $userRepository, PasswordResetService $passwordResetService)
     {
-        // TODO Remove, example while reset password route / security is not created
-//        $passwordResetService->sendPasswordResetMail($userRepository->find($id));
         return $this->jsonApiResponseProvider->createResponse($userRepository->find($id));
     }
 }
