@@ -1,0 +1,15 @@
+{% extends 'mails/_email_base.txt.twig' %}
+
+{% block title %}Harpokrat | Email address validation{% endblock %}
+
+{% block content %}
+Hello,{# TODO use more parameters to personalize mail #}
+
+Your Harpokrat account was successfully created !
+To use all the features of Harpokrat you must validate your email by entering the following address in your web browser:
+https://www.harpokrat.com/todo/validate_email/{{ validation_code }}
+
+
+Thanks,
+Harpokrat
+{% endblock %}

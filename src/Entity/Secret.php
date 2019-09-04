@@ -21,14 +21,14 @@ class Secret
 
     /**
      * @ORM\Column(type="blob")
-     * @Serializer\Accessor(getter="getContentAsString")
+     * @Serializer\Exclude()
      */
     private $content;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="secrets")
      * @ORM\JoinColumn(nullable=false)
-     * @Serializer\Accessor(getter="getOwner")
+     * @Serializer\Exclude()
      */
     private $owner;
 
@@ -67,5 +67,36 @@ class Secret
         $this->owner = $owner;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     * @Serializer\VirtualProperty(name="type")
+     */
+    public function getType(): string
+    {
+        return 'secrets';
+    }
+
+    /**
+     * @return array
+     * @Serializer\VirtualProperty(name="attributes")
+     */
+    public function getAttributes(): array
+    {
+        return [
+            'content' => $this->getContentAsString(),
+        ];
+    }
+
+    /**
+     * @return array
+     * @Serializer\VirtualProperty(name="relationships")
+     */
+    public function getRelationships(): array
+    {
+        return [
+            'owner' => $this->getOwner(),
+        ];
     }
 }
