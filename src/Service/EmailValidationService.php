@@ -32,6 +32,7 @@ class EmailValidationService
      */
     public function sendValidationMail(User $user)
     {
+        // TODO Listener to auto send validation mail
         $emailValidationCode = bin2hex(random_bytes(32));
         // TODO use validation code somehow
         $this->mailer->sendMail(

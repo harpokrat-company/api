@@ -1,0 +1,389 @@
+{
+    "info": {
+        "name": "json_api",
+        "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
+    },
+    "item": [
+        {
+            "name": "User",
+            "description": "",
+            "item": [
+                {
+                    "name": "User List",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": "",
+                        "url": {
+                            "raw": "{{host}}\/users\/",
+                            "host": [
+                                "{{host}}"
+                            ],
+                            "path": [
+                                "\/users",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Add User",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"data\": {\n        \"type\": \"users\",\n        \"attributes\": {\n            \"email\": \"string\",\n            \"roles\": \"json\",\n            \"password\": \"string\",\n            \"firstName\": \"string\",\n            \"lastName\": \"string\"\n        },\n        \"relationships\": {\n            \"secrets\": {\n                \"data\": [\n                    {\n                        \"type\": \"secrets\",\n                        \"id\": \"1\"\n                    }\n                ]\n            },\n            \"logs\": {\n                \"data\": [\n                    {\n                        \"type\": \"logs\",\n                        \"id\": \"1\"\n                    }\n                ]\n            }\n        }\n    }\n}"
+                        },
+                        "url": {
+                            "raw": "{{host}}\/users\/",
+                            "host": [
+                                "{{host}}"
+                            ],
+                            "path": [
+                                "\/users",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Edit User",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"data\": {\n        \"type\": \"users\",\n        \"id\": \"1\",\n        \"attributes\": {\n            \"email\": \"string\",\n            \"roles\": \"json\",\n            \"password\": \"string\",\n            \"firstName\": \"string\",\n            \"lastName\": \"string\"\n        },\n        \"relationships\": {\n            \"secrets\": {\n                \"data\": [\n                    {\n                        \"type\": \"secrets\",\n                        \"id\": \"1\"\n                    }\n                ]\n            },\n            \"logs\": {\n                \"data\": [\n                    {\n                        \"type\": \"logs\",\n                        \"id\": \"1\"\n                    }\n                ]\n            }\n        }\n    }\n}"
+                        },
+                        "url": {
+                            "raw": "{{host}}\/users\/1",
+                            "host": [
+                                "{{host}}"
+                            ],
+                            "path": [
+                                "\/users",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete User",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": "",
+                        "url": {
+                            "raw": "{{host}}\/users\/1",
+                            "host": [
+                                "{{host}}"
+                            ],
+                            "path": [
+                                "\/users",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get User",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": "",
+                        "url": {
+                            "raw": "{{host}}\/users\/1",
+                            "host": [
+                                "{{host}}"
+                            ],
+                            "path": [
+                                "\/users",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Secret",
+            "description": "",
+            "item": [
+                {
+                    "name": "Secret List",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": "",
+                        "url": {
+                            "raw": "{{host}}\/secrets\/",
+                            "host": [
+                                "{{host}}"
+                            ],
+                            "path": [
+                                "\/secrets",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Add Secret",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"data\": {\n        \"type\": \"secrets\",\n        \"attributes\": {\n            \"content\": \"blob\"\n        },\n        \"relationships\": {\n            \"owner\": {\n                \"data\": {\n                    \"type\": \"users\",\n                    \"id\": \"1\"\n                }\n            }\n        }\n    }\n}"
+                        },
+                        "url": {
+                            "raw": "{{host}}\/secrets\/",
+                            "host": [
+                                "{{host}}"
+                            ],
+                            "path": [
+                                "\/secrets",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Edit Secret",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"data\": {\n        \"type\": \"secrets\",\n        \"id\": \"1\",\n        \"attributes\": {\n            \"content\": \"blob\"\n        },\n        \"relationships\": {\n            \"owner\": {\n                \"data\": {\n                    \"type\": \"users\",\n                    \"id\": \"1\"\n                }\n            }\n        }\n    }\n}"
+                        },
+                        "url": {
+                            "raw": "{{host}}\/secrets\/1",
+                            "host": [
+                                "{{host}}"
+                            ],
+                            "path": [
+                                "\/secrets",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Secret",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": "",
+                        "url": {
+                            "raw": "{{host}}\/secrets\/1",
+                            "host": [
+                                "{{host}}"
+                            ],
+                            "path": [
+                                "\/secrets",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Secret",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": "",
+                        "url": {
+                            "raw": "{{host}}\/secrets\/1",
+                            "host": [
+                                "{{host}}"
+                            ],
+                            "path": [
+                                "\/secrets",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Log",
+            "description": "",
+            "item": [
+                {
+                    "name": "Log List",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": "",
+                        "url": {
+                            "raw": "{{host}}\/logs\/",
+                            "host": [
+                                "{{host}}"
+                            ],
+                            "path": [
+                                "\/logs",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Add Log",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"data\": {\n        \"type\": \"logs\",\n        \"attributes\": {\n            \"date\": \"datetime\",\n            \"uri\": \"string\",\n            \"ip\": \"string\"\n        },\n        \"relationships\": {\n            \"user\": {\n                \"data\": {\n                    \"type\": \"users\",\n                    \"id\": \"1\"\n                }\n            }\n        }\n    }\n}"
+                        },
+                        "url": {
+                            "raw": "{{host}}\/logs\/",
+                            "host": [
+                                "{{host}}"
+                            ],
+                            "path": [
+                                "\/logs",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Edit Log",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"data\": {\n        \"type\": \"logs\",\n        \"id\": \"1\",\n        \"attributes\": {\n            \"date\": \"datetime\",\n            \"uri\": \"string\",\n            \"ip\": \"string\"\n        },\n        \"relationships\": {\n            \"user\": {\n                \"data\": {\n                    \"type\": \"users\",\n                    \"id\": \"1\"\n                }\n            }\n        }\n    }\n}"
+                        },
+                        "url": {
+                            "raw": "{{host}}\/logs\/1",
+                            "host": [
+                                "{{host}}"
+                            ],
+                            "path": [
+                                "\/logs",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Log",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": "",
+                        "url": {
+                            "raw": "{{host}}\/logs\/1",
+                            "host": [
+                                "{{host}}"
+                            ],
+                            "path": [
+                                "\/logs",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Log",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": "",
+                        "url": {
+                            "raw": "{{host}}\/logs\/1",
+                            "host": [
+                                "{{host}}"
+                            ],
+                            "path": [
+                                "\/logs",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
