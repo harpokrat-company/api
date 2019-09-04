@@ -9,6 +9,7 @@ use App\JsonApi\Hydrator\Secret\CreateSecretHydrator;
 use App\JsonApi\Hydrator\Secret\UpdateSecretHydrator;
 use App\JsonApi\Transformer\SecretResourceTransformer;
 use App\Repository\SecretRepository;
+use Doctrine\ORM\EntityNotFoundException;
 use Paknahad\JsonApiBundle\Controller\Controller;
 use Paknahad\JsonApiBundle\Helper\ResourceCollection;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,6 +25,11 @@ class SecretController extends Controller
 {
     /**
      * @Route("/", name="secrets_index", methods="GET")
+     * @param SecretRepository   $secretRepository
+     * @param ResourceCollection $resourceCollection
+     *
+     * @return ResponseInterface
+     * @throws EntityNotFoundException
      */
     public function index(SecretRepository $secretRepository, ResourceCollection $resourceCollection): ResponseInterface
     {
@@ -39,6 +45,8 @@ class SecretController extends Controller
 
     /**
      * @Route("/", name="secrets_new", methods="POST")
+     * @param ValidatorInterface $validator
+     * @return ResponseInterface
      */
     public function new(ValidatorInterface $validator): ResponseInterface
     {
@@ -63,6 +71,8 @@ class SecretController extends Controller
 
     /**
      * @Route("/{id}", name="secrets_show", methods="GET")
+     * @param Secret $secret
+     * @return ResponseInterface
      */
     public function show(Secret $secret): ResponseInterface
     {
@@ -74,6 +84,9 @@ class SecretController extends Controller
 
     /**
      * @Route("/{id}", name="secrets_edit", methods="PATCH")
+     * @param Secret             $secret
+     * @param ValidatorInterface $validator
+     * @return ResponseInterface
      */
     public function edit(Secret $secret, ValidatorInterface $validator): ResponseInterface
     {
@@ -97,6 +110,9 @@ class SecretController extends Controller
 
     /**
      * @Route("/{id}", name="secrets_delete", methods="DELETE")
+     * @param Request $request
+     * @param Secret  $secret
+     * @return ResponseInterface
      */
     public function delete(Request $request, Secret $secret): ResponseInterface
     {

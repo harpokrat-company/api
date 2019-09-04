@@ -55,7 +55,11 @@ abstract class AbstractSecretHydrator extends AbstractHydrator
      */
     protected function getAttributeHydrator($secret): array
     {
-        return [];
+        return [
+            'content' => function (Secret $secret, $attribute, $data, $attributeName) {
+                $secret->setContent($attribute);
+            },
+        ];
     }
 
     /**

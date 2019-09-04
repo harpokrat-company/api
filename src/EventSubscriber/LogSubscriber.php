@@ -49,6 +49,7 @@ class LogSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         // TODO https://rihards.com/2018/symfony-login-event-listener/
+        // TODO Log exceptions
         return [
             KernelEvents::RESPONSE => 'onKernelResponse',
         ];

@@ -9,6 +9,7 @@ use App\JsonApi\Hydrator\Log\CreateLogHydrator;
 use App\JsonApi\Hydrator\Log\UpdateLogHydrator;
 use App\JsonApi\Transformer\LogResourceTransformer;
 use App\Repository\LogRepository;
+use Doctrine\ORM\EntityNotFoundException;
 use Paknahad\JsonApiBundle\Controller\Controller;
 use Paknahad\JsonApiBundle\Helper\ResourceCollection;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,6 +25,11 @@ class LogController extends Controller
 {
     /**
      * @Route("/", name="logs_index", methods="GET")
+     * @param LogRepository      $logRepository
+     * @param ResourceCollection $resourceCollection
+     *
+     * @return ResponseInterface
+     * @throws EntityNotFoundException
      */
     public function index(LogRepository $logRepository, ResourceCollection $resourceCollection): ResponseInterface
     {
@@ -39,6 +45,8 @@ class LogController extends Controller
 
     /**
      * @Route("/", name="logs_new", methods="POST")
+     * @param ValidatorInterface $validator
+     * @return ResponseInterface
      */
     public function new(ValidatorInterface $validator): ResponseInterface
     {
@@ -63,6 +71,8 @@ class LogController extends Controller
 
     /**
      * @Route("/{id}", name="logs_show", methods="GET")
+     * @param Log $log
+     * @return ResponseInterface
      */
     public function show(Log $log): ResponseInterface
     {
@@ -74,6 +84,9 @@ class LogController extends Controller
 
     /**
      * @Route("/{id}", name="logs_edit", methods="PATCH")
+     * @param Log                $log
+     * @param ValidatorInterface $validator
+     * @return ResponseInterface
      */
     public function edit(Log $log, ValidatorInterface $validator): ResponseInterface
     {
@@ -97,6 +110,9 @@ class LogController extends Controller
 
     /**
      * @Route("/{id}", name="logs_delete", methods="DELETE")
+     * @param Request $request
+     * @param Log     $log
+     * @return ResponseInterface
      */
     public function delete(Request $request, Log $log): ResponseInterface
     {

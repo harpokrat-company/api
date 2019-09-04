@@ -9,6 +9,7 @@ use App\JsonApi\Hydrator\User\CreateUserHydrator;
 use App\JsonApi\Hydrator\User\UpdateUserHydrator;
 use App\JsonApi\Transformer\UserResourceTransformer;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityNotFoundException;
 use Paknahad\JsonApiBundle\Controller\Controller;
 use Paknahad\JsonApiBundle\Helper\ResourceCollection;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,6 +25,11 @@ class UserController extends Controller
 {
     /**
      * @Route("/", name="users_index", methods="GET")
+     * @param UserRepository     $userRepository
+     * @param ResourceCollection $resourceCollection
+     *
+     * @return ResponseInterface
+     * @throws EntityNotFoundException
      */
     public function index(UserRepository $userRepository, ResourceCollection $resourceCollection): ResponseInterface
     {
@@ -39,6 +45,8 @@ class UserController extends Controller
 
     /**
      * @Route("/", name="users_new", methods="POST")
+     * @param ValidatorInterface $validator
+     * @return ResponseInterface
      */
     public function new(ValidatorInterface $validator): ResponseInterface
     {
@@ -63,6 +71,8 @@ class UserController extends Controller
 
     /**
      * @Route("/{id}", name="users_show", methods="GET")
+     * @param User $user
+     * @return ResponseInterface
      */
     public function show(User $user): ResponseInterface
     {
@@ -74,6 +84,9 @@ class UserController extends Controller
 
     /**
      * @Route("/{id}", name="users_edit", methods="PATCH")
+     * @param User               $user
+     * @param ValidatorInterface $validator
+     * @return ResponseInterface
      */
     public function edit(User $user, ValidatorInterface $validator): ResponseInterface
     {
@@ -97,6 +110,9 @@ class UserController extends Controller
 
     /**
      * @Route("/{id}", name="users_delete", methods="DELETE")
+     * @param Request $request
+     * @param User    $user
+     * @return ResponseInterface
      */
     public function delete(Request $request, User $user): ResponseInterface
     {
