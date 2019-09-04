@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Provider\UserProviderInterface;
 use App\Repository\UserRepository;
+use App\Service\PasswordResetService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -19,8 +20,10 @@ class UserController extends AbstractJsonApiController
         return $this->jsonApiResponseProvider->createResponse($user);
     }
 
-    public function getResource(Request $request, int $id, UserRepository $userRepository)
+    public function getResource(Request $request, int $id, UserRepository $userRepository, PasswordResetService $passwordResetService)
     {
+        // TODO Remove, example while reset password route / security is not created
+//        $passwordResetService->sendPasswordResetMail($userRepository->find($id));
         return $this->jsonApiResponseProvider->createResponse($userRepository->find($id));
     }
 }

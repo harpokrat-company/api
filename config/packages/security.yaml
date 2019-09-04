@@ -17,10 +17,12 @@ security:
         sign_in:
             pattern: ^/v1/users
             methods: [POST]
+            stateless: true
             anonymous: true
         login:
             pattern: ^/v1/json-web-tokens
             methods: [POST]
+            stateless: true
             http_basic:
                 realm: Basic authentication
         api:
@@ -31,6 +33,7 @@ security:
                     - lexik_jwt_authentication.jwt_token_authenticator
         main:
             anonymous: true
+            stateless: true
 
 
             # activate different ways to authenticate
