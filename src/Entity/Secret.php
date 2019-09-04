@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\SecretRepository")
@@ -24,7 +25,7 @@ class Secret
     private $id;
 
     /**
-     * @ORM\Column(type="blob")
+     * @ORM\Column(type="text")
      * @Serializer\Exclude()
      */
     private $content;
@@ -44,14 +45,6 @@ class Secret
     public function getContent()
     {
         return $this->content;
-    }
-
-    public function getContentAsString()
-    {
-        $content = $this->getContent();
-        if (is_string($content))
-            return $content;
-        return stream_get_contents($content);
     }
 
     public function setContent($content): self
@@ -89,7 +82,7 @@ class Secret
     public function getAttributes(): array
     {
         return [
-            'content' => $this->getContentAsString(),
+            'content' => $this->getContent(),
         ];
     }
 
