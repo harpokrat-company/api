@@ -6,9 +6,11 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-json": "*",
+        "doctrine/annotations": "^1.7",
         "jms/serializer-bundle": "^3.3",
         "lexik/jwt-authentication-bundle": "^2.6",
         "nelmio/cors-bundle": "^1.5",
+        "paknahad/jsonapi-bundle": "^2.2",
         "symfony/console": "^4.3",
         "symfony/dotenv": "^4.3",
         "symfony/event-dispatcher": "^4.3",
@@ -16,10 +18,11 @@
         "symfony/framework-bundle": "^4.3",
         "symfony/orm-pack": "^1.0",
         "symfony/security-bundle": "^4.3",
-        "symfony/yaml": "^4.3",
         "symfony/swiftmailer-bundle": "^3.2",
         "symfony/templating": "^4.3",
         "symfony/twig-bundle": "^4.3",
+        "symfony/validator": "^4.3",
+        "symfony/yaml": "^4.3",
         "twig/twig": "^2.11"
     },
     "config": {
@@ -67,6 +70,7 @@
         }
     },
     "require-dev": {
-        "symfony/maker-bundle": "^1.11"
+        "phootwork/collection": "^1.6",
+        "symfony/maker-bundle": "^1.13"
     }
 }
