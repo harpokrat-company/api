@@ -357,6 +357,9 @@
     "symfony/templating": {
         "version": "v3.4.31"
     },
+    "symfony/translation-contracts": {
+        "version": "v1.1.6"
+    },
     "symfony/twig-bridge": {
         "version": "v3.4.31"
     },
