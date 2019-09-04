@@ -55,7 +55,17 @@ abstract class AbstractLogHydrator extends AbstractHydrator
      */
     protected function getAttributeHydrator($log): array
     {
-        return [];
+        return [
+            'date' => function (Log $log, $attribute, $data, $attributeName) {
+                $log->setDate(new \DateTime($attribute));
+            },
+            'uri' => function (Log $log, $attribute, $data, $attributeName) {
+                $log->setUri($attribute);
+            },
+            'ip' => function (Log $log, $attribute, $data, $attributeName) {
+                $log->setIp($attribute);
+            },
+        ];
     }
 
     /**
