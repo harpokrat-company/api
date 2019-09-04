@@ -47,9 +47,52 @@ class User implements UserInterface
      */
     private $secrets;
 
+    /**
+     * @var \DateTime
+     * @ORM\Column(type="datetime", nullable=true)
+     * @Serializer\Exclude()
+     */
+    private $emailValidationDate;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(type="datetime", nullable=true)
+     * @Serializer\Exclude()
+     */
+    private $emailValidationMailSentDate;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", nullable=true)
+     * @Serializer\Exclude()
+     */
+    private $emailValidationCode;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", nullable=true)
+     * @Serializer\Exclude()
+     */
+    private $firstName;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", nullable=true)
+     * @Serializer\Exclude()
+     */
+    private $lastName;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Log", mappedBy="user")
+     * @Serializer\Exclude()
+     */
+    private $logs;
+
+
     public function __construct()
     {
         $this->secrets = new ArrayCollection();
+        $this->logs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -138,6 +181,9 @@ class User implements UserInterface
     {
         return [
             'email' => $this->getEmail(),
+            'firstName' => $this->getFirstName(),
+            'lastName' => $this->getLastName(),
+            'emailValidationDate' => $this->getEmailValidationDate(),
         ];
     }
 
@@ -175,6 +221,137 @@ class User implements UserInterface
             // set the owning side to null (unless already changed)
             if ($secret->getOwner() === $this) {
                 $secret->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getEmailValidationDate(): ?\DateTime
+    {
+        return $this->emailValidationDate;
+    }
+
+    /**
+     * @param \DateTime $emailValidationDate
+     *
+     * @return User
+     */
+    public function setEmailValidationDate(?\DateTime $emailValidationDate): User
+    {
+        $this->emailValidationDate = $emailValidationDate;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getEmailValidationMailSentDate(): ?\DateTime
+    {
+        return $this->emailValidationMailSentDate;
+    }
+
+    /**
+     * @param \DateTime $emailValidationMailSentDate
+     *
+     * @return User
+     */
+    public function setEmailValidationMailSentDate(?\DateTime $emailValidationMailSentDate): User
+    {
+        $this->emailValidationMailSentDate = $emailValidationMailSentDate;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmailValidationCode(): ?string
+    {
+        return $this->emailValidationCode;
+    }
+
+    /**
+     * @param string $emailValidationCode
+     *
+     * @return User
+     */
+    public function setEmailValidationCode(?string $emailValidationCode): User
+    {
+        $this->emailValidationCode = $emailValidationCode;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * @param string $firstName
+     *
+     * @return User
+     */
+    public function setFirstName(?string $firstName): User
+    {
+        $this->firstName = $firstName;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
+
+    /**
+     * @param string $lastName
+     *
+     * @return User
+     */
+    public function setLastName(?string $lastName): User
+    {
+        $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Log[]
+     */
+    public function getLogs(): Collection
+    {
+        return $this->logs;
+    }
+
+    public function addLog(Log $log): self
+    {
+        if (!$this->logs->contains($log)) {
+            $this->logs[] = $log;
+            $log->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLog(Log $log): self
+    {
+        if ($this->logs->contains($log)) {
+            $this->logs->removeElement($log);
+            // set the owning side to null (unless already changed)
+            if ($log->getUser() === $this) {
+                $log->setUser(null);
             }
         }
 
