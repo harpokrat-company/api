@@ -6,7 +6,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
+use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -14,9 +16,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class User implements UserInterface
 {
     /**
+     * @var UuidInterface
+     *
      * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      * @Serializer\Accessor(getter="getId")
      * @Serializer\Type("string")
      */
@@ -24,6 +29,8 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Assert\NotBlank()
+     * @Assert\Email()
      * @Serializer\Exclude()
      */
     private $email;
@@ -37,6 +44,10 @@ class User implements UserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *     min="8"
+     * )
      * @Serializer\Exclude()
      */
     private $password;
@@ -46,27 +57,6 @@ class User implements UserInterface
      * @Serializer\Exclude()
      */
     private $secrets;
-
-    /**
-     * @var \DateTime
-     * @ORM\Column(type="datetime", nullable=true)
-     * @Serializer\Exclude()
-     */
-    private $emailValidationDate;
-
-    /**
-     * @var \DateTime
-     * @ORM\Column(type="datetime", nullable=true)
-     * @Serializer\Exclude()
-     */
-    private $emailValidationMailSentDate;
-
-    /**
-     * @var string
-     * @ORM\Column(type="string", nullable=true)
-     * @Serializer\Exclude()
-     */
-    private $emailValidationCode;
 
     /**
      * @var string
@@ -95,7 +85,7 @@ class User implements UserInterface
         $this->logs = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function getId()
     {
         return $this->id;
     }
@@ -183,7 +173,6 @@ class User implements UserInterface
             'email' => $this->getEmail(),
             'firstName' => $this->getFirstName(),
             'lastName' => $this->getLastName(),
-            'emailValidationDate' => $this->getEmailValidationDate(),
         ];
     }
 
@@ -223,66 +212,6 @@ class User implements UserInterface
                 $secret->setOwner(null);
             }
         }
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getEmailValidationDate(): ?\DateTime
-    {
-        return $this->emailValidationDate;
-    }
-
-    /**
-     * @param \DateTime $emailValidationDate
-     *
-     * @return User
-     */
-    public function setEmailValidationDate(?\DateTime $emailValidationDate): User
-    {
-        $this->emailValidationDate = $emailValidationDate;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getEmailValidationMailSentDate(): ?\DateTime
-    {
-        return $this->emailValidationMailSentDate;
-    }
-
-    /**
-     * @param \DateTime $emailValidationMailSentDate
-     *
-     * @return User
-     */
-    public function setEmailValidationMailSentDate(?\DateTime $emailValidationMailSentDate): User
-    {
-        $this->emailValidationMailSentDate = $emailValidationMailSentDate;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEmailValidationCode(): ?string
-    {
-        return $this->emailValidationCode;
-    }
-
-    /**
-     * @param string $emailValidationCode
-     *
-     * @return User
-     */
-    public function setEmailValidationCode(?string $emailValidationCode): User
-    {
-        $this->emailValidationCode = $emailValidationCode;
 
         return $this;
     }

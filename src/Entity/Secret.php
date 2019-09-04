@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
+use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -12,9 +13,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class Secret
 {
     /**
+     * @var UuidInterface
+     *
      * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      * @Serializer\Accessor(getter="getId")
      */
     private $id;
@@ -32,7 +36,7 @@ class Secret
      */
     private $owner;
 
-    public function getId(): ?int
+    public function getId()
     {
         return $this->id;
     }

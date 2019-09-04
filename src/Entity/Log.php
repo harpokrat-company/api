@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Ramsey\Uuid\UuidInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\LogRepository")
@@ -10,9 +11,12 @@ use Doctrine\ORM\Mapping as ORM;
 class Log
 {
     /**
+     * @var UuidInterface
+     *
      * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
     private $id;
 
@@ -36,7 +40,7 @@ class Log
      */
     private $ip;
 
-    public function getId(): ?int
+    public function getId()
     {
         return $this->id;
     }
