@@ -30,8 +30,12 @@ services:
     # please note that last definitions always *replace* previous ones
 
     user_listener:
-        class: App\EventSubscriber\UserListener
+        class: App\EventListener\UserListener
         tags:
             - { name: doctrine.orm.entity_listener, event: prePersist, entity: App\Entity\User }
             - { name: doctrine.orm.entity_listener, event: preUpdate, entity: App\Entity\User }
 
+    jsonWebToken_listener:
+        class: App\EventListener\JsonWebTokenListener
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }
