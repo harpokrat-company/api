@@ -51,7 +51,7 @@ class LogResourceTransformer extends AbstractResource
     {
         return [
             'date' => function (Log $log) {
-                return $log->getDate()->format(DATE_ATOM);
+                return $log->getDate()->getTimestamp();
             },
             'uri' => function (Log $log) {
                 return $log->getUri();
