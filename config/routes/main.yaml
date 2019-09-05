@@ -1,3 +1,0 @@
-v1:
-  prefix: /v1/
-  resource: v1/main.yaml

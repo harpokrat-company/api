@@ -5,13 +5,14 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as Serializer;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @UniqueEntity("email")
  */
 class User implements UserInterface
 {
@@ -22,8 +23,6 @@ class User implements UserInterface
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     * @Serializer\Accessor(getter="getId")
-     * @Serializer\Type("string")
      */
     private $id;
 
@@ -31,13 +30,11 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\NotBlank()
      * @Assert\Email()
-     * @Serializer\Exclude()
      */
     private $email;
 
     /**
      * @ORM\Column(type="json")
-     * @Serializer\Exclude()
      */
     private $roles = [];
 
@@ -49,33 +46,28 @@ class User implements UserInterface
      *     min="8",
      *     max="4096"
      * )
-     * @Serializer\Exclude()
      */
     private $password;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Secret", mappedBy="owner", orphanRemoval=true)
-     * @Serializer\Exclude()
      */
     private $secrets;
 
     /**
      * @var string
      * @ORM\Column(type="string", nullable=true)
-     * @Serializer\Exclude()
      */
     private $firstName;
 
     /**
      * @var string
      * @ORM\Column(type="string", nullable=true)
-     * @Serializer\Exclude()
      */
     private $lastName;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Log", mappedBy="user")
-     * @Serializer\Exclude()
      */
     private $logs;
 
@@ -162,28 +154,6 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
-    }
-
-    /**
-     * @return array
-     * @Serializer\VirtualProperty(name="attributes")
-     */
-    public function getAttributes()
-    {
-        return [
-            'email' => $this->getEmail(),
-            'firstName' => $this->getFirstName(),
-            'lastName' => $this->getLastName(),
-        ];
-    }
-
-    /**
-     * @return string
-     * @Serializer\VirtualProperty(name="type")
-     */
-    public function getType()
-    {
-        return 'users';
     }
 
     /**
