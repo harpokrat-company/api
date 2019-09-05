@@ -3,10 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as Serializer;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\SecretRepository")
@@ -20,20 +18,17 @@ class Secret
      * @ORM\Column(type="uuid", unique=true)
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     * @Serializer\Accessor(getter="getId")
      */
     private $id;
 
     /**
      * @ORM\Column(type="text")
-     * @Serializer\Exclude()
      */
     private $content;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="secrets")
      * @ORM\JoinColumn(nullable=false)
-     * @Serializer\Exclude()
      */
     private $owner;
 
@@ -64,36 +59,5 @@ class Secret
         $this->owner = $owner;
 
         return $this;
-    }
-
-    /**
-     * @return string
-     * @Serializer\VirtualProperty(name="type")
-     */
-    public function getType(): string
-    {
-        return 'secrets';
-    }
-
-    /**
-     * @return array
-     * @Serializer\VirtualProperty(name="attributes")
-     */
-    public function getAttributes(): array
-    {
-        return [
-            'content' => $this->getContent(),
-        ];
-    }
-
-    /**
-     * @return array
-     * @Serializer\VirtualProperty(name="relationships")
-     */
-    public function getRelationships(): array
-    {
-        return [
-            'owner' => $this->getOwner(),
-        ];
     }
 }

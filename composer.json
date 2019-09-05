@@ -7,7 +7,6 @@
         "ext-iconv": "*",
         "ext-json": "*",
         "doctrine/annotations": "^1.7",
-        "jms/serializer-bundle": "^3.3",
         "lexik/jwt-authentication-bundle": "^2.6",
         "nelmio/cors-bundle": "^1.5",
         "paknahad/jsonapi-bundle": "^2.2",
