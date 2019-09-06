@@ -2,12 +2,17 @@
 
 namespace App\EventListener;
 
+use App\Entity\SecureAction;
 use App\Entity\User;
-use App\Service\EmailValidationService;
+use App\Provider\SecureActionProvider;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class UserListener
 {
@@ -22,19 +27,19 @@ class UserListener
     private $passwordEncoder;
 
     /**
-     * @var EmailValidationService
+     * @var SecureActionProvider
      */
-    private $emailValidationService;
+    private $secureActionProvider;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         UserPasswordEncoderInterface $passwordEncoder,
-        EmailValidationService $emailValidationService
+        SecureActionProvider $secureActionProvider
     )
     {
         $this->entityManager = $entityManager;
         $this->passwordEncoder = $passwordEncoder;
-        $this->emailValidationService = $emailValidationService;
+        $this->secureActionProvider = $secureActionProvider;
     }
 
     private function encodeUserPassword(User $user)
@@ -42,18 +47,56 @@ class UserListener
         $user->setPassword($this->passwordEncoder->encodePassword($user, $user->getPassword()));
     }
 
+    /**
+     * @param User $user
+     *
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
     private function handleMailModification(User $user)
     {
-        $this->emailValidationService->sendValidationMail($user);
+        $this->secureActionProvider->register(
+            $user,
+            SecureAction::ACTION_VALIDATE_EMAIL_ADDRESS,
+            [
+                'user_id' => $user->getId(),
+                'user_email' => $user->getEmail(), // To prevent the user from validating a modified email
+            ],
+            new DateTime('+1 day')
+        );
     }
 
+    /**
+     * @param User               $user
+     * @param LifecycleEventArgs $args
+     */
     public function prePersist(User $user, LifecycleEventArgs $args)
     {
         $this->encodeUserPassword($user);
-        $this->handleMailModification($user);
-        return;
     }
 
+    /**
+     * @param User               $user
+     * @param LifecycleEventArgs $args
+     *
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function postPersist(User $user, LifecycleEventArgs $args)
+    {
+        $this->handleMailModification($user);
+    }
+
+    /**
+     * @param User               $user
+     * @param PreUpdateEventArgs $args
+     *
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
     public function preUpdate(User $user, PreUpdateEventArgs $args)
     {
         if ($args->hasChangedField('password'))

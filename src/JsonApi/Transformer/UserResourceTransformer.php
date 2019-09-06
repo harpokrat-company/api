@@ -62,6 +62,9 @@ class UserResourceTransformer extends AbstractResource
             'lastName' => function (User $user) {
                 return $user->getLastName();
             },
+            'emailAddressValidated' => function (User $user) {
+                return $user->isEmailAddressValidated();
+            }
         ];
     }
 

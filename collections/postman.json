@@ -384,6 +384,133 @@
                     }
                 }
             ]
+        },
+        {
+            "name": "SecureAction",
+            "description": "",
+            "item": [
+                {
+                    "name": "SecureAction List",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": "",
+                        "url": {
+                            "raw": "{{host}}\/secure\/actions\/",
+                            "host": [
+                                "{{host}}"
+                            ],
+                            "path": [
+                                "\/secure\/actions",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Add SecureAction",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"data\": {\n        \"type\": \"secure_actions\",\n        \"attributes\": {\n            \"creationDate\": \"datetime\",\n            \"expirationDate\": \"datetime\",\n            \"token\": \"string\",\n            \"validated\": \"boolean\",\n            \"action\": \"json\"\n        },\n        \"relationships\": []\n    }\n}"
+                        },
+                        "url": {
+                            "raw": "{{host}}\/secure\/actions\/",
+                            "host": [
+                                "{{host}}"
+                            ],
+                            "path": [
+                                "\/secure\/actions",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Edit SecureAction",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"data\": {\n        \"type\": \"secure_actions\",\n        \"id\": \"1\",\n        \"attributes\": {\n            \"creationDate\": \"datetime\",\n            \"expirationDate\": \"datetime\",\n            \"token\": \"string\",\n            \"validated\": \"boolean\",\n            \"action\": \"json\"\n        },\n        \"relationships\": []\n    }\n}"
+                        },
+                        "url": {
+                            "raw": "{{host}}\/secure\/actions\/1",
+                            "host": [
+                                "{{host}}"
+                            ],
+                            "path": [
+                                "\/secure\/actions",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete SecureAction",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": "",
+                        "url": {
+                            "raw": "{{host}}\/secure\/actions\/1",
+                            "host": [
+                                "{{host}}"
+                            ],
+                            "path": [
+                                "\/secure\/actions",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get SecureAction",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": "",
+                        "url": {
+                            "raw": "{{host}}\/secure\/actions\/1",
+                            "host": [
+                                "{{host}}"
+                            ],
+                            "path": [
+                                "\/secure\/actions",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
         }
     ]
 }
