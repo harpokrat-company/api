@@ -3,11 +3,13 @@
 {% block title %}Harpokrat | Email address validation{% endblock %}
 
 {% block content %}
-Hello,{# TODO use more parameters to personalize mail #}
+Hello {{ user.firstName }},
 
 Your Harpokrat account was successfully created !
 To use all the features of Harpokrat you must validate your email by entering the following address in your web browser:
-https://www.harpokrat.com/todo/validate_email/{{ validation_code }}
+{{ validation_link }}
+
+Warning: this email and validation link are only valid until the {{ action.expirationDate|date('Y/m/d \\a\\t G:i') }}
 
 
 Thanks,

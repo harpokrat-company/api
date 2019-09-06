@@ -29,13 +29,35 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    user_listener:
+
+    ## Listeners ##
+
+    user.listener:
         class: App\EventListener\UserListener
         tags:
             - { name: doctrine.orm.entity_listener, event: prePersist, entity: App\Entity\User }
+            - { name: doctrine.orm.entity_listener, event: postPersist, entity: App\Entity\User }
             - { name: doctrine.orm.entity_listener, event: preUpdate, entity: App\Entity\User }
 
-    jsonWebToken_listener:
+    json_web_token.listener:
         class: App\EventListener\JsonWebTokenListener
         tags:
             - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }
+
+    secure_action.listener:
+        class: App\EventListener\SecureActionListener
+        arguments:
+            - '@Doctrine\ORM\EntityManagerInterface'
+            - !tagged_locator
+                tag: secure_action.handler
+                index_by: key
+        tags:
+            - { name: doctrine.orm.entity_listener, event: preUpdate, entity: App\Entity\SecureAction }
+
+    ## SecureAction handlers ##
+    # Using https://github.com/symfony/symfony/pull/30348
+
+    validate_email_address.handler:
+        class: App\Service\SecureActionHandler\ValidateEmailAddressHandler
+        tags:
+            - { name: secure_action.handler, key: !php/const App\Entity\SecureAction::ACTION_VALIDATE_EMAIL_ADDRESS }

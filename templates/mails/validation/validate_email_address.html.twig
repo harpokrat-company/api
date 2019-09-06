@@ -6,7 +6,7 @@
 
 {% block content %}
     <p>
-        Hello,<br> {# TODO use more parameters to personalize mail #}
+        Hello {{ user.firstName }},<br>
         <br>
         Your Harpokrat account was successfully created !
         To use all the features of Harpokrat you must validate your email
@@ -20,9 +20,11 @@
                     <tr>
                         <td width="350" bgcolor="#1E90FF" style="padding:12px 18px 12px 18px;border-radius:3px;
                         text-align:center">
-                            <a href="https://www.harpokrat.com/todo/validate_email/{{ validation_code }}"
-                               target="_blank" style="font-size:18px;font-family:Helvetica,Arial,sans-serif;
-                               font-weight:bold;color:#FFFFFF;text-decoration:none;display:inline-block;">
+                            <a
+                                    href="{{ validation_link }}"
+                                    target="_blank" style="font-size:18px;font-family:Helvetica,Arial,sans-serif;
+                                    font-weight:bold;color:#FFFFFF;text-decoration:none;display:inline-block;"
+                            >
                                 Validate my email address ✓
                             </a>
                         </td>
@@ -33,8 +35,14 @@
     </table>
     <br>
     <p>
+        Warning: this email and validation link are only valid until the
+        <b>{{ action.expirationDate|date('Y/m/d \\a\\t G:i') }}</b>
+    </p>
+    <br>
+    <p>
         If the link is not working you can enter the following address manually in your web browser:<br>
-        <small>https://www.harpokrat.com/todo/validate_email/{{ validation_code }}</small><br>
+        <br>
+        <small>{{ validation_link }}</small><br>
         <br>
         <br>
         Thanks,<br>

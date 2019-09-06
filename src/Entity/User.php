@@ -27,6 +27,7 @@ class User implements UserInterface
     private $id;
 
     /**
+     * @var string
      * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\NotBlank()
      * @Assert\Email()
@@ -34,6 +35,7 @@ class User implements UserInterface
     private $email;
 
     /**
+     * @var array
      * @ORM\Column(type="json")
      */
     private $roles = [];
@@ -50,6 +52,7 @@ class User implements UserInterface
     private $password;
 
     /**
+     * @var array
      * @ORM\OneToMany(targetEntity="App\Entity\Secret", mappedBy="owner", orphanRemoval=true)
      */
     private $secrets;
@@ -67,15 +70,22 @@ class User implements UserInterface
     private $lastName;
 
     /**
+     * @var array
      * @ORM\OneToMany(targetEntity="App\Entity\Log", mappedBy="user")
      */
     private $logs;
 
+    /**
+     * @var bool
+     * @ORM\Column(type="boolean")
+     */
+    private $emailAddressValidated;
 
     public function __construct()
     {
         $this->secrets = new ArrayCollection();
         $this->logs = new ArrayCollection();
+        $this->emailAddressValidated = false;
     }
 
     public function getId()
@@ -254,6 +264,26 @@ class User implements UserInterface
                 $log->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEmailAddressValidated(): bool
+    {
+        return $this->emailAddressValidated;
+    }
+
+    /**
+     * @param bool $emailAddressValidated
+     *
+     * @return User
+     */
+    public function setEmailAddressValidated(bool $emailAddressValidated): User
+    {
+        $this->emailAddressValidated = $emailAddressValidated;
 
         return $this;
     }
