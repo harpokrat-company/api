@@ -33,6 +33,5 @@ class ValidateEmailAddressHandler extends AbstractSecureActionHandler
             throw new \Exception('The email was changed since this action was created.');
         }
         $user->setEmailAddressValidated(true);
-        var_dump($user->isEmailAddressValidated());
     }
 }
