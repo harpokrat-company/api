@@ -10,6 +10,18 @@ use Ramsey\Uuid\UuidInterface;
  */
 class SecureAction
 {
+    const VALIDATION_URL_BASE = 'https://www.harpokrat.com/secure-action/';
+    const VALIDATION_URL_ID_PARAM = 'id';
+    const VALIDATION_URL_TOKEN_PARAM = 'token';
+
+    const ACTION_VALIDATE_EMAIL_ADDRESS = 0;
+    const ACTION_RESET_PASSWORD = 1;
+
+    const ACTION_IDENTIFIER = [
+        self::ACTION_VALIDATE_EMAIL_ADDRESS => 'validate_email_address',
+        self::ACTION_RESET_PASSWORD => 'reset_password',
+    ];
+
     /**
      * @var UuidInterface
      *
@@ -44,6 +56,11 @@ class SecureAction
      * @ORM\Column(type="json")
      */
     private $action = [];
+
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $type;
 
     public function getId()
     {
@@ -108,5 +125,37 @@ class SecureAction
         $this->action = $action;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param mixed $type
+     *
+     * @return SecureAction
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getValidationLink()
+    {
+        $link = SecureAction::VALIDATION_URL_BASE;
+        $link .= '?' . SecureAction::VALIDATION_URL_ID_PARAM . '=' . $this->getId()->toString();
+        $link .= '&' . SecureAction::VALIDATION_URL_TOKEN_PARAM . '=' . $this->getToken();
+
+        return $link;
     }
 }

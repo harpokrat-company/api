@@ -2,7 +2,9 @@
 
 namespace App\EventListener;
 
+use App\Entity\SecureAction;
 use App\Entity\User;
+use App\Provider\SecureActionProvider;
 use App\Service\EmailValidationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
@@ -22,19 +24,19 @@ class UserListener
     private $passwordEncoder;
 
     /**
-     * @var EmailValidationService
+     * @var SecureActionProvider
      */
-    private $emailValidationService;
+    private $secureActionProvider;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         UserPasswordEncoderInterface $passwordEncoder,
-        EmailValidationService $emailValidationService
+        SecureActionProvider $secureActionProvider
     )
     {
         $this->entityManager = $entityManager;
         $this->passwordEncoder = $passwordEncoder;
-        $this->emailValidationService = $emailValidationService;
+        $this->secureActionProvider = $secureActionProvider;
     }
 
     private function encodeUserPassword(User $user)
@@ -44,7 +46,7 @@ class UserListener
 
     private function handleMailModification(User $user)
     {
-        $this->emailValidationService->sendValidationMail($user);
+        $this->secureActionProvider->register($user, SecureAction::ACTION_VALIDATE_EMAIL_ADDRESS);
     }
 
     public function prePersist(User $user, LifecycleEventArgs $args)
