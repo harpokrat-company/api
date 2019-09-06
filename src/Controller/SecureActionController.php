@@ -43,6 +43,7 @@ class SecureActionController extends Controller
      * @param ValidatorInterface $validator
      *
      * @return ResponseInterface
+     * @throws \Exception
      */
     public function edit(Request $request, SecureAction $secureAction, ValidatorInterface $validator): ResponseInterface
     {
@@ -76,6 +77,19 @@ class SecureActionController extends Controller
             $errorDocument->addError($error);
 
             return $this->jsonApi()->respond()->genericError($errorDocument, [], 401);
+        }
+
+        if ($secureAction->getExpirationDate() < new \DateTime()) {
+            $errorDocument = new ErrorDocument();
+            $errorDocument->setJsonApi(new JsonApiObject('1.0'));
+
+            $error = Error::create();
+            $error->setDetail('This action is expired');
+            $error->setStatus('401');
+
+            $errorDocument->addError($error);
+
+            return $this->jsonApi()->respond()->genericError($errorDocument, [], 410);
         }
 
         $entityManager->flush();

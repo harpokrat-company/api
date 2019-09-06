@@ -55,7 +55,10 @@ abstract class AbstractSecureActionHydrator extends AbstractHydrator
     {
         return [
             'validated' => function (SecureAction $secureAction, $attribute, $data, $attributeName) {
-                $secureAction->setValidated($attribute);
+                if ($attribute) {
+                    // We don't want the user to be able to set to false then true again tu prevent potential issue
+                    $secureAction->setValidated(true);
+                }
             },
         ];
     }
@@ -65,7 +68,6 @@ abstract class AbstractSecureActionHydrator extends AbstractHydrator
      */
     protected function validateRequest(JsonApiRequestInterface $request): void
     {
-        // TODO not working for datetime but should not be used anyway on this class. Need todo on future entities
         $this->validateFields($this->objectManager->getClassMetadata(SecureAction::class), $request);
     }
 
