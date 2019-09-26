@@ -41,9 +41,9 @@ class JsonWebTokenDocument extends AbstractSimpleResourceDocument
     /**
      * {@inheritdoc}
      */
-    public function getLinks(): Links
+    public function getLinks(): ?Links
     {
-        return Links::createWithoutBaseUri([]);
+        return null;
     }
 
     /**
