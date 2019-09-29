@@ -3,12 +3,17 @@
 namespace App\Controller;
 
 use App\Entity\SecureAction;
+use App\Entity\User;
 use App\JsonApi\Document\SecureAction\SecureActionDocument;
+use App\JsonApi\Hydrator\SecureAction\CreateSecureActionHydrator;
 use App\JsonApi\Hydrator\SecureAction\UpdateSecureActionHydrator;
 use App\JsonApi\Transformer\SecureActionResourceTransformer;
+use App\Provider\SecureActionProvider;
 use Paknahad\JsonApiBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Routing\Annotation\Route;
 use Psr\Http\Message\ResponseInterface;
@@ -30,6 +35,38 @@ class SecureActionController extends Controller
      */
     public function show(SecureAction $secureAction): ResponseInterface
     {
+        return $this->jsonApi()->respond()->ok(
+            new SecureActionDocument(new SecureActionResourceTransformer()),
+            $secureAction
+        );
+    }
+
+    /**
+     * @Route("/", name="secure_actions_new", methods="POST")
+     * @param ValidatorInterface   $validator
+     * @param SecureActionProvider $secureActionProvider
+     *
+     * @return ResponseInterface
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
+    public function new(ValidatorInterface $validator, SecureActionProvider $secureActionProvider): ResponseInterface
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $secureAction = $this->jsonApi()->hydrate(new CreateSecureActionHydrator($entityManager), new SecureAction());
+
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw new UnauthorizedHttpException('Bearer');
+        }
+
+        $secureAction = $secureActionProvider->userRegister($user, $secureAction);
+        if (is_null($secureAction)) {
+            throw new UnauthorizedHttpException('Bearer');
+        }
+
         return $this->jsonApi()->respond()->ok(
             new SecureActionDocument(new SecureActionResourceTransformer()),
             $secureAction

@@ -22,6 +22,10 @@ class SecureAction
         self::ACTION_RESET_PASSWORD => 'reset_password',
     ];
 
+    const USER_CREATED_ACTIONS = [
+        self::ACTION_RESET_PASSWORD,
+    ];
+
     /**
      * @var UuidInterface
      *
@@ -157,5 +161,26 @@ class SecureAction
         $link .= '&' . SecureAction::VALIDATION_URL_TOKEN_PARAM . '=' . $this->getToken();
 
         return $link;
+    }
+
+    /**
+     * @return string
+     */
+    public function getActionType()
+    {
+        return self::ACTION_IDENTIFIER[$this->type];
+    }
+
+    /**
+     * @param string $actionType
+     */
+    public function setActionType(string $actionType)
+    {
+        foreach (SecureAction::ACTION_IDENTIFIER as $type => $identifier) {
+            if ($actionType === $identifier) {
+                $this->setType($type);
+                return;
+            }
+        }
     }
 }

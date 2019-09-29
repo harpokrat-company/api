@@ -58,6 +58,9 @@ class SecureActionResourceTransformer extends AbstractResource
             'validated' => function (SecureAction $secureAction) {
                 return $secureAction->getValidated();
             },
+            'actionType' => function (SecureAction $secureAction) {
+                return $secureAction->getActionType();
+            },
         ];
     }
 

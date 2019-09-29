@@ -61,3 +61,8 @@ services:
         class: App\Service\SecureActionHandler\ValidateEmailAddressHandler
         tags:
             - { name: secure_action.handler, key: !php/const App\Entity\SecureAction::ACTION_VALIDATE_EMAIL_ADDRESS }
+
+    reset_password.handler:
+        class: App\Service\SecureActionHandler\ResetPasswordHandler
+        tags:
+            - { name: secure_action.handler, key: !php/const App\Entity\SecureAction::ACTION_RESET_PASSWORD }
