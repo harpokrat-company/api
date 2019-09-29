@@ -62,4 +62,37 @@ class SecureActionProvider
 
         $this->validationEmailService->sendValidationMail($user, $action);
     }
+
+    /**
+     * @param User         $user
+     * @param SecureAction $action
+     *
+     * @return null
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws \Exception
+     */
+    public function userRegister(User $user, SecureAction $action)
+    {
+        if (!in_array($action->getType(), SecureAction::USER_CREATED_ACTIONS)) {
+            return null;
+        }
+
+        $action->setAction([
+            'user_id' => $user->getId(),
+            'user_email' => $user->getEmail(),
+        ]);
+        $action->setCreationDate(new DateTime());
+        $action->setExpirationDate(new DateTime('+15 minutes'));
+        $action->setValidated(false);
+        $action->setToken(bin2hex(random_bytes(16)));
+
+        $this->entityManager->persist($action);
+        $this->entityManager->flush();
+
+        $this->validationEmailService->sendValidationMail($user, $action);
+
+        return $action;
+    }
 }
