@@ -51,24 +51,14 @@ abstract class AbstractSecureActionHydrator extends AbstractHydrator
     /**
      * {@inheritdoc}
      */
-    protected function getAttributeHydrator($secureAction): array
-    {
-        return [
-            'validated' => function (SecureAction $secureAction, $attribute, $data, $attributeName) {
-                if ($attribute) {
-                    // We don't want the user to be able to set to false then true again tu prevent potential issue
-                    $secureAction->setValidated(true);
-                }
-            },
-        ];
-    }
+    abstract protected function getAttributeHydrator($secureAction): array;
 
     /**
      * {@inheritdoc}
      */
     protected function validateRequest(JsonApiRequestInterface $request): void
     {
-        $this->validateFields($this->objectManager->getClassMetadata(SecureAction::class), $request);
+//        $this->validateFields($this->objectManager->getClassMetadata(SecureAction::class), $request);
     }
 
     /**
