@@ -1,4 +1,16 @@
 {
+    "dama/doctrine-test-bundle": {
+        "version": "4.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "4.0",
+            "ref": "56eaa387b5e48ebcc7c95a893b47dfa1ad51449c"
+        },
+        "files": [
+            "config/packages/test/dama_doctrine_test_bundle.yaml"
+        ]
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -80,6 +92,9 @@
     },
     "egulias/email-validator": {
         "version": "2.1.11"
+    },
+    "fzaninotto/faker": {
+        "version": "v1.8.0"
     },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
@@ -195,6 +210,9 @@
     "swiftmailer/swiftmailer": {
         "version": "v6.2.1"
     },
+    "symfony/browser-kit": {
+        "version": "v4.3.5"
+    },
     "symfony/cache": {
         "version": "v3.4.27"
     },
@@ -225,6 +243,9 @@
     },
     "symfony/doctrine-bridge": {
         "version": "v3.4.27"
+    },
+    "symfony/dom-crawler": {
+        "version": "v4.3.5"
     },
     "symfony/dotenv": {
         "version": "v3.4.27"
@@ -290,6 +311,22 @@
     "symfony/orm-pack": {
         "version": "v1.0.6"
     },
+    "symfony/phpunit-bridge": {
+        "version": "4.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.3",
+            "ref": "b0582341f1df39aaf3a9a866cdbe49937da35984"
+        },
+        "files": [
+            ".env.test",
+            "bin/phpunit",
+            "config/bootstrap.php",
+            "phpunit.xml.dist",
+            "tests/.gitignore"
+        ]
+    },
     "symfony/polyfill-apcu": {
         "version": "v1.11.0"
     },
@@ -301,6 +338,9 @@
     },
     "symfony/polyfill-php72": {
         "version": "v1.12.0"
+    },
+    "symfony/profiler-pack": {
+        "version": "v1.0.4"
     },
     "symfony/property-access": {
         "version": "v3.4.27"
@@ -392,6 +432,23 @@
         "files": [
             "config/packages/test/validator.yaml",
             "config/packages/validator.yaml"
+        ]
+    },
+    "symfony/var-dumper": {
+        "version": "v4.3.5"
+    },
+    "symfony/web-profiler-bundle": {
+        "version": "3.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "3.3",
+            "ref": "6bdfa1a95f6b2e677ab985cd1af2eae35d62e0f6"
+        },
+        "files": [
+            "config/packages/dev/web_profiler.yaml",
+            "config/packages/test/web_profiler.yaml",
+            "config/routes/dev/web_profiler.yaml"
         ]
     },
     "symfony/yaml": {

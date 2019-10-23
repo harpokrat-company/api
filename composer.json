@@ -70,7 +70,12 @@
         }
     },
     "require-dev": {
+        "dama/doctrine-test-bundle": "^6.1",
+        "fzaninotto/faker": "^1.8",
         "phootwork/collection": "^1.6",
-        "symfony/maker-bundle": "^1.13"
+        "symfony/browser-kit": "^4.3",
+        "symfony/maker-bundle": "^1.13",
+        "symfony/phpunit-bridge": "^4.3",
+        "symfony/profiler-pack": "^1.0"
     }
 }
