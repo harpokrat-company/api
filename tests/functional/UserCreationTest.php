@@ -6,12 +6,12 @@ namespace App\Tests\functional;
 
 use App\Entity\SecureAction;
 use Doctrine\ORM\EntityManager;
-use Faker\Factory;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class UserCreationTest extends WebTestCase
 {
     use UserHelperTrait;
+    use JsonApiResourceHelperTrait;
 
     /**
      * @var EntityManager
@@ -32,22 +32,13 @@ class UserCreationTest extends WebTestCase
     public function testUserCreateResponseIsOk()
     {
         $client = static::createClient();
-        $fakerFactory = Factory::create();
-        $email = $fakerFactory->email;
-        $password = $fakerFactory->password;
+        $email = 'test@harpokrat.com';
+        $password = 'qwerty1234';
         $response = $this->requestCreateUser($client, $email, $password);
 
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertJson($response->getContent());
-        $content = json_decode($response->getContent(), true);
-        $this->assertIsArray($content);
 
-        $this->assertArrayHasKey('data', $content);
-        $data = $content['data'];
-        $this->assertArrayHasKey('type', $data);
-        $this->assertSame('users', $data['type']);
-        $this->assertArrayHasKey('id', $data);
-        $this->assertStringMatchesFormat('%x-%x-%x-%x-%x', $data['id']);
+        $data = $this->assertContentIsWellFormedJsonApiResource($response->getContent(), 'users');
         $this->assertArrayHasKey('attributes', $data);
         $attributes = $data['attributes'];
         $this->assertIsArray($attributes);
@@ -62,9 +53,8 @@ class UserCreationTest extends WebTestCase
     {
         $client = static::createClient();
         $client->enableProfiler();
-        $fakerFactory = Factory::create();
-        $email = $fakerFactory->email;
-        $password = $fakerFactory->password;
+        $email = 'test@harpokrat.com';
+        $password = 'qwerty1234';
         $this->requestCreateUser($client, $email, $password);
 
         $mailCollector = $client->getProfile()->getCollector('swiftmailer');
@@ -82,9 +72,8 @@ class UserCreationTest extends WebTestCase
     {
         $client = static::createClient();
         $client->enableProfiler();
-        $fakerFactory = Factory::create();
-        $email = $fakerFactory->email;
-        $password = $fakerFactory->password;
+        $email = 'test@harpokrat.com';
+        $password = 'qwerty1234';
         $secureActionRepository = $this->entityManager->getRepository(SecureAction::class);
 
         $this->assertSame(0, $secureActionRepository->count([]));
@@ -104,4 +93,6 @@ class UserCreationTest extends WebTestCase
         $this->assertContains($validationLink, $message->getBody());
         $this->assertSame(SecureAction::ACTION_VALIDATE_EMAIL_ADDRESS, $secureAction->getType());
     }
+
+    // TODO Add tests for email / password / user attributes (firstName, lastName, ...) ...
 }

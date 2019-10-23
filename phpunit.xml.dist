@@ -20,6 +20,9 @@
     </php>
 
     <testsuites>
+        <testsuite name="acceptance">
+            <directory>tests/acceptance</directory>
+        </testsuite>
         <testsuite name="functional">
             <directory>tests/functional</directory>
         </testsuite>
