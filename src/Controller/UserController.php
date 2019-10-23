@@ -24,7 +24,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class UserController extends Controller
 {
     /**
-     * @Route("/", name="users_index", methods="GET")
+     * @Route("", name="users_index", methods="GET")
      * @param UserRepository     $userRepository
      * @param ResourceCollection $resourceCollection
      *
@@ -44,7 +44,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/", name="users_new", methods="POST")
+     * @Route("", name="users_new", methods="POST")
      * @param ValidatorInterface $validator
      * @return ResponseInterface
      */
