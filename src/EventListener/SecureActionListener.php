@@ -4,46 +4,39 @@ namespace App\EventListener;
 
 use App\Entity\SecureAction;
 use App\Service\SecureActionHandler\AbstractSecureActionHandler;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\UnitOfWork;
 use Symfony\Component\DependencyInjection\ServiceLocator;
 
 class SecureActionListener
 {
     /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    /**
      * @var ServiceLocator
      */
     private $secureActionHandlersLocator;
 
-    public function __construct(
-        EntityManagerInterface $entityManager,
-        ServiceLocator $secureActionHandlersLocator
-    )
+    public function __construct(ServiceLocator $secureActionHandlersLocator)
     {
-        $this->entityManager = $entityManager;
         $this->secureActionHandlersLocator = $secureActionHandlersLocator;
     }
 
     /**
-     * @param SecureAction       $action
-     * @param PreUpdateEventArgs $args
+     * @param EntityManager $entityManager
+     * @param UnitOfWork    $unitOfWork
+     * @param SecureAction  $action
      *
      * @throws \Exception
      */
-    public function preUpdate(SecureAction $action, PreUpdateEventArgs $args)
+    public function onFlush(EntityManager $entityManager, UnitOfWork $unitOfWork, SecureAction $action)
     {
-        if ($args->hasChangedField('validated') && $action->getValidated()) {
+        $changes = $unitOfWork->getEntityChangeSet($action);
+        if (key_exists('validated', $changes) && $action->getValidated()) {
             $handler = $this->secureActionHandlersLocator->get($action->getType());
 
             if (!$handler instanceof AbstractSecureActionHandler)
                 throw new \Exception('Unhandled SecureAction');
 
-            $handler->handleAction($action);
+            $handler->handleAction($action, $unitOfWork);
         }
     }
 }

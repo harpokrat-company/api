@@ -86,14 +86,6 @@ class SecureActionController extends Controller
     {
         $entityManager = $this->getDoctrine()->getManager();
 
-        $secureAction = $this->jsonApi()->hydrate(new UpdateSecureActionHydrator($entityManager), $secureAction);
-
-        /** @var ConstraintViolationList $errors */
-        $errors = $validator->validate($secureAction);
-        if ($errors->count() > 0) {
-            return $this->validationErrorResponse($errors);
-        }
-
         // TODO Cleaner ? && For delete too
         $content = json_decode($request->getContent(), true);
         if (empty($content['meta'])
@@ -114,6 +106,14 @@ class SecureActionController extends Controller
             $errorDocument->addError($error);
 
             return $this->jsonApi()->respond()->genericError($errorDocument, [], 401);
+        }
+
+        $secureAction = $this->jsonApi()->hydrate(new UpdateSecureActionHydrator($entityManager), $secureAction);
+
+        /** @var ConstraintViolationList $errors */
+        $errors = $validator->validate($secureAction);
+        if ($errors->count() > 0) {
+            return $this->validationErrorResponse($errors);
         }
 
         if ($secureAction->getExpirationDate() < new \DateTime()) {
@@ -143,12 +143,12 @@ class SecureActionController extends Controller
      * @param SecureAction $secureAction
      * @return ResponseInterface
      */
-    public function delete(Request $request, SecureAction $secureAction): ResponseInterface
-    {
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->remove($secureAction);
-        $entityManager->flush();
-
-        return $this->jsonApi()->respond()->genericSuccess(204);
-    }
+//    public function delete(Request $request, SecureAction $secureAction): ResponseInterface
+//    {
+//        $entityManager = $this->getDoctrine()->getManager();
+//        $entityManager->remove($secureAction);
+//        $entityManager->flush();
+//
+//        return $this->jsonApi()->respond()->genericSuccess(204);
+//    }
 }

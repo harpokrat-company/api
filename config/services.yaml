@@ -47,12 +47,20 @@ services:
     secure_action.listener:
         class: App\EventListener\SecureActionListener
         arguments:
-            - '@Doctrine\ORM\EntityManagerInterface'
             - !tagged_locator
                 tag: secure_action.handler
                 index_by: key
         tags:
-            - { name: doctrine.orm.entity_listener, event: preUpdate, entity: App\Entity\SecureAction }
+            - { name: flush_listener_service, key: App\Entity\SecureAction }
+
+    flush.listener:
+        class: App\EventListener\FlushListener
+        arguments:
+            - !tagged_locator
+                tag: flush_listener_service
+                index_by: key
+        tags:
+            - { name: doctrine.event_listener, event: onFlush }
 
     ## SecureAction handlers ##
     # Using https://github.com/symfony/symfony/pull/30348
