@@ -7,6 +7,7 @@ namespace App\Service\SecureActionHandler;
 use App\Entity\SecureAction;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\UnitOfWork;
 
 class ValidateEmailAddressHandler extends AbstractSecureActionHandler
 {
@@ -22,10 +23,11 @@ class ValidateEmailAddressHandler extends AbstractSecureActionHandler
 
     /**
      * @param SecureAction $action
+     * @param UnitOfWork   $unitOfWork
      *
      * @throws \Exception
      */
-    public function handleAction(SecureAction $action)
+    public function handleAction(SecureAction $action, UnitOfWork $unitOfWork)
     {
         $user = $this->entityManager->find(User::class, $action->getAction()['user_id']);
         if ($user->getEmail() !== $action->getAction()['user_email']) {
@@ -34,6 +36,7 @@ class ValidateEmailAddressHandler extends AbstractSecureActionHandler
         }
         $user->setEmailAddressValidated(true);
 
-        $this->entityManager->persist($user);
+        $unitOfWork->persist($user);
+        $unitOfWork->computeChangeSet($this->entityManager->getClassMetadata(User::class), $user);
     }
 }
