@@ -26,6 +26,8 @@ class SecurityController extends Controller
     public function createJsonWebToken(Request $request, JWTTokenManagerInterface $jwtManager)
     {
         // TODO use request body to set jwt jti / user if logas
+        // TODO use user id instead of email (check in jwt.io) to prevent deletion / recreation of account with jwt
+        // still valid
         $jti = Uuid::uuid4()->toString();
         $request->attributes->set('jti', $jti);
         return $this->jsonApi()->respond()->ok(
