@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class SecurityController extends Controller
 {
     /**
-     * @Route("/", name="json-web-tokens_new", methods="POST")
+     * @Route("", name="json-web-tokens_new", methods="POST")
      * @param Request                  $request
      * @param JWTTokenManagerInterface $jwtManager
      *
