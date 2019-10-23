@@ -42,7 +42,7 @@ class SecureActionController extends Controller
     }
 
     /**
-     * @Route("/", name="secure_actions_new", methods="POST")
+     * @Route("", name="secure_actions_new", methods="POST")
      * @param ValidatorInterface   $validator
      * @param SecureActionProvider $secureActionProvider
      *

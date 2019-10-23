@@ -24,7 +24,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class SecretController extends Controller
 {
     /**
-     * @Route("/", name="secrets_index", methods="GET")
+     * @Route("", name="secrets_index", methods="GET")
      * @param SecretRepository   $secretRepository
      * @param ResourceCollection $resourceCollection
      *
@@ -44,7 +44,7 @@ class SecretController extends Controller
     }
 
     /**
-     * @Route("/", name="secrets_new", methods="POST")
+     * @Route("", name="secrets_new", methods="POST")
      * @param ValidatorInterface $validator
      * @return ResponseInterface
      */

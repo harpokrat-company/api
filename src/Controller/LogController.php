@@ -24,7 +24,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class LogController extends Controller
 {
     /**
-     * @Route("/", name="logs_index", methods="GET")
+     * @Route("", name="logs_index", methods="GET")
      * @param LogRepository      $logRepository
      * @param ResourceCollection $resourceCollection
      *
@@ -44,7 +44,7 @@ class LogController extends Controller
     }
 
     /**
-     * @Route("/", name="logs_new", methods="POST")
+     * @Route("", name="logs_new", methods="POST")
      * @param ValidatorInterface $validator
      * @return ResponseInterface
      */
