@@ -8,16 +8,12 @@ before_script:
   - pip install docker-compose
   - docker info
   - docker-compose version
-
-build:
-  stage: build
-  script:
-    - docker-compose -f .build/docker-compose.yml build
-    - docker-compose -f .build/docker-compose.yml up -d db
-    - docker-compose -f .build/docker-compose.yml up -d php
-    - docker-compose -f .build/docker-compose.yml up -d nginx
-    - docker-compose -f .build/docker-compose.yml up composer
-    - docker-compose -f .build/docker-compose.yml exec -T php php bin/console doctrine:migrations:migrate --no-interaction
+  - docker-compose -f .build/docker-compose.yml build
+  - docker-compose -f .build/docker-compose.yml up -d db
+  - docker-compose -f .build/docker-compose.yml up -d php
+  - docker-compose -f .build/docker-compose.yml up -d nginx
+  - docker-compose -f .build/docker-compose.yml up composer
+  - docker-compose -f .build/docker-compose.yml exec -T php php bin/console doctrine:migrations:migrate --no-interaction
 
 test:
   stage: test
