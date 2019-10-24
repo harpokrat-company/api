@@ -19,7 +19,5 @@ build:
 
 test:
   stage: test
-  tags:
-    - phpunit
   script:
     - docker-compose -f .build/docker-compose.yml exec -T php php bin/phpunit
