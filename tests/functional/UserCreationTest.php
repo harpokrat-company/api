@@ -94,5 +94,5 @@ class UserCreationTest extends WebTestCase
         $this->assertSame(SecureAction::ACTION_VALIDATE_EMAIL_ADDRESS, $secureAction->getType());
     }
 
-    // TODO Add tests for email / password / user attributes (firstName, lastName, ...) ...
+    // TODO Add tests for password / user attributes (firstName, lastName, ...) ...
 }
