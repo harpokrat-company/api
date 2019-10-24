@@ -6,7 +6,7 @@ namespace App\JsonApi\Document\JsonWebToken;
 
 use App\Entity\User;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
-use WoohooLabs\Yin\JsonApi\Document\AbstractSimpleResourceDocument;
+use WoohooLabs\Yin\JsonApi\Schema\Document\AbstractSimpleResourceDocument;
 use WoohooLabs\Yin\JsonApi\Schema\JsonApiObject;
 use WoohooLabs\Yin\JsonApi\Schema\Links;
 

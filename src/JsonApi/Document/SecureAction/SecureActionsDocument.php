@@ -2,7 +2,7 @@
 
 namespace App\JsonApi\Document\SecureAction;
 
-use WoohooLabs\Yin\JsonApi\Document\AbstractCollectionDocument;
+use WoohooLabs\Yin\JsonApi\Schema\Document\AbstractCollectionDocument;
 use WoohooLabs\Yin\JsonApi\Schema\JsonApiObject;
 use WoohooLabs\Yin\JsonApi\Schema\Links;
 
