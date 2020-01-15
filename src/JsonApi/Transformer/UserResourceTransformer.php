@@ -84,13 +84,11 @@ class UserResourceTransformer extends AbstractResource
         return [
             'secrets' => function (User $user) {
                 return ToManyRelationship::create()
-                    ->setData($user->getSecrets(), new SecretResourceTransformer())
-                    ->omitDataWhenNotIncluded();
+                    ->setData($user->getSecrets(), new SecretResourceTransformer());
             },
             'logs' => function (User $user) {
                 return ToManyRelationship::create()
-                    ->setData($user->getLogs(), new LogResourceTransformer())
-                    ->omitDataWhenNotIncluded();
+                    ->setData($user->getLogs(), new LogResourceTransformer());
             },
         ];
     }
