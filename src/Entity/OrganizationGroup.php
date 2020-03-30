@@ -5,13 +5,12 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\OrganizationRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\OrganizationGroupRepository")
  */
-class Organization
+class OrganizationGroup
 {
     /**
      * @var UuidInterface
@@ -31,10 +30,11 @@ class Organization
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="organizations")
+     * @var Organization
+     * @ORM\ManyToOne(targetEntity="App\Entity\Organization", inversedBy="groups")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $owner;
+    private $organization;
 
     public function getId()
     {
@@ -53,15 +53,14 @@ class Organization
         return $this;
     }
 
-    public function getOwner(): ?User
+    public function getOrganization(): Organization
     {
-        return $this->owner;
+        return $this->organization;
     }
 
-    public function setOwner(?UserInterface $owner): self
+    public function setOrganization(Organization $organization): self
     {
-        $this->owner = $owner;
-
+        $this->organization = $organization;
         return $this;
     }
 }

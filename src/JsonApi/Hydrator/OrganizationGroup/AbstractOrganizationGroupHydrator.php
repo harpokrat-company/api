@@ -1,12 +1,11 @@
 <?php
 
 
-namespace App\JsonApi\Hydrator\Organization;
+namespace App\JsonApi\Hydrator\OrganizationGroup;
 
 
-use App\Entity\Organization;
-use App\Entity\Secret;
-use App\Entity\User;
+use App\Entity\Group;
+use App\Entity\OrganizationGroup;
 use Paknahad\JsonApiBundle\Exception\InvalidRelationshipValueException;
 use Paknahad\JsonApiBundle\Hydrator\AbstractHydrator;
 use Paknahad\JsonApiBundle\Hydrator\ValidatorTrait;
@@ -15,7 +14,7 @@ use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship;
 use WoohooLabs\Yin\JsonApi\Request\JsonApiRequestInterface;
 
-abstract class AbstractOrganizationHydrator extends AbstractHydrator
+abstract class AbstractOrganizationGroupHydrator extends AbstractHydrator
 {
     use ValidatorTrait;
 
@@ -48,17 +47,17 @@ abstract class AbstractOrganizationHydrator extends AbstractHydrator
      */
     protected function getAcceptedTypes(): array
     {
-        return ['organizations'];
+        return ['groups'];
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function getAttributeHydrator($organization): array
+    protected function getAttributeHydrator($group): array
     {
         return [
-            'name' => function (Organization $organization, $attribute, $data, $attributeName) {
-                $organization->setName($attribute);
+            'name' => function (OrganizationGroup $group, $attribute, $data, $attributeName) {
+                $group->setName($attribute);
             },
         ];
     }
@@ -68,15 +67,15 @@ abstract class AbstractOrganizationHydrator extends AbstractHydrator
      */
     protected function validateRequest(JsonApiRequestInterface $request): void
     {
-        $this->validateFields($this->objectManager->getClassMetadata(Organization::class), $request);
+        $this->validateFields($this->objectManager->getClassMetadata(OrganizationGroup::class), $request);
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function setId($organization, string $id): void
+    protected function setId($group, string $id): void
     {
-        if ($id && (string) $organization->getId() !== $id) {
+        if ($id && (string) $group->getId() !== $id) {
             throw new NotFoundHttpException('both ids in url & body bust be same');
         }
     }
@@ -84,16 +83,16 @@ abstract class AbstractOrganizationHydrator extends AbstractHydrator
     /**
      * {@inheritdoc}
      */
-    protected function getRelationshipHydrator($organization): array
+    protected function getRelationshipHydrator($group): array
     {
         return [
-            'owner' => function (Organization $organization, ToOneRelationship $owner, $data, $relationshipName) {
-                $this->validateRelationType($owner, ['users']);
+            'organization' => function (OrganizationGroup $group, ToOneRelationship $organization, $data, $relationshipName) {
+                $this->validateRelationType($organization, ['organizations']);
 
                 $association = null;
-                $identifier = $owner->getResourceIdentifier();
+                $identifier = $organization->getResourceIdentifier();
                 if ($identifier) {
-                    $association = $this->objectManager->getRepository('App\Entity\User')
+                    $association = $this->objectManager->getRepository('App\Entity\Organization')
                         ->find($identifier->getId());
 
                     if (is_null($association)) {
@@ -101,7 +100,7 @@ abstract class AbstractOrganizationHydrator extends AbstractHydrator
                     }
                 }
 
-                $organization->setOwner($association);
+                $group->setOrganization($association);
             },
         ];
     }

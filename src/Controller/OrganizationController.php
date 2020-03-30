@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\Organization;
 use App\JsonApi\Document\Organization\OrganizationDocument;
+use App\JsonApi\Document\Organization\OrganizationsDocument;
 use App\JsonApi\Hydrator\Organization\CreateOrganizationHydrator;
 use App\JsonApi\Hydrator\Organization\UpdateOrganizationHydrator;
 use App\JsonApi\Transformer\OrganizationResourceTransformer;
@@ -25,7 +26,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class OrganizationController extends Controller
 {
     /**
-     * @Route("", name="organization_index", methods="GET")
+     * @Route("", name="organizations_index", methods="GET")
      * @param OrganizationRepository $organizationRepository
      * @param ResourceCollection $resourceCollection
      *
@@ -39,7 +40,7 @@ class OrganizationController extends Controller
         $resourceCollection->handleIndexRequest();
 
         return $this->jsonApi()->respond()->ok(
-            new OrganizationDocument(new OrganizationResourceTransformer()),
+            new OrganizationsDocument(new OrganizationResourceTransformer()),
             $resourceCollection
         );
     }
@@ -86,18 +87,18 @@ class OrganizationController extends Controller
 
     /**
      * @Route("/{id}", name="organizations_edit", methods="PATCH")
-     * @param Organization       $organisation
+     * @param Organization       $organization
      * @param ValidatorInterface $validator
      * @return ResponseInterface
      */
-    public function edit(Organization $organisation, ValidatorInterface $validator): ResponseInterface
+    public function edit(Organization $organization, ValidatorInterface $validator): ResponseInterface
     {
         $entityManager = $this->getDoctrine()->getManager();
 
-        $organisation = $this->jsonApi()->hydrate(new UpdateOrganizationHydrator($entityManager), $organisation);
+        $organization = $this->jsonApi()->hydrate(new UpdateOrganizationHydrator($entityManager), $organization);
 
         /** @var ConstraintViolationList $errors */
-        $errors = $validator->validate($organisation);
+        $errors = $validator->validate($organization);
         if ($errors->count() > 0) {
             return $this->validationErrorResponse($errors);
         }
@@ -106,7 +107,7 @@ class OrganizationController extends Controller
 
         return $this->jsonApi()->respond()->ok(
             new OrganizationDocument(new OrganizationResourceTransformer()),
-            $organisation
+            $organization
         );
     }
 
