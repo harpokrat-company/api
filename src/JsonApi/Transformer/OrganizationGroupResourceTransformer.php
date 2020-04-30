@@ -6,6 +6,7 @@ namespace App\JsonApi\Transformer;
 
 use App\Entity\OrganizationGroup;
 use WoohooLabs\Yin\JsonApi\Schema\Links;
+use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToManyRelationship;
 use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToOneRelationship;
 use WoohooLabs\Yin\JsonApi\Schema\Resource\AbstractResource;
 
@@ -76,6 +77,10 @@ class OrganizationGroupResourceTransformer extends AbstractResource
                 return ToOneRelationship::create()
                     ->setData($group->getOrganization(), new OrganizationResourceTransformer());
             },
+            'members' => function (OrganizationGroup $group) {
+                return ToManyRelationship::create()
+                    ->setData($group->getMembers(), new OrganizationResourceTransformer());
+            }
         ];
     }
 }

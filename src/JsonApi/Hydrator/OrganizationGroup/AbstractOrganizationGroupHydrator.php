@@ -4,13 +4,14 @@
 namespace App\JsonApi\Hydrator\OrganizationGroup;
 
 
-use App\Entity\Group;
 use App\Entity\OrganizationGroup;
+use Doctrine\ORM\Query\Expr;
 use Paknahad\JsonApiBundle\Exception\InvalidRelationshipValueException;
 use Paknahad\JsonApiBundle\Hydrator\AbstractHydrator;
 use Paknahad\JsonApiBundle\Hydrator\ValidatorTrait;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;
+use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToManyRelationship;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship;
 use WoohooLabs\Yin\JsonApi\Request\JsonApiRequestInterface;
 
@@ -81,6 +82,31 @@ abstract class AbstractOrganizationGroupHydrator extends AbstractHydrator
     }
 
     /**
+     * @param ToManyRelationship $members
+     * @param $relationshipName
+     * @return array|mixed
+     * @throws InvalidRelationshipValueException
+     * @throws \Exception
+     */
+    protected function getRelationshipMembers(ToManyRelationship $members, $relationshipName) {
+        $this->validateRelationType($members, ['users']);
+
+        if (!$members->isEmpty()) {
+            $association = $this->objectManager->getRepository('App\Entity\User')
+                ->createQueryBuilder('l')
+                ->where((new Expr())->in('l.id', $members->getResourceIdentifierIds()))
+                ->getQuery()
+                ->getResult();
+
+            $this->validateRelationValues($association, $members->getResourceIdentifierIds(), $relationshipName);
+        } else {
+            $association = [];
+        }
+
+        return $association;
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function getRelationshipHydrator($group): array
@@ -102,6 +128,19 @@ abstract class AbstractOrganizationGroupHydrator extends AbstractHydrator
 
                 $group->setOrganization($association);
             },
+            'members' => function (OrganizationGroup $group, ToManyRelationship $members, $data, $relationshipName) {
+                $association = $this->getRelationshipMembers($members, $relationshipName);
+
+                if ($group->getMembers()->count() > 0) {
+                    foreach ($group->getMembers() as $member) {
+                        $group->removeMember($member);
+                    }
+                }
+
+                foreach ($association as $member) {
+                    $group->addMember($member);
+                }
+            }
         ];
     }
 }
