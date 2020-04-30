@@ -3,6 +3,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -36,6 +38,17 @@ class Organization
      */
     private $owner;
 
+    /**
+     * @var array
+     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="organizations")
+     */
+    private $members;
+
+    public function __construct()
+    {
+        $this->members = new ArrayCollection();
+    }
+
     public function getId()
     {
         return $this->id;
@@ -62,6 +75,38 @@ class Organization
     {
         $this->owner = $owner;
 
+        return $this;
+    }
+
+    public function getMembers(): Collection
+    {
+        return $this->members;
+    }
+
+    public function setMembers(array $members): self
+    {
+        $this->members = $members;
+        return $this;
+    }
+
+    public function addMember(User $member): self
+    {
+        if (!$this->members->contains($member)) {
+            $this->members[] = $member;
+            // TODO : $member->addOrganization($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMember(User $member): self
+    {
+        if ($this->members->contains($member)) {
+            $this->members->removeElement($member);
+            /* TODO : if ($member->getOrganization->contains($this)) {
+                $member->removeOrganization($organization);
+            } */
+        }
         return $this;
     }
 }
