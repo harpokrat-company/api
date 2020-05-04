@@ -1,0 +1,5 @@
+App\Entity\OrganizationGroup:
+  constraints:
+    - App\Validator\Constraints\OrganizationGroupChildrenRecursion: ~
+    - App\Validator\Constraints\OrganizationGroupChildrenOrganization: ~
+    - App\Validator\Constraints\OrganizationGroupMembersOrganization: ~
