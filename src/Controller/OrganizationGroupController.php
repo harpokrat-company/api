@@ -65,6 +65,7 @@ class OrganizationGroupController extends Controller
         /** @var ConstraintViolationList $errors */
         $errors = $validator->validate($group);
         if ($errors->count() > 0) {
+            $entityManager->clear();
             return $this->validationErrorResponse($errors);
         }
 
@@ -106,6 +107,7 @@ class OrganizationGroupController extends Controller
         /** @var ConstraintViolationList $errors */
         $errors = $validator->validate($group);
         if ($errors->count() > 0) {
+            $entityManager->clear();
             return $this->validationErrorResponse($errors);
         }
 
@@ -154,6 +156,7 @@ class OrganizationGroupController extends Controller
         /** @var ConstraintViolationList $errors */
         $errors = $validator->validate($group);
         if ($errors->count() > 0) {
+            $entityManager->clear();
             return $this->validationErrorResponse($errors);
         }
 
@@ -203,6 +206,7 @@ class OrganizationGroupController extends Controller
         /** @var ConstraintViolationList $errors */
         $errors = $validator->validate($group);
         if ($errors->count() > 0) {
+            $entityManager->clear();
             return $this->validationErrorResponse($errors);
         }
 
@@ -238,6 +242,7 @@ class OrganizationGroupController extends Controller
         /** @var ConstraintViolationList $errors */
         $errors = $validator->validate($group);
         if ($errors->count() > 0) {
+            $entityManager->clear();
             return $this->validationErrorResponse($errors);
         }
 
