@@ -57,7 +57,8 @@ class UserController extends Controller
         /** @var ConstraintViolationList $errors */
         $errors = $validator->validate($user);
         if ($errors->count() > 0) {
-            return $this->validationErrorResponse($errors);
+            $entityManager->clear();
+return $this->validationErrorResponse($errors);
         }
 
         $entityManager->persist($user);
@@ -97,7 +98,8 @@ class UserController extends Controller
         /** @var ConstraintViolationList $errors */
         $errors = $validator->validate($user);
         if ($errors->count() > 0) {
-            return $this->validationErrorResponse($errors);
+            $entityManager->clear();
+return $this->validationErrorResponse($errors);
         }
 
         $entityManager->flush();
