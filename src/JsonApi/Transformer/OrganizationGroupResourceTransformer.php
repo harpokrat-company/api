@@ -80,6 +80,10 @@ class OrganizationGroupResourceTransformer extends AbstractResource
             'members' => function (OrganizationGroup $group) {
                 return ToManyRelationship::create()
                     ->setData($group->getMembers(), new UserResourceTransformer());
+            },
+            'children' => function (OrganizationGroup $group) {
+                return ToManyRelationship::create()
+                    ->setData($group->getChildren(), new OrganizationGroupResourceTransformer());
             }
         ];
     }

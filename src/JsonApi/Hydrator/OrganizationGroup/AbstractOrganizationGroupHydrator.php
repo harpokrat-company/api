@@ -4,6 +4,7 @@
 namespace App\JsonApi\Hydrator\OrganizationGroup;
 
 
+use App\Entity\Organization;
 use App\Entity\OrganizationGroup;
 use Doctrine\ORM\Query\Expr;
 use Paknahad\JsonApiBundle\Exception\InvalidRelationshipValueException;
@@ -107,6 +108,31 @@ abstract class AbstractOrganizationGroupHydrator extends AbstractHydrator
     }
 
     /**
+     * @param ToManyRelationship $children
+     * @param $relationshipName
+     * @return array|mixed
+     * @throws InvalidRelationshipValueException
+     * @throws \Exception
+     */
+    protected function getRelationshipChildren(ToManyRelationship $children, $relationshipName) {
+        $this->validateRelationType($children, ['groups']);
+
+        if (!$children->isEmpty()) {
+            $association = $this->objectManager->getRepository('App\Entity\OrganizationGroup')
+                ->createQueryBuilder('l')
+                ->where((new Expr())->in('l.id', $children->getResourceIdentifierIds()))
+                ->getQuery()
+                ->getResult();
+
+            $this->validateRelationValues($association, $children->getResourceIdentifierIds(), $relationshipName);
+        } else {
+            $association = [];
+        }
+
+        return $association;
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function getRelationshipHydrator($group): array
@@ -124,9 +150,9 @@ abstract class AbstractOrganizationGroupHydrator extends AbstractHydrator
                     if (is_null($association)) {
                         throw new InvalidRelationshipValueException($relationshipName, [$identifier->getId()]);
                     }
+                    $group->setOrganization($association);
                 }
 
-                $group->setOrganization($association);
             },
             'members' => function (OrganizationGroup $group, ToManyRelationship $members, $data, $relationshipName) {
                 $association = $this->getRelationshipMembers($members, $relationshipName);
@@ -139,6 +165,19 @@ abstract class AbstractOrganizationGroupHydrator extends AbstractHydrator
 
                 foreach ($association as $member) {
                     $group->addMember($member);
+                }
+            },
+            'children' => function (OrganizationGroup $group, ToManyRelationship $children, $data, $relationshipName) {
+                $association = $this->getRelationshipChildren($children, $relationshipName);
+
+                if ($group->getChildren()->count() > 0) {
+                    foreach ($group->getChildren() as $child) {
+                        $group->removeChild($child);
+                    }
+                }
+
+                foreach ($association as $child) {
+                    $group->addChild($child);
                 }
             }
         ];

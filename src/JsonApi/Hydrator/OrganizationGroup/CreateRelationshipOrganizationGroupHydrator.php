@@ -18,6 +18,13 @@ class CreateRelationshipOrganizationGroupHydrator extends AbstractOrganizationGr
                 foreach ($association as $member) {
                     $group->addMember($member);
                 }
+            },
+            'children' => function (OrganizationGroup $group, ToManyRelationship $members, $data, $relationshipName) {
+                $association = $this->getRelationshipChildren($members, $relationshipName);
+
+                foreach ($association as $member) {
+                    $group->addChild($member);
+                }
             }
         ];
     }

@@ -20,6 +20,15 @@ class DeleteRelationshipOrganizationGroupHydrator extends AbstractOrganizationGr
                         $group->removeMember($member);
                     }
                 }
+            },
+            'children' => function (OrganizationGroup $group, ToManyRelationship $children, $data, $relationshipName) {
+                $association = $this->getRelationshipChildren($children, $relationshipName);
+
+                if (!$group->getChildren()->isEmpty()) {
+                    foreach ($association as $member) {
+                        $group->removeChild($member);
+                    }
+                }
             }
         ];
     }

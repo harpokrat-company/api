@@ -45,11 +45,19 @@ class OrganizationGroup
     private $members;
 
     /**
+     * @var array
+     * @ORM\ManyToMany(targetEntity="App\Entity\OrganizationGroup")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $children;
+
+    /**
      * OrganizationGroup constructor.
      */
     public function __construct()
     {
         $this->members = new ArrayCollection();
+        $this->children = new ArrayCollection();
     }
 
     public function getId()
@@ -104,6 +112,35 @@ class OrganizationGroup
     {
         if ($this->members->contains($member)) {
             $this->members->removeElement($member);
+        }
+        return $this;
+    }
+
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    public function setChildren($children): self
+    {
+        $this->children = $children;
+        return $this;
+    }
+
+    public function addChild(OrganizationGroup $child): self
+    {
+        if (!$this->children->contains($child)) {
+            $this->children[] = $child;
+            # TODO : $this->child->addParent($this);
+        }
+        return $this;
+    }
+
+    public function removeChild(OrganizationGroup $child): self
+    {
+        if ($this->children->contains($child)) {
+            $this->children->removeElement($child);
+            # TODO : $this->child->removeParent($this);
         }
         return $this;
     }
