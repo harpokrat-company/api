@@ -114,7 +114,7 @@ class SecureActionController extends Controller
         $errors = $validator->validate($secureAction);
         if ($errors->count() > 0) {
             $entityManager->clear();
-return $this->validationErrorResponse($errors);
+            return $this->validationErrorResponse($errors);
         }
 
         if ($secureAction->getExpirationDate() < new \DateTime()) {
