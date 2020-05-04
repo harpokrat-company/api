@@ -58,7 +58,7 @@ class UserController extends Controller
         $errors = $validator->validate($user);
         if ($errors->count() > 0) {
             $entityManager->clear();
-return $this->validationErrorResponse($errors);
+            return $this->validationErrorResponse($errors);
         }
 
         $entityManager->persist($user);
@@ -99,7 +99,7 @@ return $this->validationErrorResponse($errors);
         $errors = $validator->validate($user);
         if ($errors->count() > 0) {
             $entityManager->clear();
-return $this->validationErrorResponse($errors);
+            return $this->validationErrorResponse($errors);
         }
 
         $entityManager->flush();

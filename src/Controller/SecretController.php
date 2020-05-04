@@ -58,7 +58,7 @@ class SecretController extends Controller
         $errors = $validator->validate($secret);
         if ($errors->count() > 0) {
             $entityManager->clear();
-return $this->validationErrorResponse($errors);
+            return $this->validationErrorResponse($errors);
         }
 
         $entityManager->persist($secret);
@@ -99,7 +99,7 @@ return $this->validationErrorResponse($errors);
         $errors = $validator->validate($secret);
         if ($errors->count() > 0) {
             $entityManager->clear();
-return $this->validationErrorResponse($errors);
+            return $this->validationErrorResponse($errors);
         }
 
         $entityManager->flush();
