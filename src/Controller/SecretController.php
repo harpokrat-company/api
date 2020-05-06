@@ -57,6 +57,7 @@ class SecretController extends Controller
         /** @var ConstraintViolationList $errors */
         $errors = $validator->validate($secret);
         if ($errors->count() > 0) {
+            $entityManager->clear();
             return $this->validationErrorResponse($errors);
         }
 
@@ -97,6 +98,7 @@ class SecretController extends Controller
         /** @var ConstraintViolationList $errors */
         $errors = $validator->validate($secret);
         if ($errors->count() > 0) {
+            $entityManager->clear();
             return $this->validationErrorResponse($errors);
         }
 

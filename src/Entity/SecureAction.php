@@ -66,6 +66,11 @@ class SecureAction
      */
     private $type;
 
+    /**
+     * Not ORM since never really persisted. Will probably only be used for actions like password reset.
+     */
+    private $payload;
+
     public function getId()
     {
         return $this->id;
@@ -182,5 +187,21 @@ class SecureAction
                 return;
             }
         }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPayload()
+    {
+        return $this->payload;
+    }
+
+    /**
+     * @param mixed $payload
+     */
+    public function setPayload($payload): void
+    {
+        $this->payload = $payload;
     }
 }

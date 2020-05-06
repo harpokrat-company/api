@@ -113,6 +113,7 @@ class SecureActionController extends Controller
         /** @var ConstraintViolationList $errors */
         $errors = $validator->validate($secureAction);
         if ($errors->count() > 0) {
+            $entityManager->clear();
             return $this->validationErrorResponse($errors);
         }
 

@@ -39,6 +39,8 @@ class LogSubscriber implements EventSubscriberInterface
         if (!is_null($token)) {
             $user = $token->getUser();
             if (!is_null($user) && $user instanceof User) {
+                /** @var User $user */
+                $user = $this->entityManager->merge($user);
                 $log->setUser($user);
             }
         }
