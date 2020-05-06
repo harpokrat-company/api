@@ -32,7 +32,7 @@ class ResetPasswordHandler extends AbstractSecureActionHandler
             // TODO Handle cleanly for the user
             throw new \Exception('The email was changed since this action was created.');
         }
-        $user->setPassword($action->getPayload());
+        $user->setPassword($action->getPayload()); // TODO Check password format cleanly
         $action->setPayload('');
 
         $unitOfWork->persist($user);
