@@ -18,6 +18,9 @@ class CreateSecureActionHydrator extends AbstractSecureActionHydrator
             'actionType' => function (SecureAction $secureAction, $attribute, $data, $attributeName) {
                 $secureAction->setActionType($attribute);
             },
+            'payload' => function (SecureAction $secureAction, $attribute, $data, $attributeName) {
+                $secureAction->setPayload($attribute);
+            },
         ];
     }
 }

@@ -22,6 +22,10 @@ class SecureAction
         self::ACTION_RESET_PASSWORD => 'reset_password',
     ];
 
+    const ANONYMOUS_CREATED_ACTIONS = [
+        self::ACTION_RESET_PASSWORD,
+    ];
+
     const USER_CREATED_ACTIONS = [
         self::ACTION_RESET_PASSWORD,
     ];
