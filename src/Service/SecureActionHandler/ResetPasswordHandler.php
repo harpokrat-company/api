@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Service\SecureActionHandler;
-
 
 use App\Entity\SecureAction;
 use App\Entity\User;
@@ -34,7 +32,10 @@ class ResetPasswordHandler extends AbstractSecureActionHandler
             // TODO Handle cleanly for the user
             throw new \Exception('The email was changed since this action was created.');
         }
-        // TODO Change password with token generation or something (creation of new secure action without mail
-        // sending ?)
+        $user->setPassword($action->getPayload()); // TODO Check password format cleanly
+        $action->setPayload('');
+
+        $unitOfWork->persist($user);
+        $unitOfWork->computeChangeSet($this->entityManager->getClassMetadata(User::class), $user);
     }
 }

@@ -20,6 +20,9 @@ class UpdateSecureActionHydrator extends AbstractSecureActionHydrator
                     $secureAction->setValidated(true);
                 }
             },
+            'payload' => function (SecureAction $secureAction, $attribute, $data, $attributeName) {
+                $secureAction->setPayload($attribute);
+            },
         ];
     }
 }
