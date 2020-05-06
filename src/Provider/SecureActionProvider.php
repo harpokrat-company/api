@@ -32,10 +32,10 @@ class SecureActionProvider
     }
 
     /**
-     * @param User           $user
+     * @param User $user
      * @param                $actionType
-     * @param array          $details
-     * @param DateTime|null  $expirationDate
+     * @param array $details
+     * @param DateTime|null $expirationDate
      *
      * @throws LoaderError
      * @throws RuntimeError
@@ -64,7 +64,7 @@ class SecureActionProvider
     }
 
     /**
-     * @param User         $user
+     * @param User $user
      * @param SecureAction $action
      *
      * @return null
@@ -73,9 +73,12 @@ class SecureActionProvider
      * @throws SyntaxError
      * @throws \Exception
      */
-    public function userRegister(User $user, SecureAction $action)
+    public function userRegister(User $user, SecureAction $action, bool $anonymous = true)
     {
-        if (!in_array($action->getType(), SecureAction::USER_CREATED_ACTIONS)) {
+        if (
+            ($anonymous && !in_array($action->getType(), SecureAction::ANONYMOUS_CREATED_ACTIONS))
+            || (!$anonymous && !in_array($action->getType(), SecureAction::USER_CREATED_ACTIONS))
+        ) {
             return null;
         }
 

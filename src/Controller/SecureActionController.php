@@ -9,6 +9,7 @@ use App\JsonApi\Hydrator\SecureAction\CreateSecureActionHydrator;
 use App\JsonApi\Hydrator\SecureAction\UpdateSecureActionHydrator;
 use App\JsonApi\Transformer\SecureActionResourceTransformer;
 use App\Provider\SecureActionProvider;
+use App\Repository\UserRepository;
 use Paknahad\JsonApiBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -43,7 +44,7 @@ class SecureActionController extends Controller
 
     /**
      * @Route("", name="secure_actions_new", methods="POST")
-     * @param ValidatorInterface   $validator
+     * @param ValidatorInterface $validator
      * @param SecureActionProvider $secureActionProvider
      *
      * @return ResponseInterface
@@ -51,18 +52,24 @@ class SecureActionController extends Controller
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      */
-    public function new(ValidatorInterface $validator, SecureActionProvider $secureActionProvider): ResponseInterface
+    public function new(ValidatorInterface $validator, SecureActionProvider $secureActionProvider,
+                        UserRepository $userRepository): ResponseInterface
     {
         $entityManager = $this->getDoctrine()->getManager();
 
         $secureAction = $this->jsonApi()->hydrate(new CreateSecureActionHydrator($entityManager), new SecureAction());
 
         $user = $this->getUser();
+        $anonymous = false;
+        if (!$user) {
+            $user = $userRepository->findOneBy(['email'=> $secureAction->getPayload()]);
+            $anonymous = true;
+        }
         if (!$user instanceof User) {
-            throw new UnauthorizedHttpException('Bearer');
+            throw new NotFoundHttpException();
         }
 
-        $secureAction = $secureActionProvider->userRegister($user, $secureAction);
+        $secureAction = $secureActionProvider->userRegister($user, $secureAction, $anonymous);
         if (is_null($secureAction)) {
             throw new UnauthorizedHttpException('Bearer');
         }
@@ -75,8 +82,8 @@ class SecureActionController extends Controller
 
     /**
      * @Route("/{id}", name="secure_actions_edit", methods="PATCH")
-     * @param Request            $request
-     * @param SecureAction       $secureAction
+     * @param Request $request
+     * @param SecureAction $secureAction
      * @param ValidatorInterface $validator
      *
      * @return ResponseInterface
@@ -140,7 +147,7 @@ class SecureActionController extends Controller
 
     /**
      * @Route("/{id}", name="secure_actions_delete", methods="DELETE")
-     * @param Request      $request
+     * @param Request $request
      * @param SecureAction $secureAction
      * @return ResponseInterface
      */
