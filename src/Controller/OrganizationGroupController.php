@@ -100,6 +100,8 @@ class OrganizationGroupController extends Controller
      */
     public function edit(OrganizationGroup $group, ValidatorInterface $validator): ResponseInterface
     {
+        $this->denyAccessUnlessGranted('edit', $group);
+
         $entityManager = $this->getDoctrine()->getManager();
 
         $group = $this->jsonApi()->hydrate(new UpdateOrganizationGroupHydrator($entityManager), $group);
@@ -127,6 +129,8 @@ class OrganizationGroupController extends Controller
      */
     public function delete(Request $request, OrganizationGroup $group): ResponseInterface
     {
+        $this->denyAccessUnlessGranted('delete', $group);
+
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($group);
         $entityManager->flush();
@@ -143,6 +147,8 @@ class OrganizationGroupController extends Controller
      */
     public function editRelationship(OrganizationGroup $group, ValidatorInterface $validator): ResponseInterface
     {
+        $this->denyAccessUnlessGranted('edit', $group);
+
         $relationshipName = $this->jsonApi()->getRequest()->getAttribute('rel');
 
         $entityManager = $this->getDoctrine()->getManager();
@@ -189,6 +195,8 @@ class OrganizationGroupController extends Controller
      */
     public function addRelationship(OrganizationGroup $group, ValidatorInterface $validator): ResponseInterface
     {
+        $this->denyAccessUnlessGranted('edit', $group);
+
         $relationshipName = $this->jsonApi()->getRequest()->getAttribute('rel');
 
         $entityManager = $this->getDoctrine()->getManager();
@@ -226,6 +234,8 @@ class OrganizationGroupController extends Controller
      */
     public function deleteRelationship(OrganizationGroup $group, ValidatorInterface $validator): ResponseInterface
     {
+        $this->denyAccessUnlessGranted('edit', $group);
+
         $relationshipName = $this->jsonApi()->getRequest()->getAttribute('rel');
 
         $entityManager = $this->getDoctrine()->getManager();

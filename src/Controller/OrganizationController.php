@@ -85,6 +85,7 @@ class OrganizationController extends Controller
      */
     public function show(Organization $organization): ResponseInterface
     {
+        $this->denyAccessUnlessGranted('view', $organization);
         return $this->jsonApi()->respond()->ok(
             new OrganizationDocument(new OrganizationResourceTransformer()),
             $organization
@@ -100,6 +101,8 @@ class OrganizationController extends Controller
      */
     public function edit(Organization $organization, ValidatorInterface $validator): ResponseInterface
     {
+        $this->denyAccessUnlessGranted('edit', $organization);
+
         $entityManager = $this->getDoctrine()->getManager();
 
         $organization = $this->jsonApi()->hydrate(new UpdateOrganizationHydrator($entityManager), $organization);
@@ -127,6 +130,8 @@ class OrganizationController extends Controller
      */
     public function delete(Request $request, Organization $organization): ResponseInterface
     {
+        $this->denyAccessUnlessGranted('delete', $organization);
+
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($organization);
         $entityManager->flush();
@@ -142,6 +147,8 @@ class OrganizationController extends Controller
      */
     public function editRelationship(Organization $organization, ValidatorInterface $validator): ResponseInterface
     {
+        $this->denyAccessUnlessGranted('edit', $organization);
+
         $relationshipName = $this->jsonApi()->getRequest()->getAttribute('rel');
 
         $entityManager = $this->getDoctrine()->getManager();
@@ -188,6 +195,8 @@ class OrganizationController extends Controller
      */
     public function addRelationship(Organization $organization, ValidatorInterface $validator): ResponseInterface
     {
+        $this->denyAccessUnlessGranted('edit', $organization);
+
         $relationshipName = $this->jsonApi()->getRequest()->getAttribute('rel');
 
         $entityManager = $this->getDoctrine()->getManager();
@@ -225,6 +234,8 @@ class OrganizationController extends Controller
      */
     public function deleteRelationship(Organization $organization, ValidatorInterface $validator): ResponseInterface
     {
+        $this->denyAccessUnlessGranted('edit', $organization);
+
         $relationshipName = $this->jsonApi()->getRequest()->getAttribute('rel');
 
         $entityManager = $this->getDoctrine()->getManager();
