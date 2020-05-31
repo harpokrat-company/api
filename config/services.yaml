@@ -4,6 +4,8 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
+    google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
+    google_recaptcha_secret: '%env(GOOGLE_RECAPTCHA_SECRET)%'
 
 services:
     # default configuration for services in *this* file
@@ -74,3 +76,8 @@ services:
         class: App\Service\SecureActionHandler\ResetPasswordHandler
         tags:
             - { name: secure_action.handler, key: !php/const App\Entity\SecureAction::ACTION_RESET_PASSWORD }
+
+    recaptcha.subscriber:
+        class: App\EventSubscriber\ReCaptchaSubscriber
+        arguments:
+            - '%google_recaptcha_secret%'
