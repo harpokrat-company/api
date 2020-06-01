@@ -77,7 +77,8 @@ services:
         tags:
             - { name: secure_action.handler, key: !php/const App\Entity\SecureAction::ACTION_RESET_PASSWORD }
 
-    recaptcha.subscriber:
+    App\EventSubscriber\ReCaptchaSubscriber:
         class: App\EventSubscriber\ReCaptchaSubscriber
         arguments:
-            - '%google_recaptcha_secret%'
+            - '@ReCaptcha\ReCaptcha'
+            - '%env(GOOGLE_RECAPTCHA_SECRET)%'
