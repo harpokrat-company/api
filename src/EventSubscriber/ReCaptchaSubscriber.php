@@ -6,13 +6,13 @@ namespace App\EventSubscriber;
 
 use ReCaptcha\ReCaptcha;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
-use Symfony\Component\HttpKernel\KernelEvents;
 
 class ReCaptchaSubscriber implements EventSubscriberInterface
 {
+    const RECAPTCHA_EVENT = "harpokrat.api.controller.recaptcha";
+
     private $reCaptcha;
     /**
      * @var bool
@@ -30,7 +30,7 @@ class ReCaptchaSubscriber implements EventSubscriberInterface
         $this->enable = $enable;
     }
 
-    public function onKernelController(ControllerEvent $controllerEvent) {
+    public function onRecaptchaController(ControllerEvent $controllerEvent) {
         if (!$this->enable) {
             return;
         }
@@ -47,7 +47,7 @@ class ReCaptchaSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            KernelEvents::CONTROLLER => 'onKernelController',
+            self::RECAPTCHA_EVENT => 'onRecaptchaController',
         ];
     }
 }
