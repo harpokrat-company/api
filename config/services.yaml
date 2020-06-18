@@ -6,6 +6,7 @@
 parameters:
     google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
     google_recaptcha_secret: '%env(GOOGLE_RECAPTCHA_SECRET)%'
+    google_recaptcha_enabled: '%env(bool:GOOGLE_RECAPTCHA_ENABLED)%'
 
 services:
     # default configuration for services in *this* file
@@ -81,4 +82,11 @@ services:
         class: App\EventSubscriber\ReCaptchaSubscriber
         arguments:
             - '@ReCaptcha\ReCaptcha'
-            - '%env(GOOGLE_RECAPTCHA_SECRET)%'
+            - '%google_recaptcha_enabled%'
+
+    App\Controller\ReCaptchaController:
+        class: App\Controller\ReCaptchaController
+        arguments:
+            - '@WoohooLabs\Yin\JsonApi\JsonApi'
+            - '%google_recaptcha_site_key%'
+            - '%google_recaptcha_enabled%'
