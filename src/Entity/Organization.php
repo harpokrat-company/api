@@ -33,6 +33,7 @@ class Organization
     private $name;
 
     /**
+     * @var User
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="organizations")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -71,10 +72,9 @@ class Organization
         return $this->owner;
     }
 
-    public function setOwner(?UserInterface $owner): self
+    public function setOwner(?User $owner): self
     {
         $this->owner = $owner;
-
         return $this;
     }
 
@@ -83,19 +83,11 @@ class Organization
         return $this->members;
     }
 
-    public function setMembers(array $members): self
-    {
-        $this->members = $members;
-        return $this;
-    }
-
     public function addMember(User $member): self
     {
         if (!$this->members->contains($member)) {
             $this->members[] = $member;
-            // TODO : $member->addOrganization($this);
         }
-
         return $this;
     }
 
@@ -103,9 +95,6 @@ class Organization
     {
         if ($this->members->contains($member)) {
             $this->members->removeElement($member);
-            /* TODO : if ($member->getOrganization->contains($this)) {
-                $member->removeOrganization($organization);
-            } */
         }
         return $this;
     }

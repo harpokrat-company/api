@@ -81,11 +81,25 @@ class User implements UserInterface
      */
     private $emailAddressValidated;
 
+    /**
+     * @var array
+     * @ORM\ManyToMany(targetEntity="App\Entity\Organization", mappedBy="members")
+     */
+    private $organizations;
+
+    /**
+     * @var array
+     * @ORM\OneToMany(targetEntity="App\Entity\Organization", mappedBy="owner")
+     */
+    private $ownedOrganizations;
+
     public function __construct()
     {
         $this->secrets = new ArrayCollection();
         $this->logs = new ArrayCollection();
         $this->emailAddressValidated = false;
+        $this->organizations = new ArrayCollection();
+        $this->ownedOrganizations = new ArrayCollection();
     }
 
     public function getId()
@@ -287,4 +301,47 @@ class User implements UserInterface
 
         return $this;
     }
+
+    public function getOrganizations(): Collection
+    {
+        return $this->organizations;
+    }
+
+    public function addOrganization(Organization $organization): self
+    {
+        if (!$this->organizations->contains($organization)) {
+            $this->organizations[] = $organization;
+        }
+        return $this;
+    }
+
+    public function removeOrganization(Organization $organization): self
+    {
+        if ($this->organizations->contains($organization)) {
+            $this->organizations->removeElement($organization);
+        }
+        return $this;
+    }
+
+    public function getOwnedOrganizations(): Collection
+    {
+        return $this->ownedOrganizations;
+    }
+
+    public function addOwnedOrganization(Organization $organization): self
+    {
+        if (!$this->ownedOrganizations->contains($organization)) {
+            $this->ownedOrganizations[] = $organization;
+        }
+        return $this;
+    }
+
+    public function removeOwnedOrganization(Organization $organization): self
+    {
+        if ($this->ownedOrganizations->contains($organization)) {
+            $this->ownedOrganizations->removeElement($organization);
+        }
+        return $this;
+    }
+
 }

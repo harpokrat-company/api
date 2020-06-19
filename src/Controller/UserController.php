@@ -4,15 +4,20 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\JsonApi\Document\User\UserDocument;
+use App\JsonApi\Document\User\UserRelatedEntitiesDocument;
 use App\JsonApi\Document\User\UsersDocument;
 use App\JsonApi\Hydrator\User\CreateUserHydrator;
 use App\JsonApi\Hydrator\User\UpdateUserHydrator;
+use App\JsonApi\Transformer\LogResourceTransformer;
+use App\JsonApi\Transformer\OrganizationResourceTransformer;
+use App\JsonApi\Transformer\SecretResourceTransformer;
 use App\JsonApi\Transformer\UserResourceTransformer;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityNotFoundException;
 use Paknahad\JsonApiBundle\Controller\Controller;
 use Paknahad\JsonApiBundle\Helper\ResourceCollection;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Routing\Annotation\Route;
 use Psr\Http\Message\ResponseInterface;
@@ -112,16 +117,84 @@ class UserController extends Controller
 
     /**
      * @Route("/{id}", name="users_delete", methods="DELETE")
-     * @param Request $request
      * @param User    $user
      * @return ResponseInterface
      */
-    public function delete(Request $request, User $user): ResponseInterface
+    public function delete(User $user): ResponseInterface
     {
+        if ($user === $this->getUser()) {
+            # TODO : close session and remove jwt
+            throw new HttpException(501, "not implemented");
+        }
+
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->remove($user);
         $entityManager->flush();
 
         return $this->jsonApi()->respond()->genericSuccess(204);
+    }
+
+    /**
+     * @Route("/{id}/relationships/{rel}", name="users_relationship", methods="GET")
+     * @param User $user
+     * @return ResponseInterface
+     */
+    public function showRelationships(User $user) {
+        # TODO : access control
+
+        $relationshipName = $this->jsonApi()->getRequest()->getAttribute('rel');
+        # TODO : check if relationship exist
+
+        return $this->jsonApi()->respond()->okWithRelationship(
+            $relationshipName, new UserDocument(new UserResourceTransformer()), $user
+        );
+    }
+
+
+    private function getRelatedResponses() {
+        return [
+            "organizations" => function (User $user, string $relationshipName) {
+                return $this->jsonApi()->respond()->ok(
+                    new UserRelatedEntitiesDocument(new OrganizationResourceTransformer(), $user->getId(), $relationshipName),
+                    $user->getOrganizations()
+                );
+            },
+            "ownedOrganizations" => function (User $user, string $relationshipName) {
+                return $this->jsonApi()->respond()->ok(
+                    new UserRelatedEntitiesDocument(new OrganizationResourceTransformer(), $user->getId(), $relationshipName),
+                    $user->getOwnedOrganizations()
+                );
+            },
+            "secrets" => function (User $user, string $relationshipName) {
+                return $this->jsonApi()->respond()->ok(
+                    new UserRelatedEntitiesDocument(new SecretResourceTransformer(), $user->getId(), $relationshipName),
+                    $user->getSecrets()
+                );
+            },
+            "logs" => function (User $user, string $relationshipName) {
+                return $this->jsonApi()->respond()->ok(
+                    new UserRelatedEntitiesDocument(new LogResourceTransformer(), $user->getId(), $relationshipName),
+                    $user->getLogs()
+                );
+            },
+        ];
+    }
+
+    /**
+     * @Route("/{id}/{rel}", name="users_related", methods="GET")
+     * @param User $user
+     * @return ResponseInterface
+     */
+    public function showRelatedEntities(User $user) {
+        # TODO : access control
+
+        $relationshipName = $this->jsonApi()->getRequest()->getAttribute('rel');
+
+        $relatedResponseCreator = $this->getRelatedResponses();
+        if (!array_key_exists($relationshipName, $relatedResponseCreator)) {
+            throw new NotFoundHttpException('relationship not exist');
+        }
+
+        return $relatedResponseCreator[$relationshipName]($user, $relationshipName);
     }
 }
