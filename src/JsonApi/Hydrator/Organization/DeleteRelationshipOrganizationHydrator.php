@@ -5,7 +5,9 @@ namespace App\JsonApi\Hydrator\Organization;
 
 
 use App\Entity\Organization;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToManyRelationship;
+use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship;
 
 class DeleteRelationshipOrganizationHydrator extends AbstractOrganizationHydrator
 {
@@ -20,7 +22,10 @@ class DeleteRelationshipOrganizationHydrator extends AbstractOrganizationHydrato
                         $organization->removeMember($member);
                     }
                 }
-            }
+            },
+            'owner' => function (Organization $organization, ToOneRelationship $owner, $data, $relationshipName) {
+                throw new BadRequestHttpException();
+            },
         ];
     }
 }

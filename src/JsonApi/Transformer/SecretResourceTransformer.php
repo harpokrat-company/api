@@ -3,6 +3,7 @@
 namespace App\JsonApi\Transformer;
 
 use App\Entity\Secret;
+use WoohooLabs\Yin\JsonApi\Schema\Link;
 use WoohooLabs\Yin\JsonApi\Schema\Links;
 use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToOneRelationship;
 use WoohooLabs\Yin\JsonApi\Schema\Resource\AbstractResource;
@@ -72,7 +73,11 @@ class SecretResourceTransformer extends AbstractResource
         return [
             'owner' => function (Secret $secret) {
                 return ToOneRelationship::create()
-                    ->setData($secret->getOwner(), new UserResourceTransformer());
+                    ->setData($secret->getOwner(), new UserResourceTransformer())
+                    ->setLinks(Links::createWithoutBaseUri([
+                        'self' => new Link('/v1/secrets/' . $secret->getId() . '/relationships/owner'),
+                        'related' => new Link('/v1/secrets/' . $secret->getId() . '/owner'),
+                    ]));
             },
         ];
     }

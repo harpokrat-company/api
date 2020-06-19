@@ -5,6 +5,7 @@ namespace App\JsonApi\Transformer;
 
 
 use App\Entity\OrganizationGroup;
+use WoohooLabs\Yin\JsonApi\Schema\Link;
 use WoohooLabs\Yin\JsonApi\Schema\Links;
 use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToManyRelationship;
 use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToOneRelationship;
@@ -73,18 +74,30 @@ class OrganizationGroupResourceTransformer extends AbstractResource
     public function getRelationships($group): array
     {
         return [
-            'organization' => function (OrganizationGroup $group) {
-                return ToOneRelationship::create()
-                    ->setData($group->getOrganization(), new OrganizationResourceTransformer());
+            'children' => function (OrganizationGroup $group) {
+                return ToManyRelationship::create()
+                    ->setData($group->getChildren(), new OrganizationGroupResourceTransformer())
+                    ->setLinks(Links::createWithoutBaseUri([
+                        'self' => new Link('/v1/groups/' . $group->getId() . '/relationships/children'),
+                        'related' => new Link('/v1/groups/' . $group->getId() . '/children'),
+                    ]));
             },
             'members' => function (OrganizationGroup $group) {
                 return ToManyRelationship::create()
-                    ->setData($group->getMembers(), new UserResourceTransformer());
+                    ->setData($group->getMembers(), new UserResourceTransformer())
+                    ->setLinks(Links::createWithoutBaseUri([
+                        'self' => new Link('/v1/groups/'. $group->getId() . '/relationships/members'),
+                        'related' => new Link('/v1/groups/'. $group->getId() . '/members'),
+                    ]));
             },
-            'children' => function (OrganizationGroup $group) {
-                return ToManyRelationship::create()
-                    ->setData($group->getChildren(), new OrganizationGroupResourceTransformer());
-            }
+            'organization' => function (OrganizationGroup $group) {
+                return ToOneRelationship::create()
+                    ->setData($group->getOrganization(), new OrganizationResourceTransformer())
+                    ->setLinks(Links::createWithoutBaseUri([
+                        'self' => new Link('/v1/groups/'. $group->getId() . '/relationships/organization'),
+                        'related' => new Link('/v1/groups/'. $group->getId() . '/organization'),
+                    ]));
+            },
         ];
     }
 }

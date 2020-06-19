@@ -5,8 +5,9 @@ namespace App\JsonApi\Hydrator\Organization;
 
 
 use App\Entity\Organization;
-use Doctrine\ORM\Query\Expr;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToManyRelationship;
+use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship;
 
 class CreateRelationshipOrganizationHydrator extends AbstractOrganizationHydrator
 {
@@ -19,7 +20,10 @@ class CreateRelationshipOrganizationHydrator extends AbstractOrganizationHydrato
                 foreach ($association as $member) {
                     $organization->addMember($member);
                 }
-            }
+            },
+            'owner' => function (Organization $organization, ToOneRelationship $owner, $data, $relationshipName) {
+                throw new BadRequestHttpException();
+            },
         ];
     }
 }

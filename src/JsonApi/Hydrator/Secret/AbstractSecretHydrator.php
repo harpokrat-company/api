@@ -2,6 +2,7 @@
 
 namespace App\JsonApi\Hydrator\Secret;
 
+use App\Exception\NotImplementedException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Entity\Secret;
 use Paknahad\JsonApiBundle\Hydrator\ValidatorTrait;
@@ -64,6 +65,7 @@ abstract class AbstractSecretHydrator extends AbstractHydrator
 
     /**
      * {@inheritdoc}
+     * @throws \Paknahad\JsonApiBundle\Exception\InvalidAttributeException
      */
     protected function validateRequest(JsonApiRequestInterface $request): void
     {
@@ -87,21 +89,7 @@ abstract class AbstractSecretHydrator extends AbstractHydrator
     {
         return [
             'owner' => function (Secret $secret, ToOneRelationship $owner, $data, $relationshipName) {
-                $this->validateRelationType($owner, ['users']);
-
-
-                $association = null;
-                $identifier = $owner->getResourceIdentifier();
-                if ($identifier) {
-                    $association = $this->objectManager->getRepository('App\Entity\User')
-                        ->find($identifier->getId());
-
-                    if (is_null($association)) {
-                        throw new InvalidRelationshipValueException($relationshipName, [$identifier->getId()]);
-                    }
-                }
-
-                $secret->setOwner($association);
+                throw new NotImplementedException();
             },
         ];
     }

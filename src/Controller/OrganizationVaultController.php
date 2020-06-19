@@ -11,37 +11,44 @@ use App\JsonApi\Hydrator\OrganizationVault\CreateOrganizationVaultHydrator;
 use App\JsonApi\Hydrator\OrganizationVault\UpdateOrganizationVaultHydrator;
 use App\JsonApi\Transformer\OrganizationVaultResourceTransformer;
 use App\Repository\OrganizationVaultRepository;
-use Doctrine\ORM\EntityNotFoundException;
-use Paknahad\JsonApiBundle\Controller\Controller;
 use Paknahad\JsonApiBundle\Helper\ResourceCollection;
 use Psr\Http\Message\ResponseInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use WoohooLabs\Yin\JsonApi\Schema\Document\AbstractSuccessfulDocument;
 
 /**
  * @Route("/v1/vaults")
  */
-class OrganizationVaultController extends Controller
+class OrganizationVaultController extends AbstractResourceController
 {
+    protected function getSingleDocument(): AbstractSuccessfulDocument
+    {
+        return new OrganizationVaultDocument(new OrganizationVaultResourceTransformer());
+    }
+
+    protected function getCollectionDocument(): AbstractSuccessfulDocument
+    {
+        return new OrganizationVaultsDocument(new OrganizationVaultResourceTransformer());
+    }
+
+    protected function getRelatedResponses(): array
+    {
+        return [
+        ];
+    }
+
     /**
      * @Route("", name="vaults_index", methods="GET")
      * @param OrganizationVaultRepository $vaultRepository
      * @param ResourceCollection $resourceCollection
      *
      * @return ResponseInterface
-     * @throws EntityNotFoundException
      */
     public function index(OrganizationVaultRepository $vaultRepository, ResourceCollection $resourceCollection): ResponseInterface
     {
-        $resourceCollection->setRepository($vaultRepository);
-
-        $resourceCollection->handleIndexRequest();
-
-        return $this->jsonApi()->respond()->ok(
-            new OrganizationVaultsDocument(new OrganizationVaultResourceTransformer()),
-            $resourceCollection
+        return $this->resourceIndex(
+            $vaultRepository, $resourceCollection
         );
     }
 
@@ -52,23 +59,8 @@ class OrganizationVaultController extends Controller
      */
     public function new(ValidatorInterface $validator): ResponseInterface
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $vault = $this->jsonApi()->hydrate(new CreateOrganizationVaultHydrator($entityManager), new OrganizationVault());
-
-        /** @var ConstraintViolationList $errors */
-        $errors = $validator->validate($vault);
-        if ($errors->count() > 0) {
-            $entityManager->clear();
-            return $this->validationErrorResponse($errors);
-        }
-
-        $entityManager->persist($vault);
-        $entityManager->flush();
-
-        return $this->jsonApi()->respond()->ok(
-            new OrganizationVaultDocument(new OrganizationVaultResourceTransformer()),
-            $vault
+        return $this->resourceNew(
+            new OrganizationVault(), $validator, new CreateOrganizationVaultHydrator($this->getDoctrine()->getManager())
         );
     }
 
@@ -79,8 +71,7 @@ class OrganizationVaultController extends Controller
      */
     public function show(OrganizationVault $vault): ResponseInterface
     {
-        return $this->jsonApi()->respond()->ok(
-            new OrganizationVaultDocument(new OrganizationVaultResourceTransformer()),
+        return $this->resourceShow(
             $vault
         );
     }
@@ -94,37 +85,18 @@ class OrganizationVaultController extends Controller
      */
     public function edit(OrganizationVault $vault, ValidatorInterface $validator): ResponseInterface
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $vault = $this->jsonApi()->hydrate(new UpdateOrganizationVaultHydrator($entityManager), $vault);
-
-        /** @var ConstraintViolationList $errors */
-        $errors = $validator->validate($vault);
-        if ($errors->count() > 0) {
-            $entityManager->clear();
-            return $this->validationErrorResponse($errors);
-        }
-
-        $entityManager->flush();
-
-        return $this->jsonApi()->respond()->ok(
-            new OrganizationVaultDocument(new OrganizationVaultResourceTransformer()),
-            $vault
+        return $this->resourceHydrate(
+            $vault, $validator, new UpdateOrganizationVaultHydrator($this->getDoctrine()->getManager())
         );
     }
 
     /**
      * @Route("/{id}", name="vaults_delete", methods="DELETE")
-     * @param Request $request
      * @param OrganizationVault $vault
      * @return ResponseInterface
      */
-    public function delete(Request $request, OrganizationVault $vault): ResponseInterface
+    public function delete(OrganizationVault $vault): ResponseInterface
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->remove($vault);
-        $entityManager->flush();
-
-        return $this->jsonApi()->respond()->genericSuccess(204);
+        return $this->resourceDelete($vault);
     }
 }

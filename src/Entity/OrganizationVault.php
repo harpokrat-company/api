@@ -30,12 +30,6 @@ class OrganizationVault
      */
     private $name;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="organizations")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $owner;
-
     public function getId()
     {
         return $this->id;
@@ -49,18 +43,6 @@ class OrganizationVault
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getOwner(): ?User
-    {
-        return $this->owner;
-    }
-
-    public function setOwner(?UserInterface $owner): self
-    {
-        $this->owner = $owner;
 
         return $this;
     }

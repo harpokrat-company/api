@@ -72,10 +72,6 @@ class OrganizationVaultResourceTransformer extends AbstractResource
     public function getRelationships($vault): array
     {
         return [
-            'owner' => function (OrganizationVault $vault) {
-                return ToOneRelationship::create()
-                    ->setData($vault->getOwner(), new UserResourceTransformer());
-            },
         ];
     }
 }

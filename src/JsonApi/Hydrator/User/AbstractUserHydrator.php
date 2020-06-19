@@ -2,6 +2,8 @@
 
 namespace App\JsonApi\Hydrator\User;
 
+use App\Entity\Organization;
+use App\Exception\NotImplementedException;
 use Exception;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Entity\User;
@@ -77,6 +79,7 @@ abstract class AbstractUserHydrator extends AbstractHydrator
 
     /**
      * {@inheritdoc}
+     * @throws \Paknahad\JsonApiBundle\Exception\InvalidAttributeException
      */
     protected function validateRequest(JsonApiRequestInterface $request): void
     {
@@ -99,83 +102,18 @@ abstract class AbstractUserHydrator extends AbstractHydrator
     protected function getRelationshipHydrator($user): array
     {
         return [
-            // TODO : Should it be possible to change that here?
-//            'secrets' => function (User $user, ToManyRelationship $secrets, $data, $relationshipName) {
-//                $this->validateRelationType($secrets, ['secrets']);
-//
-//                if (count($secrets->getResourceIdentifierIds()) > 0) {
-//                    $association = $this->objectManager->getRepository('App\Entity\Secret')
-//                        ->createQueryBuilder('s')
-//                        ->where((new Expr())->in('s.id', $secrets->getResourceIdentifierIds()))
-//                        ->getQuery()
-//                        ->getResult();
-//
-//                    $this->validateRelationValues($association, $secrets->getResourceIdentifierIds(), $relationshipName);
-//                } else {
-//                    $association = [];
-//                }
-//
-//                if ($user->getSecrets()->count() > 0) {
-//                    foreach ($user->getSecrets() as $secret) {
-//                        $user->removeSecret($secret);
-//                    }
-//                }
-//
-//                foreach ($association as $secret) {
-//                    $user->addSecret($secret);
-//                }
-//            },
-//            'logs' => function (User $user, ToManyRelationship $logs, $data, $relationshipName) {
-//                $this->validateRelationType($logs, ['logs']);
-//
-//                if (count($logs->getResourceIdentifierIds()) > 0) {
-//                    $association = $this->objectManager->getRepository('App\Entity\Log')
-//                        ->createQueryBuilder('l')
-//                        ->where((new Expr())->in('l.id', $logs->getResourceIdentifierIds()))
-//                        ->getQuery()
-//                        ->getResult();
-//
-//                    $this->validateRelationValues($association, $logs->getResourceIdentifierIds(), $relationshipName);
-//                } else {
-//                    $association = [];
-//                }
-//
-//                if ($user->getLogs()->count() > 0) {
-//                    foreach ($user->getLogs() as $log) {
-//                        $user->removeLog($log);
-//                    }
-//                }
-//
-//                foreach ($association as $log) {
-//                    $user->addLog($log);
-//                }
-//            },
-//            'organizations' => function (User $user, ToManyRelationship $organizations, $data, $relationshipName) {
-//                $association = $this->getRelationShipOrganizations($organizations, $relationshipName);
-//                /** @var Organization $organization */
-//                foreach ($association as $organization) {
-//                    $user->removeOrganization($organization);
-//                    $organization->removeMember($user);
-//                }
-//                /** @var Organization $organization */
-//                foreach ($organizations as $organization) {
-//                    $user->addOrganization($organization);
-//                    $organization->addMember($user);
-//                }
-//            },
-//            'ownedOrganizations' => function (User $user, ToManyRelationship $organizations, $data, $relationshipName) {
-//                $association = $this->getRelationShipOrganizations($organizations, $relationshipName);
-//                /** @var Organization $organization */
-//                foreach ($user->getOwnedOrganizations() as $organization) {
-//                    $organization->setOwner(null);
-//                    $user->removeOwnedOrganization($organization);
-//                }
-//                /** @var Organization $organization */
-//                foreach ($association as $organization) {
-//                    $organization->setOwner($user);
-//                    $user->addOwnedOrganization($organization);
-//                }
-//            }
+            'logs' => function (User $user, ToManyRelationship $logs, $data, $relationshipName) {
+                throw new NotImplementedException();
+            },
+            'organizations' => function (User $user, ToManyRelationship $organizations, $data, $relationshipName) {
+                throw new NotImplementedException();
+            },
+            'ownedOrganizations' => function (User $user, ToManyRelationship $organizations, $data, $relationshipName) {
+                throw new NotImplementedException();
+            },
+            'secrets' => function (User $user, ToManyRelationship $organizations, $data, $relationshipName) {
+                throw new NotImplementedException();
+            },
         ];
     }
 

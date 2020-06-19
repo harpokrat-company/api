@@ -3,6 +3,7 @@
 namespace App\JsonApi\Transformer;
 
 use App\Entity\Log;
+use WoohooLabs\Yin\JsonApi\Schema\Link;
 use WoohooLabs\Yin\JsonApi\Schema\Links;
 use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToOneRelationship;
 use WoohooLabs\Yin\JsonApi\Schema\Resource\AbstractResource;
@@ -78,7 +79,11 @@ class LogResourceTransformer extends AbstractResource
         return [
             'user' => function (Log $log) {
                 return ToOneRelationship::create()
-                    ->setData($log->getUser(), new UserResourceTransformer());
+                    ->setData($log->getUser(), new UserResourceTransformer())
+                    ->setLinks(Links::createWithoutBaseUri([
+                        'self' => new Link('/v1/logs/' . $log->getId() . '/relationships/user'),
+                        'related' => new Link('/v1/logs/' . $log->getId() . '/user'),
+                    ]));
             },
         ];
     }

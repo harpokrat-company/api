@@ -4,9 +4,11 @@
 namespace App\JsonApi\Hydrator\OrganizationGroup;
 
 
-use App\Entity\Organization;
 use App\Entity\OrganizationGroup;
+use App\Exception\NotImplementedException;
 use Doctrine\ORM\Query\Expr;
+use Exception;
+use Paknahad\JsonApiBundle\Exception\InvalidAttributeException;
 use Paknahad\JsonApiBundle\Exception\InvalidRelationshipValueException;
 use Paknahad\JsonApiBundle\Hydrator\AbstractHydrator;
 use Paknahad\JsonApiBundle\Hydrator\ValidatorTrait;
@@ -66,6 +68,7 @@ abstract class AbstractOrganizationGroupHydrator extends AbstractHydrator
 
     /**
      * {@inheritdoc}
+     * @throws InvalidAttributeException
      */
     protected function validateRequest(JsonApiRequestInterface $request): void
     {
@@ -87,7 +90,7 @@ abstract class AbstractOrganizationGroupHydrator extends AbstractHydrator
      * @param $relationshipName
      * @return array|mixed
      * @throws InvalidRelationshipValueException
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getRelationshipMembers(ToManyRelationship $members, $relationshipName) {
         $this->validateRelationType($members, ['users']);
@@ -112,7 +115,7 @@ abstract class AbstractOrganizationGroupHydrator extends AbstractHydrator
      * @param $relationshipName
      * @return array|mixed
      * @throws InvalidRelationshipValueException
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getRelationshipChildren(ToManyRelationship $children, $relationshipName) {
         $this->validateRelationType($children, ['groups']);
@@ -138,21 +141,18 @@ abstract class AbstractOrganizationGroupHydrator extends AbstractHydrator
     protected function getRelationshipHydrator($group): array
     {
         return [
-            'organization' => function (OrganizationGroup $group, ToOneRelationship $organization, $data, $relationshipName) {
-                $this->validateRelationType($organization, ['organizations']);
+            'children' => function (OrganizationGroup $group, ToManyRelationship $children, $data, $relationshipName) {
+                $association = $this->getRelationshipChildren($children, $relationshipName);
 
-                $association = null;
-                $identifier = $organization->getResourceIdentifier();
-                if ($identifier) {
-                    $association = $this->objectManager->getRepository('App\Entity\Organization')
-                        ->find($identifier->getId());
-
-                    if (is_null($association)) {
-                        throw new InvalidRelationshipValueException($relationshipName, [$identifier->getId()]);
+                if ($group->getChildren()->count() > 0) {
+                    foreach ($group->getChildren() as $child) {
+                        $group->removeChild($child);
                     }
-                    $group->setOrganization($association);
                 }
 
+                foreach ($association as $child) {
+                    $group->addChild($child);
+                }
             },
             'members' => function (OrganizationGroup $group, ToManyRelationship $members, $data, $relationshipName) {
                 $association = $this->getRelationshipMembers($members, $relationshipName);
@@ -167,19 +167,9 @@ abstract class AbstractOrganizationGroupHydrator extends AbstractHydrator
                     $group->addMember($member);
                 }
             },
-            'children' => function (OrganizationGroup $group, ToManyRelationship $children, $data, $relationshipName) {
-                $association = $this->getRelationshipChildren($children, $relationshipName);
-
-                if ($group->getChildren()->count() > 0) {
-                    foreach ($group->getChildren() as $child) {
-                        $group->removeChild($child);
-                    }
-                }
-
-                foreach ($association as $child) {
-                    $group->addChild($child);
-                }
-            }
+            'organization' => function (OrganizationGroup $group, ToOneRelationship $organization, $data, $relationshipName) {
+                throw new NotImplementedException();
+            },
         ];
     }
 }

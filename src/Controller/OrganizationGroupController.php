@@ -6,48 +6,75 @@ namespace App\Controller;
 
 use App\Entity\OrganizationGroup;
 use App\JsonApi\Document\OrganizationGroup\OrganizationGroupDocument;
+use App\JsonApi\Document\OrganizationGroup\OrganizationGroupRelatedEntitiesDocument;
+use App\JsonApi\Document\OrganizationGroup\OrganizationGroupRelatedEntityDocument;
 use App\JsonApi\Document\OrganizationGroup\OrganizationGroupsDocument;
 use App\JsonApi\Hydrator\OrganizationGroup\CreateOrganizationGroupHydrator;
 use App\JsonApi\Hydrator\OrganizationGroup\CreateRelationshipOrganizationGroupHydrator;
 use App\JsonApi\Hydrator\OrganizationGroup\DeleteRelationshipOrganizationGroupHydrator;
 use App\JsonApi\Hydrator\OrganizationGroup\UpdateOrganizationGroupHydrator;
+use App\JsonApi\Hydrator\OrganizationGroup\UpdateRelationshipOrganizationGroupHydrator;
 use App\JsonApi\Transformer\OrganizationGroupResourceTransformer;
+use App\JsonApi\Transformer\OrganizationResourceTransformer;
+use App\JsonApi\Transformer\UserResourceTransformer;
 use App\Repository\OrganizationGroupRepository;
-use Doctrine\ORM\EntityNotFoundException;
-use Paknahad\JsonApiBundle\Controller\Controller;
 use Paknahad\JsonApiBundle\Helper\ResourceCollection;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use WoohooLabs\Yin\JsonApi\Document\ErrorDocument;
-use WoohooLabs\Yin\JsonApi\Exception\RelationshipNotExists;
-use WoohooLabs\Yin\JsonApi\Schema\Error\Error;
-use WoohooLabs\Yin\JsonApi\Schema\JsonApiObject;
+use WoohooLabs\Yin\JsonApi\Schema\Document\AbstractSuccessfulDocument;
 
 /**
  * @Route("/v1/groups")
  */
-class OrganizationGroupController extends Controller
+class OrganizationGroupController extends AbstractResourceController
 {
+    protected function getSingleDocument(): AbstractSuccessfulDocument
+    {
+        return new OrganizationGroupDocument(new OrganizationGroupResourceTransformer());
+    }
+
+    protected function getCollectionDocument(): AbstractSuccessfulDocument
+    {
+        return new OrganizationGroupsDocument(new OrganizationGroupResourceTransformer());
+    }
+
+    protected function getRelatedResponses(): array
+    {
+        return [
+            "children" => function (OrganizationGroup $group, string $relationshipName) {
+                return $this->jsonApi()->respond()->ok(
+                    new OrganizationGroupRelatedEntitiesDocument(new OrganizationGroupResourceTransformer(), $group->getId(), $relationshipName),
+                    $group->getChildren()
+                );
+            },
+            "members" => function (OrganizationGroup $group, string $relationshipName) {
+                return $this->jsonApi()->respond()->ok(
+                    new OrganizationGroupRelatedEntitiesDocument(new UserResourceTransformer(), $group->getId(), $relationshipName),
+                    $group->getMembers()
+                );
+            },
+            "organization" => function (OrganizationGroup $group, string $relationshipName) {
+                return $this->jsonApi()->respond()->ok(
+                    new OrganizationGroupRelatedEntityDocument(new OrganizationResourceTransformer(), $group->getId(), $relationshipName),
+                    $group->getOrganization()
+                );
+            },
+        ];
+    }
+
     /**
-     * @Route("", name="organization_index", methods="GET")
+     * @Route("", name="groups_index", methods="GET")
      * @param OrganizationGroupRepository $groupRepository
      * @param ResourceCollection $resourceCollection
      *
      * @return ResponseInterface
-     * @throws EntityNotFoundException
      */
     public function index(OrganizationGroupRepository $groupRepository, ResourceCollection $resourceCollection): ResponseInterface
     {
-        $resourceCollection->setRepository($groupRepository);
-
-        $resourceCollection->handleIndexRequest();
-
-        return $this->jsonApi()->respond()->ok(
-            new OrganizationGroupsDocument(new OrganizationGroupResourceTransformer()),
-            $resourceCollection
+        return $this->resourceIndex(
+            $groupRepository, $resourceCollection
         );
     }
 
@@ -58,23 +85,8 @@ class OrganizationGroupController extends Controller
      */
     public function new(ValidatorInterface $validator): ResponseInterface
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $group = $this->jsonApi()->hydrate(new CreateOrganizationGroupHydrator($entityManager), new OrganizationGroup());
-
-        /** @var ConstraintViolationList $errors */
-        $errors = $validator->validate($group);
-        if ($errors->count() > 0) {
-            $entityManager->clear();
-            return $this->validationErrorResponse($errors);
-        }
-
-        $entityManager->persist($group);
-        $entityManager->flush();
-
-        return $this->jsonApi()->respond()->ok(
-            new OrganizationGroupDocument(new OrganizationGroupResourceTransformer()),
-            $group
+        return $this->resourceNew(
+            new OrganizationGroup(), $validator, new CreateOrganizationGroupHydrator($this->getDoctrine()->getManager())
         );
     }
 
@@ -85,8 +97,7 @@ class OrganizationGroupController extends Controller
      */
     public function show(OrganizationGroup $group): ResponseInterface
     {
-        return $this->jsonApi()->respond()->ok(
-            new OrganizationGroupDocument(new OrganizationGroupResourceTransformer()),
+        return $this->resourceShow(
             $group
         );
     }
@@ -100,167 +111,75 @@ class OrganizationGroupController extends Controller
      */
     public function edit(OrganizationGroup $group, ValidatorInterface $validator): ResponseInterface
     {
-        $this->denyAccessUnlessGranted('edit', $group);
-
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $group = $this->jsonApi()->hydrate(new UpdateOrganizationGroupHydrator($entityManager), $group);
-
-        /** @var ConstraintViolationList $errors */
-        $errors = $validator->validate($group);
-        if ($errors->count() > 0) {
-            $entityManager->clear();
-            return $this->validationErrorResponse($errors);
-        }
-
-        $entityManager->flush();
-
-        return $this->jsonApi()->respond()->ok(
-            new OrganizationGroupDocument(new OrganizationGroupResourceTransformer()),
-            $group
+        return $this->resourceHydrate(
+            $group, $validator, new UpdateOrganizationGroupHydrator($this->getDoctrine()->getManager())
         );
     }
 
     /**
      * @Route("/{id}", name="groups_delete", methods="DELETE")
-     * @param Request $request
      * @param OrganizationGroup $group
      * @return ResponseInterface
      */
-    public function delete(Request $request, OrganizationGroup $group): ResponseInterface
+    public function delete(OrganizationGroup $group): ResponseInterface
     {
-        $this->denyAccessUnlessGranted('delete', $group);
-
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->remove($group);
-        $entityManager->flush();
-
-        return $this->jsonApi()->respond()->genericSuccess(204);
+        return $this->resourceDelete($group);
     }
 
+    /**
+     * @Route("/{id}/relationships/{rel}", name="groups_relationship", methods="GET")
+     * @param OrganizationGroup $group
+     * @return ResponseInterface
+     */
+    public function showRelationships(OrganizationGroup $group) {
+        return $this->resourceShowRelationships($group);
+    }
 
     /**
-     * @Route("/{id}/relationships/{rel}", name="groups_relationship_edit", methods="PATCH")
+     * @Route("/{id}/relationships/{rel}", name="groups_relationships_edit", methods="PATCH")
      * @param OrganizationGroup $group
      * @param ValidatorInterface $validator
      * @return ResponseInterface
      */
-    public function editRelationship(OrganizationGroup $group, ValidatorInterface $validator): ResponseInterface
+    public function editRelationships(OrganizationGroup $group, ValidatorInterface $validator): ResponseInterface
     {
-        $this->denyAccessUnlessGranted('edit', $group);
-
-        $relationshipName = $this->jsonApi()->getRequest()->getAttribute('rel');
-
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $group = $this->jsonApi()->hydrateRelationship(
-            $relationshipName,
-            new UpdateOrganizationGroupHydrator($entityManager),
-            $group
-        );
-
-        /** @var ConstraintViolationList $errors */
-        $errors = $validator->validate($group);
-        if ($errors->count() > 0) {
-            $entityManager->clear();
-            return $this->validationErrorResponse($errors);
-        }
-
-        $entityManager->flush();
-
-        return $this->jsonApi()->respond()->ok(
-            new OrganizationGroupDocument(new OrganizationGroupResourceTransformer()),
-            $group
-        );
-    }
-
-    private function relationshipNotFound(RelationshipNotExists $notExists): ResponseInterface
-    {
-        $errorDocument = new ErrorDocument();
-        $errorDocument->setJsonApi(new JsonApiObject('1.0'));
-
-        $error = Error::create();
-        $error->setDetail($notExists->getMessage());
-        $error->setStatus('404');
-
-        $errorDocument->addError($error);
-        return $this->jsonApi()->respond()->genericError($errorDocument);
-    }
-
-    /**
-     * @Route("/{id}/relationships/{rel}", name="groups_relationship_new", methods="POST")
-     * @param OrganizationGroup $group
-     * @param ValidatorInterface $validator
-     * @return ResponseInterface
-     */
-    public function addRelationship(OrganizationGroup $group, ValidatorInterface $validator): ResponseInterface
-    {
-        $this->denyAccessUnlessGranted('edit', $group);
-
-        $relationshipName = $this->jsonApi()->getRequest()->getAttribute('rel');
-
-        $entityManager = $this->getDoctrine()->getManager();
-
-        try {
-            $group = $this->jsonApi()->hydrateRelationship(
-                $relationshipName,
-                new CreateRelationshipOrganizationGroupHydrator($entityManager),
-                $group
-            );
-        } catch (RelationshipNotExists $exception) {
-            return $this->relationshipNotFound($exception);
-        }
-
-        /** @var ConstraintViolationList $errors */
-        $errors = $validator->validate($group);
-        if ($errors->count() > 0) {
-            $entityManager->clear();
-            return $this->validationErrorResponse($errors);
-        }
-
-        $entityManager->flush();
-
-        return $this->jsonApi()->respond()->ok(
-            new OrganizationGroupDocument(new OrganizationGroupResourceTransformer()),
-            $group
+        return $this->resourceHydrateRelationships(
+            $group, $validator, new UpdateRelationshipOrganizationGroupHydrator($this->getDoctrine()->getManager())
         );
     }
 
     /**
-     * @Route("/{id}/relationships/{rel}", name="groups_relationship_delete", methods="DELETE")
+     * @Route("/{id}/relationships/{rel}", name="groups_relationships_new", methods="POST")
      * @param OrganizationGroup $group
      * @param ValidatorInterface $validator
      * @return ResponseInterface
      */
-    public function deleteRelationship(OrganizationGroup $group, ValidatorInterface $validator): ResponseInterface
+    public function addRelationships(OrganizationGroup $group, ValidatorInterface $validator): ResponseInterface
     {
-        $this->denyAccessUnlessGranted('edit', $group);
-
-        $relationshipName = $this->jsonApi()->getRequest()->getAttribute('rel');
-
-        $entityManager = $this->getDoctrine()->getManager();
-        try {
-            $group = $this->jsonApi()->hydrateRelationship(
-                $relationshipName,
-                new DeleteRelationshipOrganizationGroupHydrator($entityManager),
-                $group
-            );
-        } catch (RelationshipNotExists $exception) {
-            return $this->relationshipNotFound($exception);
-        }
-
-        /** @var ConstraintViolationList $errors */
-        $errors = $validator->validate($group);
-        if ($errors->count() > 0) {
-            $entityManager->clear();
-            return $this->validationErrorResponse($errors);
-        }
-
-        $entityManager->flush();
-
-        return $this->jsonApi()->respond()->ok(
-            new OrganizationGroupDocument(new OrganizationGroupResourceTransformer()),
-            $group
+        return $this->resourceHydrateRelationships(
+            $group, $validator, new CreateRelationshipOrganizationGroupHydrator($this->getDoctrine()->getManager())
         );
+    }
+
+    /**
+     * @Route("/{id}/relationships/{rel}", name="groups_relationships_delete", methods="DELETE")
+     * @param OrganizationGroup $group
+     * @param ValidatorInterface $validator
+     * @return ResponseInterface
+     */
+    public function deleteRelationships(OrganizationGroup $group, ValidatorInterface $validator): ResponseInterface
+    {
+        return $this->resourceHydrateRelationships(
+            $group, $validator, new DeleteRelationshipOrganizationGroupHydrator($this->getDoctrine()->getManager())
+        );
+    }
+
+    /**
+     * @Route("/{id}/{rel}", name="groups_related", methods="GET")
+     * @param OrganizationGroup $group
+     * @return ResponseInterface
+     */
+    public function showRelatedEntities(OrganizationGroup $group) {
+        return $this->resourceRelatedEntities($group);
     }
 }

@@ -5,6 +5,7 @@ namespace App\JsonApi\Transformer;
 
 
 use App\Entity\Organization;
+use WoohooLabs\Yin\JsonApi\Schema\Link;
 use WoohooLabs\Yin\JsonApi\Schema\Links;
 use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToManyRelationship;
 use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToOneRelationship;
@@ -73,14 +74,22 @@ class OrganizationResourceTransformer extends AbstractResource
     public function getRelationships($organization): array
     {
         return [
-            'owner' => function (Organization $organization) {
-                return ToOneRelationship::create()
-                    ->setData($organization->getOwner(), new UserResourceTransformer());
-            },
             'members' => function (Organization $organization) {
                 return ToManyRelationship::create()
-                    ->setData($organization->getMembers(), new UserResourceTransformer());
-            }
+                    ->setData($organization->getMembers(), new UserResourceTransformer())
+                    ->setLinks(Links::createWithoutBaseUri([
+                        'self' => new Link('/v1/organizations/'. $organization->getId() . '/relationships/members'),
+                        'related' => new Link('/v1/organizations/'. $organization->getId() . '/members'),
+                    ]));
+            },
+            'owner' => function (Organization $organization) {
+                return ToOneRelationship::create()
+                    ->setData($organization->getOwner(), new UserResourceTransformer())
+                    ->setLinks(Links::createWithoutBaseUri([
+                        'self' => new Link('/v1/organizations/'. $organization->getId() . '/relationships/owner'),
+                        'related' => new Link('/v1/organizations/'. $organization->getId() . '/owner'),
+                    ]));
+            },
         ];
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\JsonApi\Document\User;
+namespace App\JsonApi\Document\Organization;
 
 
 use WoohooLabs\Yin\JsonApi\Document\AbstractCollectionDocument;
@@ -9,15 +9,15 @@ use WoohooLabs\Yin\JsonApi\Schema\JsonApiObject;
 use WoohooLabs\Yin\JsonApi\Schema\Link;
 use WoohooLabs\Yin\JsonApi\Schema\Links;
 
-class UserRelatedEntitiesDocument extends AbstractCollectionDocument
+class OrganizationRelatedEntitiesDocument extends AbstractCollectionDocument
 {
-    private $userId;
+    private $organizationId;
     private $relationshipName;
 
-    public function __construct($transformer, $userId, string $relationshipName)
+    public function __construct($transformer, $organizationId, string $relationshipName)
     {
         parent::__construct($transformer);
-        $this->userId = $userId;
+        $this->organizationId = $organizationId;
         $this->relationshipName = $relationshipName;
     }
 
@@ -43,7 +43,7 @@ class UserRelatedEntitiesDocument extends AbstractCollectionDocument
     public function getLinks(): Links
     {
         return Links::createWithoutBaseUri([
-            'self' => new Link('/v1/users/' . $this->userId . '/' . $this->relationshipName),
+            'self' => new Link('/v1/organizations/' . $this->organizationId . '/' . $this->relationshipName),
         ]);
     }
 }

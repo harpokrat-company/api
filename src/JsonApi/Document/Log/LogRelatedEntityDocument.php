@@ -1,23 +1,23 @@
 <?php
 
 
-namespace App\JsonApi\Document\User;
+namespace App\JsonApi\Document\Log;
 
 
-use WoohooLabs\Yin\JsonApi\Document\AbstractCollectionDocument;
+use WoohooLabs\Yin\JsonApi\Document\AbstractSingleResourceDocument;
 use WoohooLabs\Yin\JsonApi\Schema\JsonApiObject;
 use WoohooLabs\Yin\JsonApi\Schema\Link;
 use WoohooLabs\Yin\JsonApi\Schema\Links;
 
-class UserRelatedEntitiesDocument extends AbstractCollectionDocument
+class LogRelatedEntityDocument extends AbstractSingleResourceDocument
 {
-    private $userId;
+    private $logId;
     private $relationshipName;
 
-    public function __construct($transformer, $userId, string $relationshipName)
+    public function __construct($transformer, $logId, string $relationshipName)
     {
         parent::__construct($transformer);
-        $this->userId = $userId;
+        $this->logId = $logId;
         $this->relationshipName = $relationshipName;
     }
 
@@ -43,7 +43,7 @@ class UserRelatedEntitiesDocument extends AbstractCollectionDocument
     public function getLinks(): Links
     {
         return Links::createWithoutBaseUri([
-            'self' => new Link('/v1/users/' . $this->userId . '/' . $this->relationshipName),
+            'self' => new Link('/v1/logs/' . $this->logId . '/' . $this->relationshipName),
         ]);
     }
 }
