@@ -6,11 +6,14 @@ namespace App\JsonApi\Hydrator\Organization;
 
 use App\Entity\Organization;
 use App\Entity\User;
+use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\ORM\Query\Expr;
 use Exception;
+use http\Exception\InvalidArgumentException;
 use Paknahad\JsonApiBundle\Exception\InvalidRelationshipValueException;
 use Paknahad\JsonApiBundle\Hydrator\AbstractHydrator;
 use Paknahad\JsonApiBundle\Hydrator\ValidatorTrait;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToManyRelationship;
@@ -134,16 +137,17 @@ abstract class AbstractOrganizationHydrator extends AbstractHydrator
                 $association = null;
                 $identifier = $owner->getResourceIdentifier();
                 if ($identifier) {
-                    /** @var User $association */
-                    $association = $this->objectManager->getRepository('App\Entity\User')
-                        ->find($identifier->getId());
-
-                    if (is_null($association)) {
+                    try {
+                        /** @var User $association */
+                        $association = $this->objectManager->getRepository('App\Entity\User')
+                            ->find($identifier->getId());
+                    } catch (ConversionException $exception) {
                         throw new InvalidRelationshipValueException($relationshipName, [$identifier->getId()]);
                     }
+                    $organization->setOwner($association);
+                } else {
+                    throw new BadRequestHttpException($relationshipName . " cannot be null");
                 }
-
-                $organization->setOwner($association);
             },
         ];
     }

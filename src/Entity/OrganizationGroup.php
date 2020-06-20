@@ -26,7 +26,7 @@ class OrganizationGroup
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=180, unique=true)
+     * @ORM\Column(type="string", length=180)
      * @Assert\NotBlank()
      */
     private $name;
@@ -46,10 +46,16 @@ class OrganizationGroup
 
     /**
      * @var array
-     * @ORM\ManyToMany(targetEntity="App\Entity\OrganizationGroup")
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\OrganizationGroup", mappedBy="parent")
      */
     private $children;
+
+    /**
+     * @var OrganizationGroup
+     * @ORM\ManyToOne(targetEntity="App\Entity\OrganizationGroup", inversedBy="children")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $parent;
 
     /**
      * OrganizationGroup constructor.
@@ -116,7 +122,7 @@ class OrganizationGroup
         return $this;
     }
 
-    public function getChildren()
+    public function getChildren(): Collection
     {
         return $this->children;
     }
@@ -131,7 +137,6 @@ class OrganizationGroup
     {
         if (!$this->children->contains($child)) {
             $this->children[] = $child;
-            # TODO : $this->child->addParent($this);
         }
         return $this;
     }
@@ -140,8 +145,23 @@ class OrganizationGroup
     {
         if ($this->children->contains($child)) {
             $this->children->removeElement($child);
-            # TODO : $this->child->removeParent($this);
         }
         return $this;
+    }
+
+    /**
+     * @return OrganizationGroup|null
+     */
+    public function getParent(): ?OrganizationGroup
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @param OrganizationGroup|null $parent
+     */
+    public function setParent(?OrganizationGroup $parent): void
+    {
+        $this->parent = $parent;
     }
 }

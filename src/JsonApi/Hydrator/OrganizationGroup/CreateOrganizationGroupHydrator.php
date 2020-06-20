@@ -20,6 +20,7 @@ class CreateOrganizationGroupHydrator extends AbstractOrganizationGroupHydrator
 
                 foreach ($association as $child) {
                     $group->addChild($child);
+                    $child->setParent($group);
                 }
             },
             'members' => function (OrganizationGroup $group, ToManyRelationship $members, $data, $relationshipName) {
@@ -43,6 +44,24 @@ class CreateOrganizationGroupHydrator extends AbstractOrganizationGroupHydrator
                         throw new InvalidRelationshipValueException($relationshipName, [$identifier->getId()]);
                     }
                     $group->setOrganization($association);
+                }
+            },
+            # TODO : remove code duplication
+            'parent' => function (OrganizationGroup $group, ToOneRelationship $parent, $data, $relationshipName) {
+                $this->validateRelationType($parent, ['groups']);
+
+                $association = null;
+                $identifier = $parent->getResourceIdentifier();
+                if ($identifier) {
+                    /** @var OrganizationGroup $association */
+                    $association = $this->objectManager->getRepository('App\Entity\OrganizationGroup')
+                        ->find($identifier->getId());
+
+                    if (is_null($association)) {
+                        throw new InvalidRelationshipValueException($relationshipName, [$identifier->getId()]);
+                    }
+                    $group->setParent($association);
+                    $association->addChild($group);
                 }
             },
         ];

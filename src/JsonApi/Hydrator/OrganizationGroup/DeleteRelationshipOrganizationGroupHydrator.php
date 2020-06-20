@@ -18,8 +18,9 @@ class DeleteRelationshipOrganizationGroupHydrator extends AbstractOrganizationGr
                 $association = $this->getRelationshipChildren($children, $relationshipName);
 
                 if (!$group->getChildren()->isEmpty()) {
-                    foreach ($association as $member) {
-                        $group->removeChild($member);
+                    foreach ($association as $child) {
+                        $group->removeChild($child);
+                        $child->setParent(null);
                     }
                 }
             },
@@ -33,6 +34,9 @@ class DeleteRelationshipOrganizationGroupHydrator extends AbstractOrganizationGr
                 }
             },
             'organization' => function (OrganizationGroup $group, ToOneRelationship $organization, $data, $relationshipName) {
+                throw new BadRequestHttpException();
+            },
+            'parent' => function (OrganizationGroup $group, ToOneRelationship $children, $data, $relationshipName) {
                 throw new BadRequestHttpException();
             },
         ];

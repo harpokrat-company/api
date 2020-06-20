@@ -12,14 +12,15 @@ use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship;
 
 class CreateRelationshipOrganizationGroupHydrator extends AbstractOrganizationGroupHydrator
 {
-    protected function getRelationshipHydrator($group, $clear=null): array
+    protected function getRelationshipHydrator($group): array
     {
         return [
-            'children' => function (OrganizationGroup $group, ToManyRelationship $members, $data, $relationshipName) {
-                $association = $this->getRelationshipChildren($members, $relationshipName);
+            'children' => function (OrganizationGroup $group, ToManyRelationship $children, $data, $relationshipName) {
+                $association = $this->getRelationshipChildren($children, $relationshipName);
 
-                foreach ($association as $member) {
-                    $group->addChild($member);
+                foreach ($association as $child) {
+                    $group->addChild($child);
+                    $child->setParent($group);
                 }
             },
             'members' => function (OrganizationGroup $group, ToManyRelationship $members, $data, $relationshipName) {
@@ -30,6 +31,9 @@ class CreateRelationshipOrganizationGroupHydrator extends AbstractOrganizationGr
                 }
             },
             'organization' => function (OrganizationGroup $group, ToOneRelationship $organization, $data, $relationshipName) {
+                throw new BadRequestHttpException();
+            },
+            'parent' => function (OrganizationGroup $group, ToOneRelationship $children, $data, $relationshipName) {
                 throw new BadRequestHttpException();
             },
         ];

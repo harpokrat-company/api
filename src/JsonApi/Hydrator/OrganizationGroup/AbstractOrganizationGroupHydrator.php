@@ -113,11 +113,11 @@ abstract class AbstractOrganizationGroupHydrator extends AbstractHydrator
     /**
      * @param ToManyRelationship $children
      * @param $relationshipName
-     * @return array|mixed
+     * @return OrganizationGroup[]
      * @throws InvalidRelationshipValueException
      * @throws Exception
      */
-    protected function getRelationshipChildren(ToManyRelationship $children, $relationshipName) {
+    protected function getRelationshipChildren(ToManyRelationship $children, $relationshipName): array {
         $this->validateRelationType($children, ['groups']);
 
         if (!$children->isEmpty()) {
@@ -144,14 +144,17 @@ abstract class AbstractOrganizationGroupHydrator extends AbstractHydrator
             'children' => function (OrganizationGroup $group, ToManyRelationship $children, $data, $relationshipName) {
                 $association = $this->getRelationshipChildren($children, $relationshipName);
 
-                if ($group->getChildren()->count() > 0) {
+                if (!$group->getChildren()->isEmpty()) {
+                    /** @var OrganizationGroup $child */
                     foreach ($group->getChildren() as $child) {
+                        $child->setParent(null);
                         $group->removeChild($child);
                     }
                 }
 
                 foreach ($association as $child) {
                     $group->addChild($child);
+                    $child->setParent($group);
                 }
             },
             'members' => function (OrganizationGroup $group, ToManyRelationship $members, $data, $relationshipName) {
@@ -169,6 +172,25 @@ abstract class AbstractOrganizationGroupHydrator extends AbstractHydrator
             },
             'organization' => function (OrganizationGroup $group, ToOneRelationship $organization, $data, $relationshipName) {
                 throw new NotImplementedException();
+            },
+            'parent' => function (OrganizationGroup $group, ToOneRelationship $parent, $data, $relationshipName) {
+                $this->validateRelationType($parent, ['groups']);
+
+                $identifier = $parent->getResourceIdentifier();
+
+                if ($identifier) {
+                    /** @var OrganizationGroup $association */
+                    $association = $this->objectManager->getRepository('App\Entity\OrganizationGroup')
+                        ->find($identifier->getId());
+
+                    if (is_null($association)) {
+                        throw new InvalidRelationshipValueException($relationshipName, [$identifier->getId()]);
+                    }
+                    $group->setParent($association);
+                    $association->addChild($group);
+                } else {
+                    $group->setParent(null);
+                }
             },
         ];
     }

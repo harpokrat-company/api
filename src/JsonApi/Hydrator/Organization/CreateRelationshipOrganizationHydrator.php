@@ -11,7 +11,7 @@ use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship;
 
 class CreateRelationshipOrganizationHydrator extends AbstractOrganizationHydrator
 {
-    protected function getRelationshipHydrator($organization, $clear=null): array
+    protected function getRelationshipHydrator($organization): array
     {
         return [
             'members' => function (Organization $organization, ToManyRelationship $members, $data, $relationshipName) {

@@ -39,6 +39,10 @@ class OrganizationGroupChildrenRecursionValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, OrganizationGroup::class);
         }
 
+        while ($parent = $value->getParent()) {
+            $value = $parent;
+        }
+
         if ($this->getChild($value)) {
             $this->context->buildViolation($constraint->message)
                 ->setInvalidValue($value->getId())

@@ -18,6 +18,7 @@ use App\JsonApi\Transformer\OrganizationGroupResourceTransformer;
 use App\JsonApi\Transformer\OrganizationResourceTransformer;
 use App\JsonApi\Transformer\UserResourceTransformer;
 use App\Repository\OrganizationGroupRepository;
+use Doctrine\ORM\EntityNotFoundException;
 use Paknahad\JsonApiBundle\Helper\ResourceCollection;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -61,6 +62,12 @@ class OrganizationGroupController extends AbstractResourceController
                     $group->getOrganization()
                 );
             },
+            "parent" => function (OrganizationGroup $group, string $relationshipName) {
+                return $this->jsonApi()->respond()->ok(
+                    new OrganizationGroupRelatedEntityDocument(new OrganizationGroupResourceTransformer(), $group->getId(), $relationshipName),
+                    $group->getParent()
+                );
+            },
         ];
     }
 
@@ -70,6 +77,7 @@ class OrganizationGroupController extends AbstractResourceController
      * @param ResourceCollection $resourceCollection
      *
      * @return ResponseInterface
+     * @throws EntityNotFoundException
      */
     public function index(OrganizationGroupRepository $groupRepository, ResourceCollection $resourceCollection): ResponseInterface
     {
