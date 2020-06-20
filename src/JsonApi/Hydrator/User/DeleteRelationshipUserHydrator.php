@@ -14,24 +14,23 @@ class DeleteRelationshipUserHydrator extends AbstractUserHydrator
     protected function getRelationshipHydrator($organization): array
     {
         return [
-            'logs' => function (User $user, ToManyRelationship $logs, $data, $relationshipName) {
+            'logs' => function (User $user, ToManyRelationship $relationship, $data, $relationshipName) {
                 throw new NotImplementedException();
             },
-            'organizations' => function (User $user, ToManyRelationship $organizations, $data, $relationshipName) {
-                $association = $this->getRelationShipOrganizations($organizations, 'organizations');
-                if ($user->getOrganizations()->isEmpty()) {
-                    return;
-                }
-                /** @var Organization $organization */
-                foreach ($association as $organization) {
+            'organizations' => function (User $user, ToManyRelationship $relationship, $data, $relationshipName) {
+                /** @var Organization[] $organizations */
+                $organizations = $this->getCollectionAssociation(
+                    $relationship, $relationshipName, ['organizations'], $this->objectManager->getRepository('App:Organization')
+                );
+                foreach ($organizations as $organization) {
                     $organization->removeMember($user);
                     $user->removeOrganization($organization);
                 }
             },
-            'ownedOrganizations' => function (User $user, ToManyRelationship $organizations, $data, $relationshipName) {
+            'ownedOrganizations' => function (User $user, ToManyRelationship $relationship, $data, $relationshipName) {
                 throw new NotImplementedException();
             },
-            'secrets' => function (User $user, ToManyRelationship $organizations, $data, $relationshipName) {
+            'secrets' => function (User $user, ToManyRelationship $relationship, $data, $relationshipName) {
                 throw new NotImplementedException();
             },
         ];

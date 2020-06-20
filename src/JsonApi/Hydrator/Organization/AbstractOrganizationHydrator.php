@@ -6,14 +6,9 @@ namespace App\JsonApi\Hydrator\Organization;
 
 use App\Entity\Organization;
 use App\Entity\User;
-use Doctrine\DBAL\Types\ConversionException;
-use Doctrine\ORM\Query\Expr;
-use Exception;
-use http\Exception\InvalidArgumentException;
-use Paknahad\JsonApiBundle\Exception\InvalidRelationshipValueException;
+use App\JsonApi\Hydrator\ResourceHydratorTrait;
+use Paknahad\JsonApiBundle\Exception\InvalidAttributeException;
 use Paknahad\JsonApiBundle\Hydrator\AbstractHydrator;
-use Paknahad\JsonApiBundle\Hydrator\ValidatorTrait;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToManyRelationship;
@@ -22,7 +17,7 @@ use WoohooLabs\Yin\JsonApi\Request\JsonApiRequestInterface;
 
 abstract class AbstractOrganizationHydrator extends AbstractHydrator
 {
-    use ValidatorTrait;
+    use ResourceHydratorTrait;
 
     /**
      * {@inheritdoc}
@@ -70,7 +65,7 @@ abstract class AbstractOrganizationHydrator extends AbstractHydrator
 
     /**
      * {@inheritdoc}
-     * @throws \Paknahad\JsonApiBundle\Exception\InvalidAttributeException
+     * @throws InvalidAttributeException
      */
     protected function validateRequest(JsonApiRequestInterface $request): void
     {
@@ -88,66 +83,31 @@ abstract class AbstractOrganizationHydrator extends AbstractHydrator
     }
 
     /**
-     * @param ToManyRelationship $members
-     * @param $relationshipName
-     * @return array|mixed
-     * @throws InvalidRelationshipValueException
-     * @throws Exception
-     */
-    protected function getRelationshipMembers(ToManyRelationship $members, $relationshipName) {
-        $this->validateRelationType($members, ['users']);
-
-        if (!$members->isEmpty()) {
-            $association = $this->objectManager->getRepository('App\Entity\User')
-                ->createQueryBuilder('l')
-                ->where((new Expr())->in('l.id', $members->getResourceIdentifierIds()))
-                ->getQuery()
-                ->getResult();
-
-            $this->validateRelationValues($association, $members->getResourceIdentifierIds(), $relationshipName);
-        } else {
-            $association = [];
-        }
-
-        return $association;
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function getRelationshipHydrator($organization): array
     {
         return [
-            'members' => function (Organization $organization, ToManyRelationship $members, $data, $relationshipName) {
-                $association = $this->getRelationshipMembers($members, $relationshipName);
-
+            'members' => function (Organization $organization, ToManyRelationship $relationship, $data, $relationshipName) {
+                /** @var User[] $members */
+                $members = $this->getCollectionAssociation(
+                    $relationship, $relationshipName, ['users'], $this->objectManager->getRepository('App:User')
+                );
                 if ($organization->getMembers()->count() > 0) {
                     foreach ($organization->getMembers() as $member) {
                         $organization->removeMember($member);
                     }
                 }
-
-                foreach ($association as $member) {
+                foreach ($members as $member) {
                     $organization->addMember($member);
                 }
             },
-            'owner' => function (Organization $organization, ToOneRelationship $owner, $data, $relationshipName) {
-                $this->validateRelationType($owner, ['users']);
-
-                $association = null;
-                $identifier = $owner->getResourceIdentifier();
-                if ($identifier) {
-                    try {
-                        /** @var User $association */
-                        $association = $this->objectManager->getRepository('App\Entity\User')
-                            ->find($identifier->getId());
-                    } catch (ConversionException $exception) {
-                        throw new InvalidRelationshipValueException($relationshipName, [$identifier->getId()]);
-                    }
-                    $organization->setOwner($association);
-                } else {
-                    throw new BadRequestHttpException($relationshipName . " cannot be null");
-                }
+            'owner' => function (Organization $organization, ToOneRelationship $relationship, $data, $relationshipName) {
+                /** @var User $owner */
+                $owner = $this->getSingleAssociation(
+                    $relationship, $relationshipName, ['users'], $this->objectManager->getRepository('App:User')
+                );
+                $organization->setOwner($owner);
             },
         ];
     }

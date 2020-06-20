@@ -5,13 +5,11 @@ namespace App\JsonApi\Hydrator\OrganizationGroup;
 
 
 use App\Entity\OrganizationGroup;
+use App\Entity\User;
 use App\Exception\NotImplementedException;
-use Doctrine\ORM\Query\Expr;
-use Exception;
+use App\JsonApi\Hydrator\ResourceHydratorTrait;
 use Paknahad\JsonApiBundle\Exception\InvalidAttributeException;
-use Paknahad\JsonApiBundle\Exception\InvalidRelationshipValueException;
 use Paknahad\JsonApiBundle\Hydrator\AbstractHydrator;
-use Paknahad\JsonApiBundle\Hydrator\ValidatorTrait;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToManyRelationship;
@@ -20,7 +18,7 @@ use WoohooLabs\Yin\JsonApi\Request\JsonApiRequestInterface;
 
 abstract class AbstractOrganizationGroupHydrator extends AbstractHydrator
 {
-    use ValidatorTrait;
+    use ResourceHydratorTrait;
 
     /**
      * {@inheritdoc}
@@ -86,64 +84,16 @@ abstract class AbstractOrganizationGroupHydrator extends AbstractHydrator
     }
 
     /**
-     * @param ToManyRelationship $members
-     * @param $relationshipName
-     * @return array|mixed
-     * @throws InvalidRelationshipValueException
-     * @throws Exception
-     */
-    protected function getRelationshipMembers(ToManyRelationship $members, $relationshipName) {
-        $this->validateRelationType($members, ['users']);
-
-        if (!$members->isEmpty()) {
-            $association = $this->objectManager->getRepository('App\Entity\User')
-                ->createQueryBuilder('l')
-                ->where((new Expr())->in('l.id', $members->getResourceIdentifierIds()))
-                ->getQuery()
-                ->getResult();
-
-            $this->validateRelationValues($association, $members->getResourceIdentifierIds(), $relationshipName);
-        } else {
-            $association = [];
-        }
-
-        return $association;
-    }
-
-    /**
-     * @param ToManyRelationship $children
-     * @param $relationshipName
-     * @return OrganizationGroup[]
-     * @throws InvalidRelationshipValueException
-     * @throws Exception
-     */
-    protected function getRelationshipChildren(ToManyRelationship $children, $relationshipName): array {
-        $this->validateRelationType($children, ['groups']);
-
-        if (!$children->isEmpty()) {
-            $association = $this->objectManager->getRepository('App\Entity\OrganizationGroup')
-                ->createQueryBuilder('l')
-                ->where((new Expr())->in('l.id', $children->getResourceIdentifierIds()))
-                ->getQuery()
-                ->getResult();
-
-            $this->validateRelationValues($association, $children->getResourceIdentifierIds(), $relationshipName);
-        } else {
-            $association = [];
-        }
-
-        return $association;
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function getRelationshipHydrator($group): array
     {
         return [
-            'children' => function (OrganizationGroup $group, ToManyRelationship $children, $data, $relationshipName) {
-                $association = $this->getRelationshipChildren($children, $relationshipName);
-
+            'children' => function (OrganizationGroup $group, ToManyRelationship $relationship, $data, $relationshipName) {
+                /** @var OrganizationGroup[] $members */
+                $members = $this->getCollectionAssociation(
+                    $relationship, $relationshipName, ['groups'], $this->objectManager->getRepository('App:OrganizationGroup')
+                );
                 if (!$group->getChildren()->isEmpty()) {
                     /** @var OrganizationGroup $child */
                     foreach ($group->getChildren() as $child) {
@@ -151,46 +101,34 @@ abstract class AbstractOrganizationGroupHydrator extends AbstractHydrator
                         $group->removeChild($child);
                     }
                 }
-
-                foreach ($association as $child) {
+                foreach ($members as $child) {
                     $group->addChild($child);
                     $child->setParent($group);
                 }
             },
-            'members' => function (OrganizationGroup $group, ToManyRelationship $members, $data, $relationshipName) {
-                $association = $this->getRelationshipMembers($members, $relationshipName);
-
+            'members' => function (OrganizationGroup $group, ToManyRelationship $relationship, $data, $relationshipName) {
+                /** @var User[] $members */
+                $members = $this->getCollectionAssociation(
+                    $relationship, $relationshipName, ['users'], $this->objectManager->getRepository('App:User')
+                );
                 if ($group->getMembers()->count() > 0) {
                     foreach ($group->getMembers() as $member) {
                         $group->removeMember($member);
                     }
                 }
-
-                foreach ($association as $member) {
+                foreach ($members as $member) {
                     $group->addMember($member);
                 }
             },
             'organization' => function (OrganizationGroup $group, ToOneRelationship $organization, $data, $relationshipName) {
                 throw new NotImplementedException();
             },
-            'parent' => function (OrganizationGroup $group, ToOneRelationship $parent, $data, $relationshipName) {
-                $this->validateRelationType($parent, ['groups']);
-
-                $identifier = $parent->getResourceIdentifier();
-
-                if ($identifier) {
-                    /** @var OrganizationGroup $association */
-                    $association = $this->objectManager->getRepository('App\Entity\OrganizationGroup')
-                        ->find($identifier->getId());
-
-                    if (is_null($association)) {
-                        throw new InvalidRelationshipValueException($relationshipName, [$identifier->getId()]);
-                    }
-                    $group->setParent($association);
-                    $association->addChild($group);
-                } else {
-                    $group->setParent(null);
-                }
+            'parent' => function (OrganizationGroup $group, ToOneRelationship $relationship, $data, $relationshipName) {
+                /** @var OrganizationGroup $parent */
+                $parent = $this->getSingleAssociation(
+                    $relationship, $relationshipName, ['users'], $this->objectManager->getRepository('App:User')
+                );
+                $group->setParent($parent);
             },
         ];
     }

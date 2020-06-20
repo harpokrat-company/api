@@ -5,6 +5,7 @@ namespace App\JsonApi\Hydrator\OrganizationGroup;
 
 
 use App\Entity\OrganizationGroup;
+use App\Entity\User;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToManyRelationship;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship;
@@ -14,29 +15,28 @@ class DeleteRelationshipOrganizationGroupHydrator extends AbstractOrganizationGr
     protected function getRelationshipHydrator($group, $clear = true): array
     {
         return [
-            'children' => function (OrganizationGroup $group, ToManyRelationship $children, $data, $relationshipName) {
-                $association = $this->getRelationshipChildren($children, $relationshipName);
-
-                if (!$group->getChildren()->isEmpty()) {
-                    foreach ($association as $child) {
-                        $group->removeChild($child);
-                        $child->setParent(null);
-                    }
+            'children' => function (OrganizationGroup $group, ToManyRelationship $relationship, $data, $relationshipName) {
+                /** @var OrganizationGroup[] $members */
+                $members = $this->getCollectionAssociation(
+                    $relationship, $relationshipName, ['groups'], $this->objectManager->getRepository('App:OrganizationGroup')
+                );
+                foreach ($members as $child) {
+                    $group->removeChild($child);
                 }
             },
-            'members' => function (OrganizationGroup $group, ToManyRelationship $members, $data, $relationshipName) {
-                $association = $this->getRelationshipMembers($members, $relationshipName);
-
-                if (!$group->getMembers()->isEmpty()) {
-                    foreach ($association as $member) {
-                        $group->removeMember($member);
-                    }
+            'members' => function (OrganizationGroup $group, ToManyRelationship $relationship, $data, $relationshipName) {
+                /** @var User[] $members */
+                $members = $this->getCollectionAssociation(
+                    $relationship, $relationshipName, ['users'], $this->objectManager->getRepository('App:User')
+                );
+                foreach ($members as $member) {
+                    $group->removeMember($member);
                 }
             },
-            'organization' => function (OrganizationGroup $group, ToOneRelationship $organization, $data, $relationshipName) {
+            'organization' => function (OrganizationGroup $group, ToOneRelationship $relationship, $data, $relationshipName) {
                 throw new BadRequestHttpException();
             },
-            'parent' => function (OrganizationGroup $group, ToOneRelationship $children, $data, $relationshipName) {
+            'parent' => function (OrganizationGroup $group, ToOneRelationship $relationship, $data, $relationshipName) {
                 throw new BadRequestHttpException();
             },
         ];

@@ -3,13 +3,13 @@
 namespace App\JsonApi\Hydrator\Secret;
 
 use App\Exception\NotImplementedException;
+use App\JsonApi\Hydrator\ResourceHydratorTrait;
+use Paknahad\JsonApiBundle\Exception\InvalidAttributeException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Entity\Secret;
-use Paknahad\JsonApiBundle\Hydrator\ValidatorTrait;
 use Paknahad\JsonApiBundle\Hydrator\AbstractHydrator;
 use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship;
-use Paknahad\JsonApiBundle\Exception\InvalidRelationshipValueException;
 use WoohooLabs\Yin\JsonApi\Request\JsonApiRequestInterface;
 
 /**
@@ -17,7 +17,7 @@ use WoohooLabs\Yin\JsonApi\Request\JsonApiRequestInterface;
  */
 abstract class AbstractSecretHydrator extends AbstractHydrator
 {
-    use ValidatorTrait;
+    use ResourceHydratorTrait;
 
     /**
      * {@inheritdoc}
@@ -65,7 +65,7 @@ abstract class AbstractSecretHydrator extends AbstractHydrator
 
     /**
      * {@inheritdoc}
-     * @throws \Paknahad\JsonApiBundle\Exception\InvalidAttributeException
+     * @throws InvalidAttributeException
      */
     protected function validateRequest(JsonApiRequestInterface $request): void
     {
@@ -88,7 +88,7 @@ abstract class AbstractSecretHydrator extends AbstractHydrator
     protected function getRelationshipHydrator($secret): array
     {
         return [
-            'owner' => function (Secret $secret, ToOneRelationship $owner, $data, $relationshipName) {
+            'owner' => function (Secret $secret, ToOneRelationship $relationship, $data, $relationshipName) {
                 throw new NotImplementedException();
             },
         ];

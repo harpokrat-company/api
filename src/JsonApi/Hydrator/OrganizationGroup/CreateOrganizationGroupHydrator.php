@@ -6,7 +6,7 @@ namespace App\JsonApi\Hydrator\OrganizationGroup;
 
 use App\Entity\Organization;
 use App\Entity\OrganizationGroup;
-use Paknahad\JsonApiBundle\Exception\InvalidRelationshipValueException;
+use App\Entity\User;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToManyRelationship;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship;
 
@@ -15,54 +15,37 @@ class CreateOrganizationGroupHydrator extends AbstractOrganizationGroupHydrator
     protected function getRelationshipHydrator($group): array
     {
         return [
-            'children' => function (OrganizationGroup $group, ToManyRelationship $children, $data, $relationshipName) {
-                $association = $this->getRelationshipChildren($children, $relationshipName);
-
-                foreach ($association as $child) {
+            'children' => function (OrganizationGroup $group, ToManyRelationship $relationship, $data, $relationshipName) {
+                /** @var OrganizationGroup[] $members */
+                $members = $this->getCollectionAssociation(
+                    $relationship, $relationshipName, ['groups'], $this->objectManager->getRepository('App:OrganizationGroup')
+                );
+                foreach ($members as $child) {
                     $group->addChild($child);
-                    $child->setParent($group);
                 }
             },
-            'members' => function (OrganizationGroup $group, ToManyRelationship $members, $data, $relationshipName) {
-                $association = $this->getRelationshipMembers($members, $relationshipName);
-
-                foreach ($association as $member) {
+            'members' => function (OrganizationGroup $group, ToManyRelationship $relationship, $data, $relationshipName) {
+                /** @var User[] $members */
+                $members = $this->getCollectionAssociation(
+                    $relationship, $relationshipName, ['users'], $this->objectManager->getRepository('App:User')
+                );
+                foreach ($members as $member) {
                     $group->addMember($member);
                 }
             },
-            'organization' => function (OrganizationGroup $group, ToOneRelationship $organization, $data, $relationshipName) {
-                $this->validateRelationType($organization, ['organizations']);
-
-                $association = null;
-                $identifier = $organization->getResourceIdentifier();
-                if ($identifier) {
-                    /** @var Organization $association */
-                    $association = $this->objectManager->getRepository('App\Entity\Organization')
-                        ->find($identifier->getId());
-
-                    if (is_null($association)) {
-                        throw new InvalidRelationshipValueException($relationshipName, [$identifier->getId()]);
-                    }
-                    $group->setOrganization($association);
-                }
+            'organization' => function (OrganizationGroup $group, ToOneRelationship $relationship, $data, $relationshipName) {
+                /** @var Organization $organization */
+                $organization = $this->getSingleAssociation(
+                    $relationship, $relationshipName, ['organizations'], $this->objectManager->getRepository('App:Organization'), false
+                );
+                $group->setOrganization($organization);
             },
-            # TODO : remove code duplication
-            'parent' => function (OrganizationGroup $group, ToOneRelationship $parent, $data, $relationshipName) {
-                $this->validateRelationType($parent, ['groups']);
-
-                $association = null;
-                $identifier = $parent->getResourceIdentifier();
-                if ($identifier) {
-                    /** @var OrganizationGroup $association */
-                    $association = $this->objectManager->getRepository('App\Entity\OrganizationGroup')
-                        ->find($identifier->getId());
-
-                    if (is_null($association)) {
-                        throw new InvalidRelationshipValueException($relationshipName, [$identifier->getId()]);
-                    }
-                    $group->setParent($association);
-                    $association->addChild($group);
-                }
+            'parent' => function (OrganizationGroup $group, ToOneRelationship $relationship, $data, $relationshipName) {
+                /** @var OrganizationGroup $parent */
+                $parent = $this->getSingleAssociation(
+                    $relationship, $relationshipName, ['users'], $this->objectManager->getRepository('App:User')
+                );
+                $group->setParent($parent);
             },
         ];
     }

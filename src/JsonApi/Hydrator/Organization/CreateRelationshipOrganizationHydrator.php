@@ -5,6 +5,7 @@ namespace App\JsonApi\Hydrator\Organization;
 
 
 use App\Entity\Organization;
+use App\Entity\User;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToManyRelationship;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship;
@@ -14,14 +15,16 @@ class CreateRelationshipOrganizationHydrator extends AbstractOrganizationHydrato
     protected function getRelationshipHydrator($organization): array
     {
         return [
-            'members' => function (Organization $organization, ToManyRelationship $members, $data, $relationshipName) {
-                $association = $this->getRelationshipMembers($members, $relationshipName);
-
-                foreach ($association as $member) {
+            'members' => function (Organization $organization, ToManyRelationship $relationship, $data, $relationshipName) {
+                /** @var User[] $members */
+                $members = $this->getCollectionAssociation(
+                    $relationship, $relationshipName, ['users'], $this->objectManager->getRepository('App:User')
+                );
+                foreach ($members as $member) {
                     $organization->addMember($member);
                 }
             },
-            'owner' => function (Organization $organization, ToOneRelationship $owner, $data, $relationshipName) {
+            'owner' => function (Organization $organization, ToOneRelationship $relationship, $data, $relationshipName) {
                 throw new BadRequestHttpException();
             },
         ];

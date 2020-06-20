@@ -5,6 +5,7 @@ namespace App\JsonApi\Hydrator\Organization;
 
 
 use App\Entity\Organization;
+use App\Entity\User;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToManyRelationship;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship;
@@ -14,16 +15,18 @@ class DeleteRelationshipOrganizationHydrator extends AbstractOrganizationHydrato
     protected function getRelationshipHydrator($organization, $clear = true): array
     {
         return [
-            'members' => function (Organization $organization, ToManyRelationship $members, $data, $relationshipName) {
-                $association = $this->getRelationshipMembers($members, $relationshipName);
-
+            'members' => function (Organization $organization, ToManyRelationship $relationship, $data, $relationshipName) {
+                /** @var User[] $members */
+                $members = $this->getCollectionAssociation(
+                    $relationship, $relationshipName, ['users'], $this->objectManager->getRepository('App:User')
+                );
                 if (!$organization->getMembers()->isEmpty()) {
-                    foreach ($association as $member) {
+                    foreach ($members as $member) {
                         $organization->removeMember($member);
                     }
                 }
             },
-            'owner' => function (Organization $organization, ToOneRelationship $owner, $data, $relationshipName) {
+            'owner' => function (Organization $organization, ToOneRelationship $relationship, $data, $relationshipName) {
                 throw new BadRequestHttpException();
             },
         ];

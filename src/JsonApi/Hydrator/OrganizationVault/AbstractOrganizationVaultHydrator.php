@@ -5,19 +5,15 @@ namespace App\JsonApi\Hydrator\OrganizationVault;
 
 
 use App\Entity\OrganizationVault;
-use App\Entity\Secret;
-use App\Entity\User;
-use Paknahad\JsonApiBundle\Exception\InvalidRelationshipValueException;
+use App\JsonApi\Hydrator\ResourceHydratorTrait;
 use Paknahad\JsonApiBundle\Hydrator\AbstractHydrator;
-use Paknahad\JsonApiBundle\Hydrator\ValidatorTrait;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;
-use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship;
 use WoohooLabs\Yin\JsonApi\Request\JsonApiRequestInterface;
 
 abstract class AbstractOrganizationVaultHydrator extends AbstractHydrator
 {
-    use ValidatorTrait;
+    use ResourceHydratorTrait;
 
     /**
      * {@inheritdoc}
@@ -65,6 +61,7 @@ abstract class AbstractOrganizationVaultHydrator extends AbstractHydrator
 
     /**
      * {@inheritdoc}
+     * @throws \Paknahad\JsonApiBundle\Exception\InvalidAttributeException
      */
     protected function validateRequest(JsonApiRequestInterface $request): void
     {
@@ -87,22 +84,6 @@ abstract class AbstractOrganizationVaultHydrator extends AbstractHydrator
     protected function getRelationshipHydrator($vault): array
     {
         return [
-            'owner' => function (OrganizationVault $vault, ToOneRelationship $owner, $data, $relationshipName) {
-                $this->validateRelationType($owner, ['users']);
-
-                $association = null;
-                $identifier = $owner->getResourceIdentifier();
-                if ($identifier) {
-                    $association = $this->objectManager->getRepository('App\Entity\User')
-                        ->find($identifier->getId());
-
-                    if (is_null($association)) {
-                        throw new InvalidRelationshipValueException($relationshipName, [$identifier->getId()]);
-                    }
-                }
-
-                $vault->setOwner($association);
-            },
         ];
     }
 }
