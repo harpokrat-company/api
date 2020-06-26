@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\JsonApi\Document\OrganizationGroup;
+namespace App\JsonApi\Document\Vault;
 
 
 use WoohooLabs\Yin\JsonApi\Document\AbstractSingleResourceDocument;
@@ -9,15 +9,15 @@ use WoohooLabs\Yin\JsonApi\Schema\JsonApiObject;
 use WoohooLabs\Yin\JsonApi\Schema\Link;
 use WoohooLabs\Yin\JsonApi\Schema\Links;
 
-class OrganizationGroupRelatedEntityDocument extends AbstractSingleResourceDocument
+class VaultRelatedEntityDocument extends AbstractSingleResourceDocument
 {
-    private $groupId;
+    private $vaultId;
     private $relationshipName;
 
-    public function __construct($transformer, $groupId, string $relationshipName)
+    public function __construct($transformer, $vaultId, string $relationshipName)
     {
         parent::__construct($transformer);
-        $this->groupId = $groupId;
+        $this->vaultId = $vaultId;
         $this->relationshipName = $relationshipName;
     }
 
@@ -43,7 +43,7 @@ class OrganizationGroupRelatedEntityDocument extends AbstractSingleResourceDocum
     public function getLinks(): Links
     {
         return Links::createWithoutBaseUri([
-            'self' => new Link('/v1/groups/' . $this->groupId . '/' . $this->relationshipName),
+            'self' => new Link('/v1/vaults/' . $this->vaultId . '/' . $this->relationshipName),
         ]);
     }
 }

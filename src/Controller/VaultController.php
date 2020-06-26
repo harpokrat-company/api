@@ -5,16 +5,20 @@ namespace App\Controller;
 
 
 use App\Entity\OrganizationGroup;
+use App\Entity\User;
 use App\Entity\Vault;
-use App\JsonApi\Document\OrganizationGroup\OrganizationGroupRelatedEntityDocument;
+use App\JsonApi\Document\Secret\SecretRelatedEntityDocument;
 use App\JsonApi\Document\Vault\VaultDocument;
 use App\JsonApi\Document\Vault\VaultRelatedEntitiesDocument;
 use App\JsonApi\Document\Vault\VaultsDocument;
 use App\JsonApi\Hydrator\Vault\CreateVaultHydrator;
 use App\JsonApi\Hydrator\Vault\UpdateVaultHydrator;
+use App\JsonApi\Transformer\OrganizationGroupResourceTransformer;
 use App\JsonApi\Transformer\SecretResourceTransformer;
+use App\JsonApi\Transformer\UserResourceTransformer;
 use App\JsonApi\Transformer\VaultResourceTransformer;
 use App\Repository\VaultRepository;
+use LogicException;
 use Paknahad\JsonApiBundle\Helper\ResourceCollection;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -39,6 +43,20 @@ class VaultController extends AbstractResourceController
     protected function getRelatedResponses(): array
     {
         return [
+            "owner" => function (Vault $vault, string $relationshipName) {
+                # TODO : abstract this
+                $owner = $vault->getOwner();
+                if ($owner instanceof User)
+                    $transformer = new UserResourceTransformer();
+                else if ($owner instanceof OrganizationGroup)
+                    $transformer = new OrganizationGroupResourceTransformer();
+                else
+                    throw new LogicException();
+                return $this->jsonApi()->respond()->ok(
+                    new SecretRelatedEntityDocument($transformer, $vault->getId(), $relationshipName),
+                    $owner
+                );
+            },
             "secrets" => function (Vault $vault, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
                     new VaultRelatedEntitiesDocument(new SecretResourceTransformer(), $vault->getId(), $relationshipName),

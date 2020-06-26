@@ -7,6 +7,8 @@ use App\Entity\SecretOwnership\SecretOwnerInterface;
 use App\Entity\SecretOwnership\SecretOwnerTrait;
 use App\Entity\SecretOwnership\UserSecretOwnership;
 use App\Entity\SecretOwnership\VaultSecretOwnership;
+use App\Entity\VaultOwnership\VaultOwnerInterface;
+use App\Entity\VaultOwnership\VaultOwnership;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -30,7 +32,7 @@ class Vault implements SecretOwnerInterface
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=180, unique=true)
+     * @ORM\Column(type="string", length=180)
      * @Assert\NotBlank()
      */
     private $name;
@@ -40,6 +42,13 @@ class Vault implements SecretOwnerInterface
      * @ORM\OneToOne(targetEntity="App\Entity\SecretOwnership\VaultSecretOwnership", mappedBy="vault", cascade={"persist"})
      */
     private $secretOwnership;
+
+    /**
+     * @var VaultOwnership
+     * @ORM\ManyToOne(targetEntity="App\Entity\VaultOwnership\VaultOwnership", inversedBy="vaults")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $owner;
 
     public function __construct()
     {
@@ -60,6 +69,17 @@ class Vault implements SecretOwnerInterface
     {
         $this->name = $name;
 
+        return $this;
+    }
+
+    public function getOwner(): ?VaultOwnerInterface
+    {
+        return $this->owner->getOwner();
+    }
+
+    public function setOwner(?VaultOwnerInterface $owner): self
+    {
+        $this->owner = $owner->getVaultOwnership();
         return $this;
     }
 }

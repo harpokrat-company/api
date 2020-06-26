@@ -83,14 +83,6 @@ class UserResourceTransformer extends AbstractResource
     public function getRelationships($user): array
     {
         return [
-            'secrets' => function (User $user) {
-                return ToManyRelationship::create()
-                    ->setData($user->getSecrets(), new SecretResourceTransformer())
-                    ->setLinks(Links::createWithoutBaseUri([
-                        'self' => new Link('/v1/users/'. $user->getId() . '/relationships/secrets'),
-                        'related' => new Link('/v1/users/'. $user->getId() . '/secrets'),
-                    ]));
-            },
             'logs' => function (User $user) {
                 return ToManyRelationship::create()
                     ->setData($user->getLogs(), new LogResourceTransformer())
@@ -114,7 +106,23 @@ class UserResourceTransformer extends AbstractResource
                         'self' => new Link('/v1/users/'. $user->getId() . '/relationships/ownedOrganizations'),
                         'related' => new Link('/v1/users/'. $user->getId() . '/ownedOrganizations'),
                     ]));
-            }
+            },
+            'secrets' => function (User $user) {
+                return ToManyRelationship::create()
+                    ->setData($user->getSecrets(), new SecretResourceTransformer())
+                    ->setLinks(Links::createWithoutBaseUri([
+                        'self' => new Link('/v1/users/'. $user->getId() . '/relationships/secrets'),
+                        'related' => new Link('/v1/users/'. $user->getId() . '/secrets'),
+                    ]));
+            },
+            'vaults' => function (User $user) {
+                return ToManyRelationship::create()
+                    ->setData($user->getVaults(), new VaultResourceTransformer())
+                    ->setLinks(Links::createWithoutBaseUri([
+                        'self' => new Link('/v1/users/'. $user->getId() . '/relationships/vaults'),
+                        'related' => new Link('/v1/users/'. $user->getId() . '/vaults'),
+                    ]));
+            },
         ];
     }
 }

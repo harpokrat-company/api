@@ -14,6 +14,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToManyRelationship;
 use WoohooLabs\Yin\JsonApi\Request\JsonApiRequestInterface;
+use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToOneRelationship;
 
 abstract class AbstractVaultHydrator extends AbstractHydrator
 {
@@ -88,6 +89,9 @@ abstract class AbstractVaultHydrator extends AbstractHydrator
     protected function getRelationshipHydrator($vault): array
     {
         return [
+            'owner' => function (User $user, ToOneRelationship $relationship, $data, $relationshipName) {
+                throw new NotImplementedException();
+            },
             'secrets' => function (User $user, ToManyRelationship $relationship, $data, $relationshipName) {
                 throw new NotImplementedException();
             },

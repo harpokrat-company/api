@@ -6,6 +6,9 @@ namespace App\Entity;
 use App\Entity\SecretOwnership\OrganizationGroupSecretOwnership;
 use App\Entity\SecretOwnership\SecretOwnerInterface;
 use App\Entity\SecretOwnership\SecretOwnerTrait;
+use App\Entity\VaultOwnership\OrganizationGroupVaultOwnership;
+use App\Entity\VaultOwnership\VaultOwnerInterface;
+use App\Entity\VaultOwnership\VaultOwnerTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,9 +18,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\OrganizationGroupRepository")
  */
-class OrganizationGroup implements SecretOwnerInterface
+class OrganizationGroup implements SecretOwnerInterface, VaultOwnerInterface
 {
     use SecretOwnerTrait;
+    use VaultOwnerTrait;
 
     /**
      * @var UuidInterface
@@ -69,6 +73,12 @@ class OrganizationGroup implements SecretOwnerInterface
     private $secretOwnership;
 
     /**
+     * @var OrganizationGroupVaultOwnership
+     * @ORM\OneToOne(targetEntity="App\Entity\VaultOwnership\OrganizationGroupVaultOwnership", mappedBy="group", cascade={"persist"})
+     */
+    private $vaultOwnership;
+
+    /**
      * OrganizationGroup constructor.
      */
     public function __construct()
@@ -76,6 +86,7 @@ class OrganizationGroup implements SecretOwnerInterface
         $this->members = new ArrayCollection();
         $this->children = new ArrayCollection();
         $this->secretOwnership = new OrganizationGroupSecretOwnership($this);
+        $this->vaultOwnership = new OrganizationGroupVaultOwnership($this);
     }
 
     public function getId()

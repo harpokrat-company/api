@@ -4,10 +4,14 @@
 namespace App\JsonApi\Transformer;
 
 
+use App\Entity\OrganizationGroup;
+use App\Entity\User;
 use App\Entity\Vault;
+use LogicException;
 use WoohooLabs\Yin\JsonApi\Schema\Link;
 use WoohooLabs\Yin\JsonApi\Schema\Links;
 use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToManyRelationship;
+use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToOneRelationship;
 use WoohooLabs\Yin\JsonApi\Schema\Resource\AbstractResource;
 
 /**
@@ -73,12 +77,27 @@ class VaultResourceTransformer extends AbstractResource
     public function getRelationships($vault): array
     {
         return [
-            'secrets' => function (Vault $user) {
+            'secrets' => function (Vault $vault) {
                 return ToManyRelationship::create()
-                    ->setData($user->getSecrets(), new SecretResourceTransformer())
+                    ->setData($vault->getSecrets(), new SecretResourceTransformer())
                     ->setLinks(Links::createWithoutBaseUri([
-                        'self' => new Link('/v1/vaults/'. $user->getId() . '/relationships/secrets'),
-                        'related' => new Link('/v1/vaults/'. $user->getId() . '/secrets'),
+                        'self' => new Link('/v1/vaults/'. $vault->getId() . '/relationships/secrets'),
+                        'related' => new Link('/v1/vaults/'. $vault->getId() . '/secrets'),
+                    ]));
+            },
+            'owner' => function (Vault $vault) {
+                $owner = $vault->getOwner();
+                if ($owner instanceof User)
+                    $transformer = new UserResourceTransformer();
+                else if ($owner instanceof OrganizationGroup)
+                    $transformer = new OrganizationGroupResourceTransformer();
+                else
+                    throw new LogicException();
+                return ToOneRelationship::create()
+                    ->setData($owner, $transformer)
+                    ->setLinks(Links::createWithoutBaseUri([
+                        'self' => new Link('/v1/vaults/' . $vault->getId() . '/relationships/owner'),
+                        'related' => new Link('/v1/vaults/' . $vault->getId() . '/owner'),
                     ]));
             },
         ];

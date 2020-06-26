@@ -98,6 +98,14 @@ class OrganizationGroupResourceTransformer extends AbstractResource
                         'related' => new Link('/v1/groups/'. $group->getId() . '/organization'),
                     ]));
             },
+            'parent' => function (OrganizationGroup $group) {
+                return ToOneRelationship::create()
+                    ->setData($group->getParent(), new OrganizationGroupResourceTransformer())
+                    ->setLinks(Links::createWithoutBaseUri([
+                        'self' => new Link('/v1/groups/' . $group->getId() . '/relationships/parent'),
+                        'related' => new Link('/v1/groups/' . $group->getId() . '/parent'),
+                    ]));
+            },
             'secrets' => function (OrganizationGroup $group) {
                 return ToManyRelationship::create()
                     ->setData($group->getSecrets(), new OrganizationResourceTransformer())
@@ -106,12 +114,12 @@ class OrganizationGroupResourceTransformer extends AbstractResource
                         'related' => new Link('/v1/groups/'. $group->getId() . '/secrets'),
                     ]));
             },
-            'parent' => function (OrganizationGroup $group) {
-                return ToOneRelationship::create()
-                    ->setData($group->getParent(), new OrganizationGroupResourceTransformer())
+            'vaults' => function (OrganizationGroup $group) {
+                return ToManyRelationship::create()
+                    ->setData($group->getVaults(), new VaultResourceTransformer())
                     ->setLinks(Links::createWithoutBaseUri([
-                        'self' => new Link('/v1/groups/' . $group->getId() . '/relationships/parent'),
-                        'related' => new Link('/v1/groups/' . $group->getId() . '/parent'),
+                        'self' => new Link('/v1/groups/'. $group->getId() . '/relationships/vaults'),
+                        'related' => new Link('/v1/groups/'. $group->getId() . '/vaults'),
                     ]));
             },
         ];

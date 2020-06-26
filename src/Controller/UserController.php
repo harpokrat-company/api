@@ -14,6 +14,7 @@ use App\JsonApi\Transformer\LogResourceTransformer;
 use App\JsonApi\Transformer\OrganizationResourceTransformer;
 use App\JsonApi\Transformer\SecretResourceTransformer;
 use App\JsonApi\Transformer\UserResourceTransformer;
+use App\JsonApi\Transformer\VaultResourceTransformer;
 use App\Repository\UserRepository;
 use Paknahad\JsonApiBundle\Helper\ResourceCollection;
 use Symfony\Component\Routing\Annotation\Route;
@@ -38,6 +39,12 @@ class UserController extends AbstractResourceController
 
     protected function getRelatedResponses(): array {
         return [
+            "logs" => function (User $user, string $relationshipName) {
+                return $this->jsonApi()->respond()->ok(
+                    new UserRelatedEntitiesDocument(new LogResourceTransformer(), $user->getId(), $relationshipName),
+                    $user->getLogs()
+                );
+            },
             "organizations" => function (User $user, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
                     new UserRelatedEntitiesDocument(new OrganizationResourceTransformer(), $user->getId(), $relationshipName),
@@ -56,10 +63,10 @@ class UserController extends AbstractResourceController
                     $user->getSecrets()
                 );
             },
-            "logs" => function (User $user, string $relationshipName) {
+            "vaults" => function (User $user, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
-                    new UserRelatedEntitiesDocument(new LogResourceTransformer(), $user->getId(), $relationshipName),
-                    $user->getLogs()
+                    new UserRelatedEntitiesDocument(new VaultResourceTransformer(), $user->getId(), $relationshipName),
+                    $user->getVaults()
                 );
             },
         ];

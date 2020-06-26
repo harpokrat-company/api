@@ -5,6 +5,9 @@ namespace App\Entity;
 use App\Entity\SecretOwnership\SecretOwnerInterface;
 use App\Entity\SecretOwnership\SecretOwnerTrait;
 use App\Entity\SecretOwnership\UserSecretOwnership;
+use App\Entity\VaultOwnership\UserVaultOwnership;
+use App\Entity\VaultOwnership\VaultOwnerInterface;
+use App\Entity\VaultOwnership\VaultOwnerTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,9 +20,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @UniqueEntity("email")
  */
-class User implements UserInterface, SecretOwnerInterface
+class User implements UserInterface, SecretOwnerInterface, VaultOwnerInterface
 {
     use SecretOwnerTrait;
+    use VaultOwnerTrait;
 
     /**
      * @var UuidInterface
@@ -98,6 +102,12 @@ class User implements UserInterface, SecretOwnerInterface
      */
     private $ownedOrganizations;
 
+    /**
+     * @var UserVaultOwnership
+     * @ORM\OneToOne(targetEntity="App\Entity\VaultOwnership\UserVaultOwnership", mappedBy="user", cascade={"persist"})
+     */
+    private $vaultOwnership;
+
     public function __construct()
     {
         $this->logs = new ArrayCollection();
@@ -105,6 +115,7 @@ class User implements UserInterface, SecretOwnerInterface
         $this->organizations = new ArrayCollection();
         $this->ownedOrganizations = new ArrayCollection();
         $this->secretOwnership = new UserSecretOwnership($this);
+        $this->vaultOwnership = new UserVaultOwnership($this);
     }
 
     public function getId()
