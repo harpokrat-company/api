@@ -1,17 +1,17 @@
 <?php
 
 
-namespace App\JsonApi\Hydrator\OrganizationVault;
+namespace App\JsonApi\Hydrator\Vault;
 
 
-use App\Entity\OrganizationVault;
+use App\Entity\Vault;
 use App\JsonApi\Hydrator\ResourceHydratorTrait;
 use Paknahad\JsonApiBundle\Hydrator\AbstractHydrator;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;
 use WoohooLabs\Yin\JsonApi\Request\JsonApiRequestInterface;
 
-abstract class AbstractOrganizationVaultHydrator extends AbstractHydrator
+abstract class AbstractVaultHydrator extends AbstractHydrator
 {
     use ResourceHydratorTrait;
 
@@ -53,7 +53,7 @@ abstract class AbstractOrganizationVaultHydrator extends AbstractHydrator
     protected function getAttributeHydrator($vault): array
     {
         return [
-            'name' => function (OrganizationVault $vault, $attribute, $data, $attributeName) {
+            'name' => function (Vault $vault, $attribute, $data, $attributeName) {
                 $vault->setName($attribute);
             },
         ];
@@ -65,7 +65,7 @@ abstract class AbstractOrganizationVaultHydrator extends AbstractHydrator
      */
     protected function validateRequest(JsonApiRequestInterface $request): void
     {
-        $this->validateFields($this->objectManager->getClassMetadata(OrganizationVault::class), $request);
+        $this->validateFields($this->objectManager->getClassMetadata(Vault::class), $request);
     }
 
     /**

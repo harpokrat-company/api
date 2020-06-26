@@ -9,9 +9,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\OrganizationVaultRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\VaultRepository")
  */
-class OrganizationVault
+class Vault
 {
     /**
      * @var UuidInterface

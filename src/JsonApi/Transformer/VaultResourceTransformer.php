@@ -4,15 +4,15 @@
 namespace App\JsonApi\Transformer;
 
 
-use App\Entity\OrganizationVault;
+use App\Entity\Vault;
 use WoohooLabs\Yin\JsonApi\Schema\Links;
 use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToOneRelationship;
 use WoohooLabs\Yin\JsonApi\Schema\Resource\AbstractResource;
 
 /**
- * OrganizationVault Resource Transformer.
+ * Vault Resource Transformer.
  */
-class OrganizationVaultResourceTransformer extends AbstractResource
+class VaultResourceTransformer extends AbstractResource
 {
     /**
      * @inheritDoc
@@ -52,7 +52,7 @@ class OrganizationVaultResourceTransformer extends AbstractResource
     public function getAttributes($vault): array
     {
         return [
-            'name' => function(OrganizationVault $vault) {
+            'name' => function(Vault $vault) {
                 return $vault->getName();
             }
         ];
