@@ -5,10 +5,12 @@ namespace App\Controller;
 
 
 use App\Entity\OrganizationGroup;
+use App\Entity\User;
 use App\JsonApi\Document\OrganizationGroup\OrganizationGroupDocument;
 use App\JsonApi\Document\OrganizationGroup\OrganizationGroupRelatedEntitiesDocument;
 use App\JsonApi\Document\OrganizationGroup\OrganizationGroupRelatedEntityDocument;
 use App\JsonApi\Document\OrganizationGroup\OrganizationGroupsDocument;
+use App\JsonApi\Document\User\UserRelatedEntitiesDocument;
 use App\JsonApi\Hydrator\OrganizationGroup\CreateOrganizationGroupHydrator;
 use App\JsonApi\Hydrator\OrganizationGroup\CreateRelationshipOrganizationGroupHydrator;
 use App\JsonApi\Hydrator\OrganizationGroup\DeleteRelationshipOrganizationGroupHydrator;
@@ -16,6 +18,7 @@ use App\JsonApi\Hydrator\OrganizationGroup\UpdateOrganizationGroupHydrator;
 use App\JsonApi\Hydrator\OrganizationGroup\UpdateRelationshipOrganizationGroupHydrator;
 use App\JsonApi\Transformer\OrganizationGroupResourceTransformer;
 use App\JsonApi\Transformer\OrganizationResourceTransformer;
+use App\JsonApi\Transformer\SecretResourceTransformer;
 use App\JsonApi\Transformer\UserResourceTransformer;
 use App\Repository\OrganizationGroupRepository;
 use Doctrine\ORM\EntityNotFoundException;
@@ -66,6 +69,12 @@ class OrganizationGroupController extends AbstractResourceController
                 return $this->jsonApi()->respond()->ok(
                     new OrganizationGroupRelatedEntityDocument(new OrganizationGroupResourceTransformer(), $group->getId(), $relationshipName),
                     $group->getParent()
+                );
+            },
+            "secrets" => function (OrganizationGroup $group, string $relationshipName) {
+                return $this->jsonApi()->respond()->ok(
+                    new OrganizationGroupRelatedEntitiesDocument(new SecretResourceTransformer(), $group->getId(), $relationshipName),
+                    $group->getSecrets()
                 );
             },
         ];

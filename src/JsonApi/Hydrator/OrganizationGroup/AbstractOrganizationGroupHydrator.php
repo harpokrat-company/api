@@ -123,6 +123,9 @@ abstract class AbstractOrganizationGroupHydrator extends AbstractHydrator
             'organization' => function (OrganizationGroup $group, ToOneRelationship $organization, $data, $relationshipName) {
                 throw new NotImplementedException();
             },
+            'secrets' => function (OrganizationGroup $group, ToManyRelationship $relationship, $data, $relationshipName) {
+                throw new NotImplementedException();
+            },
             'parent' => function (OrganizationGroup $group, ToOneRelationship $relationship, $data, $relationshipName) {
                 /** @var OrganizationGroup $parent */
                 $parent = $this->getSingleAssociation(

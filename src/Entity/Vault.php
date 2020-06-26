@@ -3,16 +3,21 @@
 
 namespace App\Entity;
 
+use App\Entity\SecretOwnership\SecretOwnerInterface;
+use App\Entity\SecretOwnership\SecretOwnerTrait;
+use App\Entity\SecretOwnership\UserSecretOwnership;
+use App\Entity\SecretOwnership\VaultSecretOwnership;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\VaultRepository")
  */
-class Vault
+class Vault implements SecretOwnerInterface
 {
+    use SecretOwnerTrait;
+
     /**
      * @var UuidInterface
      *
@@ -29,6 +34,17 @@ class Vault
      * @Assert\NotBlank()
      */
     private $name;
+
+    /**
+     * @var UserSecretOwnership
+     * @ORM\OneToOne(targetEntity="App\Entity\SecretOwnership\VaultSecretOwnership", mappedBy="vault", cascade={"persist"})
+     */
+    private $secretOwnership;
+
+    public function __construct()
+    {
+        $this->secretOwnership = new VaultSecretOwnership($this);
+    }
 
     public function getId()
     {

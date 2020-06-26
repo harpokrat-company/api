@@ -5,8 +5,9 @@ namespace App\JsonApi\Transformer;
 
 
 use App\Entity\Vault;
+use WoohooLabs\Yin\JsonApi\Schema\Link;
 use WoohooLabs\Yin\JsonApi\Schema\Links;
-use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToOneRelationship;
+use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToManyRelationship;
 use WoohooLabs\Yin\JsonApi\Schema\Resource\AbstractResource;
 
 /**
@@ -72,6 +73,14 @@ class VaultResourceTransformer extends AbstractResource
     public function getRelationships($vault): array
     {
         return [
+            'secrets' => function (Vault $user) {
+                return ToManyRelationship::create()
+                    ->setData($user->getSecrets(), new SecretResourceTransformer())
+                    ->setLinks(Links::createWithoutBaseUri([
+                        'self' => new Link('/v1/vaults/'. $user->getId() . '/relationships/secrets'),
+                        'related' => new Link('/v1/vaults/'. $user->getId() . '/secrets'),
+                    ]));
+            },
         ];
     }
 }

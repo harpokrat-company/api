@@ -4,11 +4,15 @@
 namespace App\Controller;
 
 
+use App\Entity\OrganizationGroup;
 use App\Entity\Vault;
+use App\JsonApi\Document\OrganizationGroup\OrganizationGroupRelatedEntityDocument;
 use App\JsonApi\Document\Vault\VaultDocument;
+use App\JsonApi\Document\Vault\VaultRelatedEntitiesDocument;
 use App\JsonApi\Document\Vault\VaultsDocument;
 use App\JsonApi\Hydrator\Vault\CreateVaultHydrator;
 use App\JsonApi\Hydrator\Vault\UpdateVaultHydrator;
+use App\JsonApi\Transformer\SecretResourceTransformer;
 use App\JsonApi\Transformer\VaultResourceTransformer;
 use App\Repository\VaultRepository;
 use Paknahad\JsonApiBundle\Helper\ResourceCollection;
@@ -35,6 +39,12 @@ class VaultController extends AbstractResourceController
     protected function getRelatedResponses(): array
     {
         return [
+            "secrets" => function (Vault $vault, string $relationshipName) {
+                return $this->jsonApi()->respond()->ok(
+                    new VaultRelatedEntitiesDocument(new SecretResourceTransformer(), $vault->getId(), $relationshipName),
+                    $vault->getSecrets()
+                );
+            },
         ];
     }
 
@@ -76,7 +86,6 @@ class VaultController extends AbstractResourceController
         );
     }
 
-
     /**
      * @Route("/{id}", name="vaults_edit", methods="PATCH")
      * @param Vault       $vault
@@ -98,5 +107,23 @@ class VaultController extends AbstractResourceController
     public function delete(Vault $vault): ResponseInterface
     {
         return $this->resourceDelete($vault);
+    }
+
+    /**
+     * @Route("/{id}/relationships/{rel}", name="vaults_relationship", methods="GET")
+     * @param Vault $vault
+     * @return ResponseInterface
+     */
+    public function showRelationships(Vault $vault) {
+        return $this->resourceShowRelationships($vault);
+    }
+
+    /**
+     * @Route("/{id}/{rel}", name="vaults_related", methods="GET")
+     * @param Vault $vault
+     * @return ResponseInterface
+     */
+    public function showRelatedEntities(Vault $vault) {
+        return $this->resourceRelatedEntities($vault);
     }
 }

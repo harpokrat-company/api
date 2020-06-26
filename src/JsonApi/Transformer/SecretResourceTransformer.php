@@ -2,7 +2,11 @@
 
 namespace App\JsonApi\Transformer;
 
+use App\Entity\OrganizationGroup;
 use App\Entity\Secret;
+use App\Entity\User;
+use App\Entity\Vault;
+use LogicException;
 use WoohooLabs\Yin\JsonApi\Schema\Link;
 use WoohooLabs\Yin\JsonApi\Schema\Links;
 use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToOneRelationship;
@@ -72,8 +76,17 @@ class SecretResourceTransformer extends AbstractResource
     {
         return [
             'owner' => function (Secret $secret) {
+                $owner = $secret->getOwner();
+                if ($owner instanceof User)
+                    $transformer = new UserResourceTransformer();
+                else if ($owner instanceof Vault)
+                    $transformer = new VaultResourceTransformer();
+                else if ($owner instanceof OrganizationGroup)
+                    $transformer = new OrganizationGroupResourceTransformer();
+                else
+                    throw new LogicException();
                 return ToOneRelationship::create()
-                    ->setData($secret->getOwner(), new UserResourceTransformer())
+                    ->setData($owner, $transformer)
                     ->setLinks(Links::createWithoutBaseUri([
                         'self' => new Link('/v1/secrets/' . $secret->getId() . '/relationships/owner'),
                         'related' => new Link('/v1/secrets/' . $secret->getId() . '/owner'),

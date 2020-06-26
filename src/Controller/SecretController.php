@@ -2,15 +2,21 @@
 
 namespace App\Controller;
 
+use App\Entity\OrganizationGroup;
 use App\Entity\Secret;
+use App\Entity\User;
+use App\Entity\Vault;
 use App\JsonApi\Document\Secret\SecretDocument;
 use App\JsonApi\Document\Secret\SecretRelatedEntityDocument;
 use App\JsonApi\Document\Secret\SecretsDocument;
 use App\JsonApi\Hydrator\Secret\CreateSecretHydrator;
 use App\JsonApi\Hydrator\Secret\UpdateSecretHydrator;
+use App\JsonApi\Transformer\OrganizationGroupResourceTransformer;
 use App\JsonApi\Transformer\SecretResourceTransformer;
 use App\JsonApi\Transformer\UserResourceTransformer;
+use App\JsonApi\Transformer\VaultResourceTransformer;
 use App\Repository\SecretRepository;
+use LogicException;
 use Paknahad\JsonApiBundle\Helper\ResourceCollection;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -36,9 +42,19 @@ class SecretController extends AbstractResourceController
     {
         return [
             "owner" => function (Secret $secret, string $relationshipName) {
+                # TODO : abstract this
+                $owner = $secret->getOwner();
+                if ($owner instanceof User)
+                    $transformer = new UserResourceTransformer();
+                else if ($owner instanceof Vault)
+                    $transformer = new VaultResourceTransformer();
+                else if ($owner instanceof OrganizationGroup)
+                    $transformer = new OrganizationGroupResourceTransformer();
+                else
+                    throw new LogicException();
                 return $this->jsonApi()->respond()->ok(
-                    new SecretRelatedEntityDocument(new UserResourceTransformer(), $secret->getId(), $relationshipName),
-                    $secret->getOwner()
+                    new SecretRelatedEntityDocument($transformer, $secret->getId(), $relationshipName),
+                    $owner
                 );
             }
         ];

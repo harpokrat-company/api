@@ -4,11 +4,15 @@
 namespace App\JsonApi\Hydrator\Vault;
 
 
+use App\Entity\User;
 use App\Entity\Vault;
+use App\Exception\NotImplementedException;
 use App\JsonApi\Hydrator\ResourceHydratorTrait;
+use Paknahad\JsonApiBundle\Exception\InvalidAttributeException;
 use Paknahad\JsonApiBundle\Hydrator\AbstractHydrator;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;
+use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToManyRelationship;
 use WoohooLabs\Yin\JsonApi\Request\JsonApiRequestInterface;
 
 abstract class AbstractVaultHydrator extends AbstractHydrator
@@ -61,7 +65,7 @@ abstract class AbstractVaultHydrator extends AbstractHydrator
 
     /**
      * {@inheritdoc}
-     * @throws \Paknahad\JsonApiBundle\Exception\InvalidAttributeException
+     * @throws InvalidAttributeException
      */
     protected function validateRequest(JsonApiRequestInterface $request): void
     {
@@ -84,6 +88,9 @@ abstract class AbstractVaultHydrator extends AbstractHydrator
     protected function getRelationshipHydrator($vault): array
     {
         return [
+            'secrets' => function (User $user, ToManyRelationship $relationship, $data, $relationshipName) {
+                throw new NotImplementedException();
+            },
         ];
     }
 }

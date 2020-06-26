@@ -3,6 +3,9 @@
 
 namespace App\Entity;
 
+use App\Entity\SecretOwnership\OrganizationGroupSecretOwnership;
+use App\Entity\SecretOwnership\SecretOwnerInterface;
+use App\Entity\SecretOwnership\SecretOwnerTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,8 +15,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\OrganizationGroupRepository")
  */
-class OrganizationGroup
+class OrganizationGroup implements SecretOwnerInterface
 {
+    use SecretOwnerTrait;
+
     /**
      * @var UuidInterface
      *
@@ -58,12 +63,19 @@ class OrganizationGroup
     private $parent;
 
     /**
+     * @var OrganizationGroupSecretOwnership
+     * @ORM\OneToOne(targetEntity="App\Entity\SecretOwnership\OrganizationGroupSecretOwnership", mappedBy="group", cascade={"persist"})
+     */
+    private $secretOwnership;
+
+    /**
      * OrganizationGroup constructor.
      */
     public function __construct()
     {
         $this->members = new ArrayCollection();
         $this->children = new ArrayCollection();
+        $this->secretOwnership = new OrganizationGroupSecretOwnership($this);
     }
 
     public function getId()

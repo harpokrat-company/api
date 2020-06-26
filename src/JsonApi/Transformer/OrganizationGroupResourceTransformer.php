@@ -98,6 +98,14 @@ class OrganizationGroupResourceTransformer extends AbstractResource
                         'related' => new Link('/v1/groups/'. $group->getId() . '/organization'),
                     ]));
             },
+            'secrets' => function (OrganizationGroup $group) {
+                return ToManyRelationship::create()
+                    ->setData($group->getSecrets(), new OrganizationResourceTransformer())
+                    ->setLinks(Links::createWithoutBaseUri([
+                        'self' => new Link('/v1/groups/'. $group->getId() . '/relationships/secrets'),
+                        'related' => new Link('/v1/groups/'. $group->getId() . '/secrets'),
+                    ]));
+            },
             'parent' => function (OrganizationGroup $group) {
                 return ToOneRelationship::create()
                     ->setData($group->getParent(), new OrganizationGroupResourceTransformer())

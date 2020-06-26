@@ -2,8 +2,9 @@
 
 namespace App\JsonApi\Hydrator\Secret;
 
-use App\Entity\Organization;
-use App\Entity\User;
+use App\Entity\Secret;
+use App\Entity\SecretOwnership\SecretOwnerInterface;
+use Symfony\Component\Validator\Exception\ValidatorException;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship;
 
 /**
@@ -17,12 +18,21 @@ class CreateSecretHydrator extends AbstractSecretHydrator
     protected function getRelationshipHydrator($secret): array
     {
         return [
-            'owner' => function (Organization $organization, ToOneRelationship $relationship, $data, $relationshipName) {
-                /** @var User $owner */
+            'owner' => function (Secret $secret, ToOneRelationship $relationship, $data, $relationshipName) {
+                $repositoryByType = [
+                    'groups' => 'App:OrganizationGroup',
+                    'users' => 'App:User',
+                    'vaults' => 'App:Vault',
+                ];
+                $type = $relationship->getResourceIdentifier()->getType();
+                if (!key_exists($type, $repositoryByType)) {
+                    throw new ValidatorException('Invalid type: '.$relationship->getResourceIdentifier()->getType());
+                }
+                /** @var SecretOwnerInterface $owner */
                 $owner = $this->getSingleAssociation(
-                    $relationship, $relationshipName, ['users'], $this->objectManager->getRepository('App:User')
+                    $relationship, $relationshipName, ['groups', 'users', 'vaults'], $this->objectManager->getRepository($repositoryByType[$type]), false
                 );
-                $organization->setOwner($owner);
+                $secret->setOwner($owner);
             },
         ];
     }

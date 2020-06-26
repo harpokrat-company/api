@@ -6,6 +6,7 @@ namespace App\JsonApi\Hydrator\OrganizationGroup;
 
 use App\Entity\OrganizationGroup;
 use App\Entity\User;
+use App\Exception\NotImplementedException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToManyRelationship;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship;
@@ -35,6 +36,9 @@ class CreateRelationshipOrganizationGroupHydrator extends AbstractOrganizationGr
             },
             'organization' => function (OrganizationGroup $group, ToOneRelationship $relationship, $data, $relationshipName) {
                 throw new BadRequestHttpException();
+            },
+            'secrets' => function (OrganizationGroup $group, ToManyRelationship $relationship, $data, $relationshipName) {
+                throw new NotImplementedException();
             },
             'parent' => function (OrganizationGroup $group, ToOneRelationship $relationship, $data, $relationshipName) {
                 throw new BadRequestHttpException();

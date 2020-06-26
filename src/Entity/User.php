@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use App\Entity\SecretOwnership\SecretOwnerInterface;
+use App\Entity\SecretOwnership\SecretOwnerTrait;
+use App\Entity\SecretOwnership\UserSecretOwnership;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,8 +17,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @UniqueEntity("email")
  */
-class User implements UserInterface
+class User implements UserInterface, SecretOwnerInterface
 {
+    use SecretOwnerTrait;
+
     /**
      * @var UuidInterface
      *
@@ -52,10 +57,10 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @var array
-     * @ORM\OneToMany(targetEntity="App\Entity\Secret", mappedBy="owner", orphanRemoval=true)
+     * @var UserSecretOwnership
+     * @ORM\OneToOne(targetEntity="App\Entity\SecretOwnership\UserSecretOwnership", mappedBy="user", cascade={"persist"})
      */
-    private $secrets;
+    private $secretOwnership;
 
     /**
      * @var string
@@ -95,11 +100,11 @@ class User implements UserInterface
 
     public function __construct()
     {
-        $this->secrets = new ArrayCollection();
         $this->logs = new ArrayCollection();
         $this->emailAddressValidated = false;
         $this->organizations = new ArrayCollection();
         $this->ownedOrganizations = new ArrayCollection();
+        $this->secretOwnership = new UserSecretOwnership($this);
     }
 
     public function getId()
@@ -178,37 +183,6 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
-    }
-
-    /**
-     * @return Collection|Secret[]
-     */
-    public function getSecrets(): Collection
-    {
-        return $this->secrets;
-    }
-
-    public function addSecret(Secret $secret): self
-    {
-        if (!$this->secrets->contains($secret)) {
-            $this->secrets[] = $secret;
-            $secret->setOwner($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSecret(Secret $secret): self
-    {
-        if ($this->secrets->contains($secret)) {
-            $this->secrets->removeElement($secret);
-            // set the owning side to null (unless already changed)
-            if ($secret->getOwner() === $this) {
-                $secret->setOwner(null);
-            }
-        }
-
-        return $this;
     }
 
     /**
@@ -343,5 +317,4 @@ class User implements UserInterface
         }
         return $this;
     }
-
 }
