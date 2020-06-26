@@ -38,7 +38,7 @@ trait ResourceHydratorTrait
                 throw new InvalidRelationshipValueException($relationshipName, [$identifier->getId()], 'invalid id format');
             }
             if (!$association) {
-                throw new InvalidRelationshipValueException($relationship, [$identifier->getId()], 'not found');
+                throw new InvalidRelationshipValueException($relationshipName, [$identifier->getId()], 'not found');
             }
         }
         if (!$association && !$nullable) {

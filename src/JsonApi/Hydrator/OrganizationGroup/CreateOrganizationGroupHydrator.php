@@ -43,7 +43,7 @@ class CreateOrganizationGroupHydrator extends AbstractOrganizationGroupHydrator
             'parent' => function (OrganizationGroup $group, ToOneRelationship $relationship, $data, $relationshipName) {
                 /** @var OrganizationGroup $parent */
                 $parent = $this->getSingleAssociation(
-                    $relationship, $relationshipName, ['users'], $this->objectManager->getRepository('App:User')
+                    $relationship, $relationshipName, ['groups'], $this->objectManager->getRepository('App:OrganizationGroup')
                 );
                 $group->setParent($parent);
             },
