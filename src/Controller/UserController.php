@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Annotation\ReCaptcha;
 use App\Entity\User;
 use App\JsonApi\Document\User\UserDocument;
 use App\JsonApi\Document\User\UserRelatedEntitiesDocument;
@@ -88,6 +89,7 @@ class UserController extends AbstractResourceController
 
     /**
      * @Route("", name="users_new", methods="POST")
+     * @ReCaptcha
      * @param ValidatorInterface $validator
      * @return ResponseInterface
      */

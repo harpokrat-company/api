@@ -19,6 +19,10 @@ security:
             methods: [POST]
             stateless: true
             anonymous: true
+        recaptcha:
+            pattern: ^/v1/recaptcha
+            methods: [GET]
+            security: false
         login:
             pattern: ^/v1/json-web-tokens
             methods: [POST]
