@@ -2,13 +2,13 @@
 
 namespace App\JsonApi\Hydrator\User;
 
+use App\Exception\NotImplementedException;
+use App\JsonApi\Hydrator\ResourceHydratorTrait;
+use Paknahad\JsonApiBundle\Exception\InvalidAttributeException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Entity\User;
-use Paknahad\JsonApiBundle\Hydrator\ValidatorTrait;
 use Paknahad\JsonApiBundle\Hydrator\AbstractHydrator;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;
-use Doctrine\ORM\Query\Expr;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToManyRelationship;
 use WoohooLabs\Yin\JsonApi\Request\JsonApiRequestInterface;
 
@@ -17,7 +17,7 @@ use WoohooLabs\Yin\JsonApi\Request\JsonApiRequestInterface;
  */
 abstract class AbstractUserHydrator extends AbstractHydrator
 {
-    use ValidatorTrait;
+    use ResourceHydratorTrait;
 
     /**
      * {@inheritdoc}
@@ -77,6 +77,7 @@ abstract class AbstractUserHydrator extends AbstractHydrator
 
     /**
      * {@inheritdoc}
+     * @throws InvalidAttributeException
      */
     protected function validateRequest(JsonApiRequestInterface $request): void
     {
@@ -99,55 +100,17 @@ abstract class AbstractUserHydrator extends AbstractHydrator
     protected function getRelationshipHydrator($user): array
     {
         return [
-            'secrets' => function (User $user, ToManyRelationship $secrets, $data, $relationshipName) {
-                $this->validateRelationType($secrets, ['secrets']);
-
-                if (count($secrets->getResourceIdentifierIds()) > 0) {
-                    $association = $this->objectManager->getRepository('App\Entity\Secret')
-                        ->createQueryBuilder('s')
-                        ->where((new Expr())->in('s.id', $secrets->getResourceIdentifierIds()))
-                        ->getQuery()
-                        ->getResult();
-
-                    $this->validateRelationValues($association, $secrets->getResourceIdentifierIds(), $relationshipName);
-                } else {
-                    $association = [];
-                }
-
-                if ($user->getSecrets()->count() > 0) {
-                    foreach ($user->getSecrets() as $secret) {
-                        $user->removeSecret($secret);
-                    }
-                }
-
-                foreach ($association as $secret) {
-                    $user->addSecret($secret);
-                }
+            'logs' => function (User $user, ToManyRelationship $relationship, $data, $relationshipName) {
+                throw new NotImplementedException();
             },
-            'logs' => function (User $user, ToManyRelationship $logs, $data, $relationshipName) {
-                $this->validateRelationType($logs, ['logs']);
-
-                if (count($logs->getResourceIdentifierIds()) > 0) {
-                    $association = $this->objectManager->getRepository('App\Entity\Log')
-                        ->createQueryBuilder('l')
-                        ->where((new Expr())->in('l.id', $logs->getResourceIdentifierIds()))
-                        ->getQuery()
-                        ->getResult();
-
-                    $this->validateRelationValues($association, $logs->getResourceIdentifierIds(), $relationshipName);
-                } else {
-                    $association = [];
-                }
-
-                if ($user->getLogs()->count() > 0) {
-                    foreach ($user->getLogs() as $log) {
-                        $user->removeLog($log);
-                    }
-                }
-
-                foreach ($association as $log) {
-                    $user->addLog($log);
-                }
+            'organizations' => function (User $user, ToManyRelationship $relationship, $data, $relationshipName) {
+                throw new NotImplementedException();
+            },
+            'ownedOrganizations' => function (User $user, ToManyRelationship $relationship, $data, $relationshipName) {
+                throw new NotImplementedException();
+            },
+            'secrets' => function (User $user, ToManyRelationship $relationship, $data, $relationshipName) {
+                throw new NotImplementedException();
             },
         ];
     }

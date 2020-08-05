@@ -2,9 +2,10 @@
 
 namespace App\Entity;
 
+use App\Entity\SecretOwnership\SecretOwnership;
+use App\Entity\SecretOwnership\SecretOwnerInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\SecretRepository")
@@ -27,7 +28,8 @@ class Secret
     private $content;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="secrets")
+     * @var SecretOwnership
+     * @ORM\ManyToOne(targetEntity="App\Entity\SecretOwnership\SecretOwnership", inversedBy="secrets")
      * @ORM\JoinColumn(nullable=false)
      */
     private $owner;
@@ -49,15 +51,14 @@ class Secret
         return $this;
     }
 
-    public function getOwner(): ?User
+    public function getOwner(): ?SecretOwnerInterface
     {
-        return $this->owner;
+        return $this->owner->getOwner();
     }
 
-    public function setOwner(?UserInterface $owner): self
+    public function setOwner(?SecretOwnerInterface $owner): self
     {
-        $this->owner = $owner;
-
+        $this->owner = $owner->getSecretOwnership();
         return $this;
     }
 }

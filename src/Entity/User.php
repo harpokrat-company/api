@@ -2,6 +2,12 @@
 
 namespace App\Entity;
 
+use App\Entity\SecretOwnership\SecretOwnerInterface;
+use App\Entity\SecretOwnership\SecretOwnerTrait;
+use App\Entity\SecretOwnership\UserSecretOwnership;
+use App\Entity\VaultOwnership\UserVaultOwnership;
+use App\Entity\VaultOwnership\VaultOwnerInterface;
+use App\Entity\VaultOwnership\VaultOwnerTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,8 +20,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @UniqueEntity("email")
  */
-class User implements UserInterface
+class User implements UserInterface, SecretOwnerInterface, VaultOwnerInterface
 {
+    use SecretOwnerTrait;
+    use VaultOwnerTrait;
+
     /**
      * @var UuidInterface
      *
@@ -52,10 +61,10 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @var array
-     * @ORM\OneToMany(targetEntity="App\Entity\Secret", mappedBy="owner", orphanRemoval=true)
+     * @var UserSecretOwnership
+     * @ORM\OneToOne(targetEntity="App\Entity\SecretOwnership\UserSecretOwnership", mappedBy="user", cascade={"persist"})
      */
-    private $secrets;
+    private $secretOwnership;
 
     /**
      * @var string
@@ -81,11 +90,32 @@ class User implements UserInterface
      */
     private $emailAddressValidated;
 
+    /**
+     * @var array
+     * @ORM\ManyToMany(targetEntity="App\Entity\Organization", mappedBy="members")
+     */
+    private $organizations;
+
+    /**
+     * @var array
+     * @ORM\OneToMany(targetEntity="App\Entity\Organization", mappedBy="owner")
+     */
+    private $ownedOrganizations;
+
+    /**
+     * @var UserVaultOwnership
+     * @ORM\OneToOne(targetEntity="App\Entity\VaultOwnership\UserVaultOwnership", mappedBy="user", cascade={"persist"})
+     */
+    private $vaultOwnership;
+
     public function __construct()
     {
-        $this->secrets = new ArrayCollection();
         $this->logs = new ArrayCollection();
         $this->emailAddressValidated = false;
+        $this->organizations = new ArrayCollection();
+        $this->ownedOrganizations = new ArrayCollection();
+        $this->secretOwnership = new UserSecretOwnership($this);
+        $this->vaultOwnership = new UserVaultOwnership($this);
     }
 
     public function getId()
@@ -164,37 +194,6 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
-    }
-
-    /**
-     * @return Collection|Secret[]
-     */
-    public function getSecrets(): Collection
-    {
-        return $this->secrets;
-    }
-
-    public function addSecret(Secret $secret): self
-    {
-        if (!$this->secrets->contains($secret)) {
-            $this->secrets[] = $secret;
-            $secret->setOwner($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSecret(Secret $secret): self
-    {
-        if ($this->secrets->contains($secret)) {
-            $this->secrets->removeElement($secret);
-            // set the owning side to null (unless already changed)
-            if ($secret->getOwner() === $this) {
-                $secret->setOwner(null);
-            }
-        }
-
-        return $this;
     }
 
     /**
@@ -285,6 +284,48 @@ class User implements UserInterface
     {
         $this->emailAddressValidated = $emailAddressValidated;
 
+        return $this;
+    }
+
+    public function getOrganizations(): Collection
+    {
+        return $this->organizations;
+    }
+
+    public function addOrganization(Organization $organization): self
+    {
+        if (!$this->organizations->contains($organization)) {
+            $this->organizations[] = $organization;
+        }
+        return $this;
+    }
+
+    public function removeOrganization(Organization $organization): self
+    {
+        if ($this->organizations->contains($organization)) {
+            $this->organizations->removeElement($organization);
+        }
+        return $this;
+    }
+
+    public function getOwnedOrganizations(): Collection
+    {
+        return $this->ownedOrganizations;
+    }
+
+    public function addOwnedOrganization(Organization $organization): self
+    {
+        if (!$this->ownedOrganizations->contains($organization)) {
+            $this->ownedOrganizations[] = $organization;
+        }
+        return $this;
+    }
+
+    public function removeOwnedOrganization(Organization $organization): self
+    {
+        if ($this->ownedOrganizations->contains($organization)) {
+            $this->ownedOrganizations->removeElement($organization);
+        }
         return $this;
     }
 }

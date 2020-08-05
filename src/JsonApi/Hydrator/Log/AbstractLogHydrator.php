@@ -2,6 +2,8 @@
 
 namespace App\JsonApi\Hydrator\Log;
 
+use App\Entity\User;
+use App\JsonApi\Hydrator\ResourceHydratorTrait;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Entity\Log;
 use Paknahad\JsonApiBundle\Hydrator\ValidatorTrait;
@@ -16,7 +18,7 @@ use WoohooLabs\Yin\JsonApi\Request\JsonApiRequestInterface;
  */
 abstract class AbstractLogHydrator extends AbstractHydrator
 {
-    use ValidatorTrait;
+    use ResourceHydratorTrait;
 
     /**
      * {@inheritdoc}
@@ -92,22 +94,12 @@ abstract class AbstractLogHydrator extends AbstractHydrator
     protected function getRelationshipHydrator($log): array
     {
         return [
-            'user' => function (Log $log, ToOneRelationship $user, $data, $relationshipName) {
-                $this->validateRelationType($user, ['users']);
-
-
-                $association = null;
-                $identifier = $user->getResourceIdentifier();
-                if ($identifier) {
-                    $association = $this->objectManager->getRepository('App\Entity\User')
-                        ->find($identifier->getId());
-
-                    if (is_null($association)) {
-                        throw new InvalidRelationshipValueException($relationshipName, [$identifier->getId()]);
-                    }
-                }
-
-                $log->setUser($association);
+            'user' => function (Log $log, ToOneRelationship $relationship, $data, $relationshipName) {
+                /** @var User $user */
+                $user = $this->getSingleAssociation(
+                    $relationship, $relationshipName, ['users'], $this->objectManager->getRepository('App\Entity\User')
+                );
+                $log->setUser($user);
             },
         ];
     }

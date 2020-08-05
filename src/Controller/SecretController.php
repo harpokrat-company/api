@@ -2,44 +2,75 @@
 
 namespace App\Controller;
 
+use App\Entity\OrganizationGroup;
 use App\Entity\Secret;
+use App\Entity\User;
+use App\Entity\Vault;
 use App\JsonApi\Document\Secret\SecretDocument;
+use App\JsonApi\Document\Secret\SecretRelatedEntityDocument;
 use App\JsonApi\Document\Secret\SecretsDocument;
 use App\JsonApi\Hydrator\Secret\CreateSecretHydrator;
 use App\JsonApi\Hydrator\Secret\UpdateSecretHydrator;
+use App\JsonApi\Transformer\OrganizationGroupResourceTransformer;
 use App\JsonApi\Transformer\SecretResourceTransformer;
+use App\JsonApi\Transformer\UserResourceTransformer;
+use App\JsonApi\Transformer\VaultResourceTransformer;
 use App\Repository\SecretRepository;
-use Doctrine\ORM\EntityNotFoundException;
-use Paknahad\JsonApiBundle\Controller\Controller;
+use LogicException;
 use Paknahad\JsonApiBundle\Helper\ResourceCollection;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Validator\ConstraintViolationList;
-use Symfony\Component\Routing\Annotation\Route;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use WoohooLabs\Yin\JsonApi\Schema\Document\AbstractSuccessfulDocument;
 
 /**
  * @Route("/v1/secrets")
  */
-class SecretController extends Controller
+class SecretController extends AbstractResourceController
 {
+    protected function getSingleDocument(): AbstractSuccessfulDocument
+    {
+        return new SecretDocument(new SecretResourceTransformer());
+    }
+
+    protected function getCollectionDocument(): AbstractSuccessfulDocument
+    {
+        return new SecretsDocument(new SecretResourceTransformer());
+    }
+
+    protected function getRelatedResponses(): array
+    {
+        return [
+            "owner" => function (Secret $secret, string $relationshipName) {
+                # TODO : abstract this
+                $owner = $secret->getOwner();
+                if ($owner instanceof User)
+                    $transformer = new UserResourceTransformer();
+                else if ($owner instanceof Vault)
+                    $transformer = new VaultResourceTransformer();
+                else if ($owner instanceof OrganizationGroup)
+                    $transformer = new OrganizationGroupResourceTransformer();
+                else
+                    throw new LogicException();
+                return $this->jsonApi()->respond()->ok(
+                    new SecretRelatedEntityDocument($transformer, $secret->getId(), $relationshipName),
+                    $owner
+                );
+            }
+        ];
+    }
+
     /**
      * @Route("", name="secrets_index", methods="GET")
      * @param SecretRepository   $secretRepository
      * @param ResourceCollection $resourceCollection
      *
      * @return ResponseInterface
-     * @throws EntityNotFoundException
      */
     public function index(SecretRepository $secretRepository, ResourceCollection $resourceCollection): ResponseInterface
     {
-        $resourceCollection->setRepository($secretRepository);
-
-        $resourceCollection->handleIndexRequest();
-
-        return $this->jsonApi()->respond()->ok(
-            new SecretsDocument(new SecretResourceTransformer()),
-            $resourceCollection
+        return $this->resourceIndex(
+            $secretRepository, $resourceCollection
         );
     }
 
@@ -50,23 +81,8 @@ class SecretController extends Controller
      */
     public function new(ValidatorInterface $validator): ResponseInterface
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $secret = $this->jsonApi()->hydrate(new CreateSecretHydrator($entityManager), new Secret());
-
-        /** @var ConstraintViolationList $errors */
-        $errors = $validator->validate($secret);
-        if ($errors->count() > 0) {
-            $entityManager->clear();
-            return $this->validationErrorResponse($errors);
-        }
-
-        $entityManager->persist($secret);
-        $entityManager->flush();
-
-        return $this->jsonApi()->respond()->ok(
-            new SecretDocument(new SecretResourceTransformer()),
-            $secret
+        return $this->resourceNew(
+            new Secret(), $validator, new CreateSecretHydrator($this->getDoctrine()->getManager())
         );
     }
 
@@ -77,11 +93,11 @@ class SecretController extends Controller
      */
     public function show(Secret $secret): ResponseInterface
     {
-        return $this->jsonApi()->respond()->ok(
-            new SecretDocument(new SecretResourceTransformer()),
+        return $this->resourceShow(
             $secret
         );
     }
+
 
     /**
      * @Route("/{id}", name="secrets_edit", methods="PATCH")
@@ -91,37 +107,36 @@ class SecretController extends Controller
      */
     public function edit(Secret $secret, ValidatorInterface $validator): ResponseInterface
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $secret = $this->jsonApi()->hydrate(new UpdateSecretHydrator($entityManager), $secret);
-
-        /** @var ConstraintViolationList $errors */
-        $errors = $validator->validate($secret);
-        if ($errors->count() > 0) {
-            $entityManager->clear();
-            return $this->validationErrorResponse($errors);
-        }
-
-        $entityManager->flush();
-
-        return $this->jsonApi()->respond()->ok(
-            new SecretDocument(new SecretResourceTransformer()),
-            $secret
+        return $this->resourceHydrate(
+            $secret, $validator, new UpdateSecretHydrator($this->getDoctrine()->getManager())
         );
     }
 
     /**
      * @Route("/{id}", name="secrets_delete", methods="DELETE")
-     * @param Request $request
      * @param Secret  $secret
      * @return ResponseInterface
      */
-    public function delete(Request $request, Secret $secret): ResponseInterface
+    public function delete(Secret $secret): ResponseInterface
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->remove($secret);
-        $entityManager->flush();
+        return $this->resourceDelete($secret);
+    }
 
-        return $this->jsonApi()->respond()->genericSuccess(204);
+    /**
+     * @Route("/{id}/relationships/{rel}", name="secrets_relationship", methods="GET")
+     * @param Secret $secret
+     * @return ResponseInterface
+     */
+    public function showRelationships(Secret $secret) {
+        return $this->resourceShowRelationships($secret);
+    }
+
+    /**
+     * @Route("/{id}/{rel}", name="secrets_related", methods="GET")
+     * @param Secret $secret
+     * @return ResponseInterface
+     */
+    public function showRelatedEntities(Secret $secret) {
+        return $this->resourceRelatedEntities($secret);
     }
 }

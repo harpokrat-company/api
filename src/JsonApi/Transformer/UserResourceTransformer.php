@@ -3,6 +3,7 @@
 namespace App\JsonApi\Transformer;
 
 use App\Entity\User;
+use WoohooLabs\Yin\JsonApi\Schema\Link;
 use WoohooLabs\Yin\JsonApi\Schema\Links;
 use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToManyRelationship;
 use WoohooLabs\Yin\JsonApi\Schema\Resource\AbstractResource;
@@ -82,13 +83,45 @@ class UserResourceTransformer extends AbstractResource
     public function getRelationships($user): array
     {
         return [
-            'secrets' => function (User $user) {
-                return ToManyRelationship::create()
-                    ->setData($user->getSecrets(), new SecretResourceTransformer());
-            },
             'logs' => function (User $user) {
                 return ToManyRelationship::create()
-                    ->setData($user->getLogs(), new LogResourceTransformer());
+                    ->setData($user->getLogs(), new LogResourceTransformer())
+                    ->setLinks(Links::createWithoutBaseUri([
+                        'self' => new Link('/v1/users/'. $user->getId() . '/relationships/logs'),
+                        'related' => new Link('/v1/users/'. $user->getId() . '/logs'),
+                    ]));
+            },
+            'organizations' => function (User $user) {
+                return ToManyRelationship::create()
+                    ->setData($user->getOrganizations(), new OrganizationResourceTransformer())
+                    ->setLinks(Links::createWithoutBaseUri([
+                        'self' => new Link('/v1/users/'. $user->getId() . '/relationships/organizations'),
+                        'related' => new Link('/v1/users/'. $user->getId() . '/organizations'),
+                    ]));
+            },
+            'ownedOrganizations' => function (User $user) {
+                return ToManyRelationship::create()
+                    ->setData($user->getOwnedOrganizations(), new OrganizationResourceTransformer())
+                    ->setLinks(Links::createWithoutBaseUri([
+                        'self' => new Link('/v1/users/'. $user->getId() . '/relationships/ownedOrganizations'),
+                        'related' => new Link('/v1/users/'. $user->getId() . '/ownedOrganizations'),
+                    ]));
+            },
+            'secrets' => function (User $user) {
+                return ToManyRelationship::create()
+                    ->setData($user->getSecrets(), new SecretResourceTransformer())
+                    ->setLinks(Links::createWithoutBaseUri([
+                        'self' => new Link('/v1/users/'. $user->getId() . '/relationships/secrets'),
+                        'related' => new Link('/v1/users/'. $user->getId() . '/secrets'),
+                    ]));
+            },
+            'vaults' => function (User $user) {
+                return ToManyRelationship::create()
+                    ->setData($user->getVaults(), new VaultResourceTransformer())
+                    ->setLinks(Links::createWithoutBaseUri([
+                        'self' => new Link('/v1/users/'. $user->getId() . '/relationships/vaults'),
+                        'related' => new Link('/v1/users/'. $user->getId() . '/vaults'),
+                    ]));
             },
         ];
     }
