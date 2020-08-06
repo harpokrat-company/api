@@ -41,7 +41,7 @@ class ReCaptchaController extends Controller
         }
         return $this->jsonApi()->respond()->ok(
             new ReCaptchaDocument(),
-            ['site-key' => $this->siteKey]
+            ['siteKey' => $this->siteKey]
         );
     }
 }
