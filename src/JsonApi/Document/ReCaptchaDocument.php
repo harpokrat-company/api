@@ -33,7 +33,7 @@ class ReCaptchaDocument extends AbstractSimpleResourceDocument
             'type' => 'recaptcha',
             'attributes' => [
                 'type' => 'v2 Tickbox',
-                'site-key' => $this->domainObject['site-key'],
+                'siteKey' => $this->domainObject['siteKey'],
             ],
         ];
     }
