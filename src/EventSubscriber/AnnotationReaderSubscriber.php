@@ -13,6 +13,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use WoohooLabs\Yin\JsonApi\JsonApi;
 
 class AnnotationReaderSubscriber implements EventSubscriberInterface
 {
@@ -29,11 +30,16 @@ class AnnotationReaderSubscriber implements EventSubscriberInterface
      * @var EventDispatcher
      */
     private $dispatcher;
+    /**
+     * @var JsonApi
+     */
+    private $jsonApi;
 
-    public function __construct(Reader $annotationReader, EventDispatcherInterface $dispatcher)
+    public function __construct(Reader $annotationReader, EventDispatcherInterface $dispatcher, JsonApi $jsonApi)
     {
         $this->annotationReader = $annotationReader;
         $this->dispatcher = $dispatcher;
+        $this->jsonApi = $jsonApi;
     }
 
     /**
@@ -46,10 +52,10 @@ class AnnotationReaderSubscriber implements EventSubscriberInterface
             return;
         }
         $controllers = $event->getController();
-        if (!is_array($controllers)) {
+        if (!is_array($controllers) || !$this->jsonApi->getRequest()) {
             return;
         }
-        $this->handleAnnotation($controllers, $event);
+        $this->handleAnnotation($controllers, $this->jsonApi->getRequest());
     }
 
     /**
