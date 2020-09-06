@@ -58,6 +58,9 @@ class SecretResourceTransformer extends AbstractResource
             'content' => function (Secret $secret) {
                 return $secret->getContent();
             },
+            'private' => function (Secret $secret) {
+                return $secret->isPrivate();
+            }
         ];
     }
 

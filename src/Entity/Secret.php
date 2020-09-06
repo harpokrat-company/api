@@ -34,6 +34,12 @@ class Secret
      */
     private $owner;
 
+    /**
+     * @var boolean
+     * @ORM\Column(type="boolean")
+     */
+    private $private;
+
     public function getId()
     {
         return $this->id;
@@ -60,5 +66,15 @@ class Secret
     {
         $this->owner = $owner->getSecretOwnership();
         return $this;
+    }
+
+    public function isPrivate(): bool
+    {
+        return $this->private;
+    }
+
+    public function setPrivate(bool $private): void
+    {
+        $this->private = $private;
     }
 }
