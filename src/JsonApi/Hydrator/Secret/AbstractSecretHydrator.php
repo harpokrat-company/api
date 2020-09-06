@@ -60,6 +60,9 @@ abstract class AbstractSecretHydrator extends AbstractHydrator
             'content' => function (Secret $secret, $attribute, $data, $attributeName) {
                 $secret->setContent($attribute);
             },
+            'private' => function (Secret $secret, $attribute, $data, $attributeName) {
+                $secret->setPrivate($attribute);
+            },
         ];
     }
 
