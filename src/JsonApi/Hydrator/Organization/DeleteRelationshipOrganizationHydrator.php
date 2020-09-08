@@ -15,6 +15,9 @@ class DeleteRelationshipOrganizationHydrator extends AbstractOrganizationHydrato
     protected function getRelationshipHydrator($organization, $clear = true): array
     {
         return [
+            'groups' => function (Organization $organization, ToManyRelationship $relationship, $data, $relationshipName) {
+                throw new BadRequestHttpException();
+            },
             'members' => function (Organization $organization, ToManyRelationship $relationship, $data, $relationshipName) {
                 /** @var User[] $members */
                 $members = $this->getCollectionAssociation(

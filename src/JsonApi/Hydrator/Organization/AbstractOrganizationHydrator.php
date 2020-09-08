@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\JsonApi\Hydrator\ResourceHydratorTrait;
 use Paknahad\JsonApiBundle\Exception\InvalidAttributeException;
 use Paknahad\JsonApiBundle\Hydrator\AbstractHydrator;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToManyRelationship;
@@ -88,6 +89,9 @@ abstract class AbstractOrganizationHydrator extends AbstractHydrator
     protected function getRelationshipHydrator($organization): array
     {
         return [
+            'groups' => function (Organization $organization, ToManyRelationship $relationship, $data, $relationshipName) {
+                throw new BadRequestHttpException();
+            },
             'members' => function (Organization $organization, ToManyRelationship $relationship, $data, $relationshipName) {
                 /** @var User[] $members */
                 $members = $this->getCollectionAssociation(
