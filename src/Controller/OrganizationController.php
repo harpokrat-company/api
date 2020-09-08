@@ -14,6 +14,7 @@ use App\JsonApi\Hydrator\Organization\CreateRelationshipOrganizationHydrator;
 use App\JsonApi\Hydrator\Organization\DeleteRelationshipOrganizationHydrator;
 use App\JsonApi\Hydrator\Organization\UpdateOrganizationHydrator;
 use App\JsonApi\Hydrator\Organization\UpdateRelationshipOrganizationHydrator;
+use App\JsonApi\Transformer\OrganizationGroupResourceTransformer;
 use App\JsonApi\Transformer\OrganizationResourceTransformer;
 use App\JsonApi\Transformer\UserResourceTransformer;
 use App\Repository\OrganizationRepository;
@@ -41,6 +42,12 @@ class OrganizationController extends AbstractResourceController
     protected function getRelatedResponses(): array
     {
         return [
+            "groups" => function (Organization $organization, string $relationshipName) {
+                return $this->jsonApi()->respond()->ok(
+                    new OrganizationRelatedEntitiesDocument(new OrganizationGroupResourceTransformer(), $organization->getId(), $relationshipName),
+                    $organization->getGroups()
+                );
+            },
             "members" => function (Organization $organization, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
                     new OrganizationRelatedEntitiesDocument(new UserResourceTransformer(), $organization->getId(), $relationshipName),
