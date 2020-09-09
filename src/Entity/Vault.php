@@ -39,13 +39,13 @@ class Vault implements SecretOwnerInterface
 
     /**
      * @var UserSecretOwnership
-     * @ORM\OneToOne(targetEntity="App\Entity\SecretOwnership\VaultSecretOwnership", mappedBy="vault", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\SecretOwnership\VaultSecretOwnership", mappedBy="vault", cascade={"persist", "remove"})
      */
     private $secretOwnership;
 
     /**
      * @var VaultOwnership
-     * @ORM\ManyToOne(targetEntity="App\Entity\VaultOwnership\VaultOwnership", inversedBy="vaults")
+     * @ORM\ManyToOne(targetEntity="App\Entity\VaultOwnership\VaultOwnership", inversedBy="vaults", cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $owner;

@@ -18,10 +18,12 @@ use App\JsonApi\Transformer\OrganizationGroupResourceTransformer;
 use App\JsonApi\Transformer\OrganizationResourceTransformer;
 use App\JsonApi\Transformer\UserResourceTransformer;
 use App\Repository\OrganizationRepository;
+use http\Env\Request;
 use Paknahad\JsonApiBundle\Helper\ResourceCollection;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use WoohooLabs\Yin\JsonApi\Request\JsonApiRequest;
 use WoohooLabs\Yin\JsonApi\Schema\Document\AbstractSuccessfulDocument;
 
 /**

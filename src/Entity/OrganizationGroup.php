@@ -55,7 +55,7 @@ class OrganizationGroup implements SecretOwnerInterface, VaultOwnerInterface
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="App\Entity\OrganizationGroup", mappedBy="parent")
+     * @ORM\OneToMany(targetEntity="App\Entity\OrganizationGroup", mappedBy="parent", cascade={"persist", "remove"})
      */
     private $children;
 
@@ -68,13 +68,13 @@ class OrganizationGroup implements SecretOwnerInterface, VaultOwnerInterface
 
     /**
      * @var OrganizationGroupSecretOwnership
-     * @ORM\OneToOne(targetEntity="App\Entity\SecretOwnership\OrganizationGroupSecretOwnership", mappedBy="group", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\SecretOwnership\OrganizationGroupSecretOwnership", mappedBy="group", cascade={"persist", "remove"})
      */
     private $secretOwnership;
 
     /**
      * @var OrganizationGroupVaultOwnership
-     * @ORM\OneToOne(targetEntity="App\Entity\VaultOwnership\OrganizationGroupVaultOwnership", mappedBy="group", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\VaultOwnership\OrganizationGroupVaultOwnership", mappedBy="group", cascade={"persist", "remove"})
      */
     private $vaultOwnership;
 
