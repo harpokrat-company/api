@@ -42,31 +42,31 @@ class UserController extends AbstractResourceController
         return [
             "logs" => function (User $user, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
-                    new UserRelatedEntitiesDocument(new LogResourceTransformer(), $user->getId(), $relationshipName),
+                    new UserRelatedEntitiesDocument(new LogResourceTransformer($this->getAuthorizationChecker()), $user->getId(), $relationshipName),
                     $user->getLogs()
                 );
             },
             "organizations" => function (User $user, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
-                    new UserRelatedEntitiesDocument(new OrganizationResourceTransformer(), $user->getId(), $relationshipName),
+                    new UserRelatedEntitiesDocument(new OrganizationResourceTransformer($this->getAuthorizationChecker()), $user->getId(), $relationshipName),
                     $user->getOrganizations()
                 );
             },
             "ownedOrganizations" => function (User $user, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
-                    new UserRelatedEntitiesDocument(new OrganizationResourceTransformer(), $user->getId(), $relationshipName),
+                    new UserRelatedEntitiesDocument(new OrganizationResourceTransformer($this->getAuthorizationChecker()), $user->getId(), $relationshipName),
                     $user->getOwnedOrganizations()
                 );
             },
             "secrets" => function (User $user, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
-                    new UserRelatedEntitiesDocument(new SecretResourceTransformer(), $user->getId(), $relationshipName),
+                    new UserRelatedEntitiesDocument(new SecretResourceTransformer($this->getAuthorizationChecker()), $user->getId(), $relationshipName),
                     $user->getSecrets()
                 );
             },
             "vaults" => function (User $user, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
-                    new UserRelatedEntitiesDocument(new VaultResourceTransformer(), $user->getId(), $relationshipName),
+                    new UserRelatedEntitiesDocument(new VaultResourceTransformer($this->getAuthorizationChecker()), $user->getId(), $relationshipName),
                     $user->getVaults()
                 );
             },

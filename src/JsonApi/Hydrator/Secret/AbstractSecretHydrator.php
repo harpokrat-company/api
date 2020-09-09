@@ -3,11 +3,11 @@
 namespace App\JsonApi\Hydrator\Secret;
 
 use App\Exception\NotImplementedException;
+use App\JsonApi\Hydrator\AbstractHydrator;
 use App\JsonApi\Hydrator\ResourceHydratorTrait;
 use Paknahad\JsonApiBundle\Exception\InvalidAttributeException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Entity\Secret;
-use Paknahad\JsonApiBundle\Hydrator\AbstractHydrator;
 use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship;
 use WoohooLabs\Yin\JsonApi\Request\JsonApiRequestInterface;
@@ -18,6 +18,11 @@ use WoohooLabs\Yin\JsonApi\Request\JsonApiRequestInterface;
 abstract class AbstractSecretHydrator extends AbstractHydrator
 {
     use ResourceHydratorTrait;
+
+    protected function getContext(): string
+    {
+        return self::EDITION;
+    }
 
     /**
      * {@inheritdoc}

@@ -29,6 +29,11 @@ abstract class AbstractHydrator extends BaseHydrator
         $this->checkHydrate = $checkHydrate;
     }
 
+    const CREATION = 'create';
+    const EDITION = 'edit';
+
+    abstract protected function getContext(): string;
+
     # TODO : maybe find a better way
     protected function hydrateAttributes($domainObject, array $data)
     {
@@ -42,7 +47,7 @@ abstract class AbstractHydrator extends BaseHydrator
                 continue;
             }
 
-            if ($this->checkHydrate && !$this->authorizationChecker->isGranted('edit-' . $attribute, $domainObject)) {
+            if ($this->checkHydrate && !$this->authorizationChecker->isGranted($this->getContext() . '-' . $attribute, $domainObject)) {
                 throw new AccessDeniedHttpException();
             }
 
@@ -67,7 +72,7 @@ abstract class AbstractHydrator extends BaseHydrator
                 continue;
             }
 
-            if ($this->checkHydrate && !$this->authorizationChecker->isGranted('edit-' . $relationship, $domainObject)) {
+            if ($this->checkHydrate && !$this->authorizationChecker->isGranted($this->getContext() . '-' . $relationship, $domainObject)) {
                 throw new AccessDeniedHttpException();
             }
 

@@ -69,7 +69,7 @@ class OrganizationResourceTransformer extends AbstractResource
         return [
             'groups' => function (Organization $organization) {
                 return ToManyRelationship::create()
-                    ->setData($organization->getGroups(), new OrganizationGroupResourceTransformer())
+                    ->setData($organization->getGroups(), new OrganizationGroupResourceTransformer($this->authorizationChecker))
                     ->setLinks(Links::createWithoutBaseUri([
                         'self' => new Link('/v1/organizations/'. $organization->getId() . '/relationships/groups'),
                         'related' => new Link('/v1/organizations/'. $organization->getId() . '/groups'),

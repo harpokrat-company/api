@@ -44,7 +44,7 @@ class OrganizationController extends AbstractResourceController
         return [
             "groups" => function (Organization $organization, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
-                    new OrganizationRelatedEntitiesDocument(new OrganizationGroupResourceTransformer(), $organization->getId(), $relationshipName),
+                    new OrganizationRelatedEntitiesDocument(new OrganizationGroupResourceTransformer($this->getAuthorizationChecker()), $organization->getId(), $relationshipName),
                     $organization->getGroups()
                 );
             },

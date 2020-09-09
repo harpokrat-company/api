@@ -9,7 +9,6 @@ use WoohooLabs\Yin\JsonApi\Schema\Link;
 use WoohooLabs\Yin\JsonApi\Schema\Links;
 use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToManyRelationship;
 use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToOneRelationship;
-use WoohooLabs\Yin\JsonApi\Schema\Resource\AbstractResource;
 
 /**
  * OrganizationGroup Resource Transformer.
@@ -51,7 +50,7 @@ class OrganizationGroupResourceTransformer extends AbstractResource
     /**
      * @inheritDoc
      */
-    public function getAttributes($group): array
+    public function getResourceAttributes($group): array
     {
         return [
             'name' => function(OrganizationGroup $group) {
@@ -71,12 +70,12 @@ class OrganizationGroupResourceTransformer extends AbstractResource
     /**
      * @inheritDoc
      */
-    public function getRelationships($group): array
+    public function getResourceRelationships($group): array
     {
         return [
             'children' => function (OrganizationGroup $group) {
                 return ToManyRelationship::create()
-                    ->setData($group->getChildren(), new OrganizationGroupResourceTransformer())
+                    ->setData($group->getChildren(), new OrganizationGroupResourceTransformer($this->authorizationChecker))
                     ->setLinks(Links::createWithoutBaseUri([
                         'self' => new Link('/v1/groups/' . $group->getId() . '/relationships/children'),
                         'related' => new Link('/v1/groups/' . $group->getId() . '/children'),
@@ -84,7 +83,7 @@ class OrganizationGroupResourceTransformer extends AbstractResource
             },
             'members' => function (OrganizationGroup $group) {
                 return ToManyRelationship::create()
-                    ->setData($group->getMembers(), new UserResourceTransformer())
+                    ->setData($group->getMembers(), new UserResourceTransformer($this->authorizationChecker))
                     ->setLinks(Links::createWithoutBaseUri([
                         'self' => new Link('/v1/groups/'. $group->getId() . '/relationships/members'),
                         'related' => new Link('/v1/groups/'. $group->getId() . '/members'),
@@ -92,7 +91,7 @@ class OrganizationGroupResourceTransformer extends AbstractResource
             },
             'organization' => function (OrganizationGroup $group) {
                 return ToOneRelationship::create()
-                    ->setData($group->getOrganization(), new OrganizationResourceTransformer())
+                    ->setData($group->getOrganization(), new OrganizationResourceTransformer($this->authorizationChecker))
                     ->setLinks(Links::createWithoutBaseUri([
                         'self' => new Link('/v1/groups/'. $group->getId() . '/relationships/organization'),
                         'related' => new Link('/v1/groups/'. $group->getId() . '/organization'),
@@ -100,7 +99,7 @@ class OrganizationGroupResourceTransformer extends AbstractResource
             },
             'parent' => function (OrganizationGroup $group) {
                 return ToOneRelationship::create()
-                    ->setData($group->getParent(), new OrganizationGroupResourceTransformer())
+                    ->setData($group->getParent(), new OrganizationGroupResourceTransformer($this->authorizationChecker))
                     ->setLinks(Links::createWithoutBaseUri([
                         'self' => new Link('/v1/groups/' . $group->getId() . '/relationships/parent'),
                         'related' => new Link('/v1/groups/' . $group->getId() . '/parent'),
@@ -108,7 +107,7 @@ class OrganizationGroupResourceTransformer extends AbstractResource
             },
             'secrets' => function (OrganizationGroup $group) {
                 return ToManyRelationship::create()
-                    ->setData($group->getSecrets(), new OrganizationResourceTransformer())
+                    ->setData($group->getSecrets(), new OrganizationResourceTransformer($this->authorizationChecker))
                     ->setLinks(Links::createWithoutBaseUri([
                         'self' => new Link('/v1/groups/'. $group->getId() . '/relationships/secrets'),
                         'related' => new Link('/v1/groups/'. $group->getId() . '/secrets'),
@@ -116,7 +115,7 @@ class OrganizationGroupResourceTransformer extends AbstractResource
             },
             'vaults' => function (OrganizationGroup $group) {
                 return ToManyRelationship::create()
-                    ->setData($group->getVaults(), new VaultResourceTransformer())
+                    ->setData($group->getVaults(), new VaultResourceTransformer($this->authorizationChecker))
                     ->setLinks(Links::createWithoutBaseUri([
                         'self' => new Link('/v1/groups/'. $group->getId() . '/relationships/vaults'),
                         'related' => new Link('/v1/groups/'. $group->getId() . '/vaults'),

@@ -23,13 +23,24 @@ abstract class ResourceVoter extends Voter
         return true;
     }
 
+    const MACROS = [
+        'create-' => 'create',
+        'edit-' => 'edit',
+        'view-' => 'view',
+    ];
+
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
         $attributesFunctions = $this->getAttributesFunctions();
         if (!array_key_exists($attribute, $attributesFunctions)) {
+            foreach (self::MACROS as $from => $to) {
+                if (substr($attribute, 0, strlen($from)) === $from) {
+                    $this->voteOnAttribute($to, $subject, $token);
+                }
+            }
             return $this->attributeDefault($attribute, $subject, $token);
         }
-        return $this->getAttributesFunctions()[$attribute]($subject, $token);
+        return $attributesFunctions[$attribute]($subject, $token);
     }
 
     protected function attributeDefault($attribute, $subject, TokenInterface $token) {

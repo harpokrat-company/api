@@ -30,12 +30,12 @@ class SecretController extends AbstractResourceController
 {
     protected function getSingleDocument(): AbstractSuccessfulDocument
     {
-        return new SecretDocument(new SecretResourceTransformer());
+        return new SecretDocument(new SecretResourceTransformer($this->getAuthorizationChecker()));
     }
 
     protected function getCollectionDocument(): AbstractSuccessfulDocument
     {
-        return new SecretsDocument(new SecretResourceTransformer());
+        return new SecretsDocument(new SecretResourceTransformer($this->getAuthorizationChecker()));
     }
 
     protected function getRelatedResponses(): array
@@ -45,11 +45,11 @@ class SecretController extends AbstractResourceController
                 # TODO : abstract this
                 $owner = $secret->getOwner();
                 if ($owner instanceof User)
-                    $transformer = new UserResourceTransformer();
+                    $transformer = new UserResourceTransformer($this->getAuthorizationChecker());
                 else if ($owner instanceof Vault)
-                    $transformer = new VaultResourceTransformer();
+                    $transformer = new VaultResourceTransformer($this->getAuthorizationChecker());
                 else if ($owner instanceof OrganizationGroup)
-                    $transformer = new OrganizationGroupResourceTransformer();
+                    $transformer = $this->getAuthorizationChecker();
                 else
                     throw new LogicException();
                 return $this->jsonApi()->respond()->ok(

@@ -32,12 +32,12 @@ class VaultController extends AbstractResourceController
 {
     protected function getSingleDocument(): AbstractSuccessfulDocument
     {
-        return new VaultDocument(new VaultResourceTransformer());
+        return new VaultDocument(new VaultResourceTransformer($this->getAuthorizationChecker()));
     }
 
     protected function getCollectionDocument(): AbstractSuccessfulDocument
     {
-        return new VaultsDocument(new VaultResourceTransformer());
+        return new VaultsDocument(new VaultResourceTransformer($this->getAuthorizationChecker()));
     }
 
     protected function getRelatedResponses(): array
@@ -47,9 +47,9 @@ class VaultController extends AbstractResourceController
                 # TODO : abstract this
                 $owner = $vault->getOwner();
                 if ($owner instanceof User)
-                    $transformer = new UserResourceTransformer();
+                    $transformer = new UserResourceTransformer($this->getAuthorizationChecker());
                 else if ($owner instanceof OrganizationGroup)
-                    $transformer = new OrganizationGroupResourceTransformer();
+                    $transformer = new OrganizationGroupResourceTransformer($this->getAuthorizationChecker());
                 else
                     throw new LogicException();
                 return $this->jsonApi()->respond()->ok(
@@ -59,7 +59,7 @@ class VaultController extends AbstractResourceController
             },
             "secrets" => function (Vault $vault, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
-                    new VaultRelatedEntitiesDocument(new SecretResourceTransformer(), $vault->getId(), $relationshipName),
+                    new VaultRelatedEntitiesDocument(new SecretResourceTransformer($this->getAuthorizationChecker()), $vault->getId(), $relationshipName),
                     $vault->getSecrets()
                 );
             },

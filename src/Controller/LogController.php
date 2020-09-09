@@ -24,12 +24,12 @@ class LogController extends AbstractResourceController
 {
     protected function getSingleDocument(): AbstractSuccessfulDocument
     {
-        return new LogDocument(new LogResourceTransformer());
+        return new LogDocument(new LogResourceTransformer($this->getAuthorizationChecker()));
     }
 
     protected function getCollectionDocument(): AbstractSuccessfulDocument
     {
-        return new LogsDocument(new LogResourceTransformer());
+        return new LogsDocument(new LogResourceTransformer($this->getAuthorizationChecker()));
     }
 
     protected function getRelatedResponses(): array
@@ -37,7 +37,7 @@ class LogController extends AbstractResourceController
         return [
             "user" => function (Log $log, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
-                    new LogRelatedEntityDocument(new UserResourceTransformer(), $log->getId(), $relationshipName),
+                    new LogRelatedEntityDocument(new UserResourceTransformer($this->getAuthorizationChecker()), $log->getId(), $relationshipName),
                     $log->getUser()
                 );
             }

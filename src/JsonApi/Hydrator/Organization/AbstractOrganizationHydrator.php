@@ -20,6 +20,11 @@ abstract class AbstractOrganizationHydrator extends AbstractHydrator
 {
     use ResourceHydratorTrait;
 
+    protected function getContext(): string
+    {
+        return self::EDITION;
+    }
+
     /**
      * {@inheritdoc}
      */

@@ -13,6 +13,11 @@ use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship;
 
 class CreateVaultHydrator extends AbstractVaultHydrator
 {
+    protected function getContext(): string
+    {
+        return self::CREATION;
+    }
+
     protected function getRelationshipHydrator($vault): array
     {
         return [
