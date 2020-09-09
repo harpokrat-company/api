@@ -36,9 +36,6 @@ class ReCaptchaController extends Controller
      * @Route("", name="recaptcha", methods="GET")
      */
     public function siteKey() {
-        if (!$this->enabled) {
-            throw new LockedException();
-        }
         return $this->jsonApi()->respond()->ok(
             new ReCaptchaDocument(),
             ['siteKey' => $this->siteKey]
