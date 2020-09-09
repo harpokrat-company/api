@@ -88,7 +88,7 @@ class VaultController extends AbstractResourceController
     public function new(ValidatorInterface $validator): ResponseInterface
     {
         return $this->resourceNew(
-            new Vault(), $validator, new CreateVaultHydrator($this->getDoctrine()->getManager())
+            new Vault(), $validator, new CreateVaultHydrator($this->getDoctrine()->getManager(), $this->getAuthorizationChecker())
         );
     }
 
@@ -113,7 +113,7 @@ class VaultController extends AbstractResourceController
     public function edit(Vault $vault, ValidatorInterface $validator): ResponseInterface
     {
         return $this->resourceHydrate(
-            $vault, $validator, new UpdateVaultHydrator($this->getDoctrine()->getManager())
+            $vault, $validator, new UpdateVaultHydrator($this->getDoctrine()->getManager(), $this->getAuthorizationChecker())
         );
     }
 

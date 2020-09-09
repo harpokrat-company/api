@@ -48,9 +48,7 @@ class OrganizationGroupVoter extends ResourceVoter
             return $this->isOwner($subject, $user) || $this->isMember($subject, $user);
         };
         return [
-            'create' => function ($subject, TokenInterface $token) {
-                return $token->getUser() instanceof User;
-            },
+            /* 'create' => $members, TODO : fix this*/
             'edit' => $owner,
             'edit-secret' => $members,
             'edit-vaults' => $members,
