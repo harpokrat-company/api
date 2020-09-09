@@ -36,7 +36,7 @@ abstract class VaultOwnership
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="App\Entity\Vault", mappedBy="owner")
+     * @ORM\OneToMany(targetEntity="App\Entity\Vault", mappedBy="owner", cascade={"persist", "remove"})
      */
     private $vaults;
 

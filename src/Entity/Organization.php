@@ -46,7 +46,7 @@ class Organization
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="App\Entity\OrganizationGroup", mappedBy="organization")
+     * @ORM\OneToMany(targetEntity="App\Entity\OrganizationGroup", mappedBy="organization", cascade={"persist", "remove"})
      */
     private $groups;
 

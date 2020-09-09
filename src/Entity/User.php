@@ -62,7 +62,7 @@ class User implements UserInterface, SecretOwnerInterface, VaultOwnerInterface
 
     /**
      * @var UserSecretOwnership
-     * @ORM\OneToOne(targetEntity="App\Entity\SecretOwnership\UserSecretOwnership", mappedBy="user", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\SecretOwnership\UserSecretOwnership", mappedBy="user", cascade={"persist", "remove"})
      */
     private $secretOwnership;
 
@@ -104,7 +104,7 @@ class User implements UserInterface, SecretOwnerInterface, VaultOwnerInterface
 
     /**
      * @var UserVaultOwnership
-     * @ORM\OneToOne(targetEntity="App\Entity\VaultOwnership\UserVaultOwnership", mappedBy="user", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\VaultOwnership\UserVaultOwnership", mappedBy="user", cascade={"persist", "remove"})
      */
     private $vaultOwnership;
 
