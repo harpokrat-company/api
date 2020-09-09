@@ -30,12 +30,12 @@ class UserController extends AbstractResourceController
 {
     protected function getSingleDocument(): AbstractSuccessfulDocument
     {
-        return new UserDocument(new UserResourceTransformer());
+        return new UserDocument(new UserResourceTransformer($this->getAuthorizationChecker()));
     }
 
     protected function getCollectionDocument(): AbstractSuccessfulDocument
     {
-        return new UsersDocument(new UserResourceTransformer());
+        return new UsersDocument(new UserResourceTransformer($this->getAuthorizationChecker()));
     }
 
     protected function getRelatedResponses(): array {
@@ -96,7 +96,7 @@ class UserController extends AbstractResourceController
     public function new(ValidatorInterface $validator): ResponseInterface
     {
         return $this->resourceNew(
-            new User(), $validator, new CreateUserHydrator($this->getDoctrine()->getManager())
+            new User(), $validator, new CreateUserHydrator($this->getDoctrine()->getManager(), $this->getAuthorizationChecker(), false)
         );
     }
 
@@ -121,7 +121,7 @@ class UserController extends AbstractResourceController
     public function edit(User $user, ValidatorInterface $validator): ResponseInterface
     {
         return $this->resourceHydrate(
-            $user, $validator, new UpdateRelationshipUserHydrator($this->getDoctrine()->getManager())
+            $user, $validator, new UpdateRelationshipUserHydrator($this->getDoctrine()->getManager(), $this->getAuthorizationChecker())
         );
     }
 
@@ -153,7 +153,7 @@ class UserController extends AbstractResourceController
     public function editRelationships(User $user, ValidatorInterface $validator): ResponseInterface
     {
         return $this->resourceHydrateRelationships(
-            $user, $validator, new UpdateRelationshipUserHydrator($this->getDoctrine()->getManager())
+            $user, $validator, new UpdateRelationshipUserHydrator($this->getDoctrine()->getManager(), $this->getAuthorizationChecker())
         );
     }
 
@@ -166,7 +166,7 @@ class UserController extends AbstractResourceController
     public function addRelationships(User $user, ValidatorInterface $validator): ResponseInterface
     {
         return $this->resourceHydrateRelationships(
-            $user, $validator, new CreateRelationshipUserHydrator($this->getDoctrine()->getManager())
+            $user, $validator, new CreateRelationshipUserHydrator($this->getDoctrine()->getManager(), $this->getAuthorizationChecker())
         );
     }
 
@@ -179,7 +179,7 @@ class UserController extends AbstractResourceController
     public function deleteRelationships(User $user, ValidatorInterface $validator): ResponseInterface
     {
         return $this->resourceHydrateRelationships(
-            $user, $validator, new DeleteRelationshipUserHydrator($this->getDoctrine()->getManager())
+            $user, $validator, new DeleteRelationshipUserHydrator($this->getDoctrine()->getManager(), $this->getAuthorizationChecker())
         );
     }
 

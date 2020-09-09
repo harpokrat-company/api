@@ -31,12 +31,12 @@ class OrganizationController extends AbstractResourceController
 {
     protected function getSingleDocument(): AbstractSuccessfulDocument
     {
-        return new OrganizationDocument(new OrganizationResourceTransformer());
+        return new OrganizationDocument(new OrganizationResourceTransformer($this->getAuthorizationChecker()));
     }
 
     protected function getCollectionDocument(): AbstractSuccessfulDocument
     {
-        return new OrganizationsDocument(new OrganizationResourceTransformer());
+        return new OrganizationsDocument(new OrganizationResourceTransformer($this->getAuthorizationChecker()));
     }
 
     protected function getRelatedResponses(): array
@@ -50,13 +50,13 @@ class OrganizationController extends AbstractResourceController
             },
             "members" => function (Organization $organization, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
-                    new OrganizationRelatedEntitiesDocument(new UserResourceTransformer(), $organization->getId(), $relationshipName),
+                    new OrganizationRelatedEntitiesDocument(new UserResourceTransformer($this->getAuthorizationChecker()), $organization->getId(), $relationshipName),
                     $organization->getMembers()
                 );
             },
             "owner" => function (Organization $organization, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
-                    new OrganizationRelatedEntityDocument(new UserResourceTransformer(), $organization->getId(), $relationshipName),
+                    new OrganizationRelatedEntityDocument(new UserResourceTransformer($this->getAuthorizationChecker()), $organization->getId(), $relationshipName),
                     $organization->getOwner()
                 );
             }
@@ -85,7 +85,7 @@ class OrganizationController extends AbstractResourceController
     public function new(ValidatorInterface $validator): ResponseInterface
     {
         return $this->resourceNew(
-            new Organization(), $validator, new CreateOrganizationHydrator($this->getDoctrine()->getManager())
+            new Organization(), $validator, new CreateOrganizationHydrator($this->getDoctrine()->getManager(), $this->getAuthorizationChecker(), false)
         );
     }
 
@@ -111,7 +111,7 @@ class OrganizationController extends AbstractResourceController
     public function edit(Organization $organization, ValidatorInterface $validator): ResponseInterface
     {
         return $this->resourceHydrate(
-            $organization, $validator, new UpdateOrganizationHydrator($this->getDoctrine()->getManager())
+            $organization, $validator, new UpdateOrganizationHydrator($this->getDoctrine()->getManager(), $this->getAuthorizationChecker())
         );
     }
 
@@ -143,7 +143,7 @@ class OrganizationController extends AbstractResourceController
     public function editRelationships(Organization $organization, ValidatorInterface $validator): ResponseInterface
     {
         return $this->resourceHydrateRelationships(
-            $organization, $validator, new UpdateRelationshipOrganizationHydrator($this->getDoctrine()->getManager())
+            $organization, $validator, new UpdateRelationshipOrganizationHydrator($this->getDoctrine()->getManager(), $this->getAuthorizationChecker())
         );
     }
 
@@ -156,7 +156,7 @@ class OrganizationController extends AbstractResourceController
     public function addRelationships(Organization $organization, ValidatorInterface $validator): ResponseInterface
     {
         return $this->resourceHydrateRelationships(
-            $organization, $validator, new CreateRelationshipOrganizationHydrator($this->getDoctrine()->getManager())
+            $organization, $validator, new CreateRelationshipOrganizationHydrator($this->getDoctrine()->getManager(), $this->getAuthorizationChecker())
         );
     }
 
@@ -169,7 +169,7 @@ class OrganizationController extends AbstractResourceController
     public function deleteRelationships(Organization $organization, ValidatorInterface $validator): ResponseInterface
     {
         return $this->resourceHydrateRelationships(
-            $organization, $validator, new DeleteRelationshipOrganizationHydrator($this->getDoctrine()->getManager())
+            $organization, $validator, new DeleteRelationshipOrganizationHydrator($this->getDoctrine()->getManager(), $this->getAuthorizationChecker())
         );
     }
 

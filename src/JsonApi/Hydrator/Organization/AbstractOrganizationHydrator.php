@@ -6,9 +6,9 @@ namespace App\JsonApi\Hydrator\Organization;
 
 use App\Entity\Organization;
 use App\Entity\User;
+use App\JsonApi\Hydrator\AbstractHydrator;
 use App\JsonApi\Hydrator\ResourceHydratorTrait;
 use Paknahad\JsonApiBundle\Exception\InvalidAttributeException;
-use Paknahad\JsonApiBundle\Hydrator\AbstractHydrator;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;

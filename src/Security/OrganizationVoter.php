@@ -6,6 +6,7 @@ namespace App\Security;
 
 use App\Entity\Organization;
 use App\Entity\User;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class OrganizationVoter extends ResourceVoter
 {
@@ -14,28 +15,46 @@ class OrganizationVoter extends ResourceVoter
         parent::__construct(Organization::class);
     }
 
-    protected function canView($subject, User $user)
+    protected function attributeDefault($attribute, $subject, TokenInterface $token)
     {
-        /** @var Organization $organization */
-        $organization = $subject;
-
-        return $user === $organization->getOwner() || in_array($user, $organization->getMembers()->toArray());
+        /** @var User $user */
+        if (!$user = $token->getUser()) {
+            return false;
+        }
+        return $this->isOwner($subject, $user) || $this->isMember($subject, $user);
     }
 
-    protected function canEdit($subject, User $user)
+    protected function getAttributesFunctions(): array
     {
-        /** @var Organization $organization */
-        $organization = $subject;
-
-        # TODO : implements team administrator
-        return $user === $organization->getOwner();
+        $owner = function ($subject, TokenInterface $token) {
+            /** @var User $user */
+            if (!$user = $token->getUser()) {
+                return false;
+            }
+            return $this->isOwner($subject, $user);
+        };
+        $member = function ($subject, TokenInterface $token) {
+            /** @var User $user */
+            if (!$user = $token->getUser()) {
+                return false;
+            }
+            return $this->isOwner($subject, $user) || $this->isMember($subject, $user);
+        };
+        return [
+            'create' => function ($subject, TokenInterface $token) {
+                return $token->getUser() instanceof User;
+            },
+            'edit' => $owner,
+            'view-groups' => $member,
+            'delete' => $owner,
+        ];
     }
 
-    protected function canDelete($subject, User $user)
-    {
-        /** @var Organization $organization */
-        $organization = $subject;
+    private function isOwner(Organization $subject, User $user): bool {
+        return $subject->getOwner() === $user;
+    }
 
-        return $user === $organization->getOwner();
+    private function isMember(Organization $subject, User $user): bool {
+        return $subject->getMembers()->contains($user);
     }
 }

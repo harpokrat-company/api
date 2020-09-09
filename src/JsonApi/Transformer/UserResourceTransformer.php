@@ -6,7 +6,6 @@ use App\Entity\User;
 use WoohooLabs\Yin\JsonApi\Schema\Link;
 use WoohooLabs\Yin\JsonApi\Schema\Links;
 use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToManyRelationship;
-use WoohooLabs\Yin\JsonApi\Schema\Resource\AbstractResource;
 
 /**
  * User Resource Transformer.
@@ -48,7 +47,7 @@ class UserResourceTransformer extends AbstractResource
     /**
      * {@inheritdoc}
      */
-    public function getAttributes($user): array
+    public function getResourceAttributes($user): array
     {
         return [
             'email' => function (User $user) {
@@ -80,7 +79,7 @@ class UserResourceTransformer extends AbstractResource
     /**
      * {@inheritdoc}
      */
-    public function getRelationships($user): array
+    public function getResourceRelationships($user): array
     {
         return [
             'logs' => function (User $user) {
