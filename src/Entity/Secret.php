@@ -38,7 +38,7 @@ class Secret
      * @var boolean
      * @ORM\Column(type="boolean")
      */
-    private $private;
+    private $private = true;
 
     public function getId()
     {

@@ -82,7 +82,7 @@ class SecretController extends AbstractResourceController
     public function new(ValidatorInterface $validator): ResponseInterface
     {
         return $this->resourceNew(
-            new Secret(), $validator, new CreateSecretHydrator($this->getDoctrine()->getManager())
+            new Secret(), $validator, new CreateSecretHydrator($this->getDoctrine()->getManager(), $this->getAuthorizationChecker())
         );
     }
 
@@ -108,7 +108,7 @@ class SecretController extends AbstractResourceController
     public function edit(Secret $secret, ValidatorInterface $validator): ResponseInterface
     {
         return $this->resourceHydrate(
-            $secret, $validator, new UpdateSecretHydrator($this->getDoctrine()->getManager())
+            $secret, $validator, new UpdateSecretHydrator($this->getDoctrine()->getManager(), $this->getAuthorizationChecker())
         );
     }
 

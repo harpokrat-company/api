@@ -108,7 +108,7 @@ class UserResourceTransformer extends AbstractResource
             },
             'secrets' => function (User $user) {
                 return ToManyRelationship::create()
-                    ->setData($user->getSecrets(), new SecretResourceTransformer())
+                    ->setData($user->getSecrets(), new SecretResourceTransformer($this->authorizationChecker))
                     ->setLinks(Links::createWithoutBaseUri([
                         'self' => new Link('/v1/users/'. $user->getId() . '/relationships/secrets'),
                         'related' => new Link('/v1/users/'. $user->getId() . '/secrets'),
