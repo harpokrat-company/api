@@ -12,6 +12,11 @@ use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship;
  */
 class CreateSecretHydrator extends AbstractSecretHydrator
 {
+    protected function getContext(): string
+    {
+        return self::CREATION;
+    }
+
     /**
      * {@inheritdoc}
      */

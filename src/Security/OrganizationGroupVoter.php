@@ -1,11 +1,10 @@
 <?php
 
-
 namespace App\Security;
-
 
 use App\Entity\OrganizationGroup;
 use App\Entity\User;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class OrganizationGroupVoter extends ResourceVoter
 {
@@ -14,33 +13,69 @@ class OrganizationGroupVoter extends ResourceVoter
         parent::__construct(OrganizationGroup::class);
     }
 
-    protected function canView($subject, User $user)
+    protected function attributeDefault($attribute, $subject, TokenInterface $token)
     {
-        /** @var OrganizationGroup $group */
-        $group = $subject;
-        $organization = $group->getOrganization();
+        /** @var User $user */
+        if (!$user = $token->getUser()) {
+            return false;
+        }
 
-        # TODO : implements secret groups
-        return $user === $organization->getOwner() || in_array($user, $organization->getMembers()->toArray());
+        return $this->isOwner($subject, $user) || $this->isOrganizationMember($subject, $user);
     }
 
-    protected function canEdit($subject, User $user)
+    protected function getAttributesFunctions(): array
     {
-        /** @var OrganizationGroup $group */
-        $group = $subject;
-        $organization = $group->getOrganization();
+        $owner = function ($subject, TokenInterface $token) {
+            /** @var User $user */
+            if (!$user = $token->getUser()) {
+                return false;
+            }
 
-        # TODO : implements group administrator
-        return $user === $organization->getOwner();
+            return $this->isOwner($subject, $user);
+        };
+        $organizationMember = function ($subject, TokenInterface $token) {
+            /** @var User $user */
+            if (!$user = $token->getUser()) {
+                return false;
+            }
+
+            return $this->isOwner($subject, $user) || $this->isOrganizationMember($subject, $user);
+        };
+        $members = function ($subject, TokenInterface $token) {
+            /** @var User $user */
+            if (!$user = $token->getUser()) {
+                return false;
+            }
+
+            return $this->isOwner($subject, $user) || $this->isMember($subject, $user);
+        };
+
+        return [
+            'create' => function ($subject, TokenInterface $token) {
+                return $token->getUser() instanceof User;
+            }, /* TODO : fix this */
+            'edit' => $owner,
+            'edit-secret' => $members,
+            'edit-vaults' => $members,
+            'delete' => $owner,
+            'view' => $organizationMember,
+            'view-secrets' => $members,
+            'view-vaults' => $members,
+        ];
     }
 
-    protected function canDelete($subject, User $user)
+    private function isOwner(OrganizationGroup $subject, User $user): bool
     {
-        /** @var OrganizationGroup $group */
-        $group = $subject;
-        $organization = $group->getOrganization();
+        return $subject->getOrganization()->getOwner() === $user;
+    }
 
-        # TODO : implements group administrator
-        return $user === $organization->getOwner();
+    private function isMember(OrganizationGroup $subject, User $user): bool
+    {
+        return $subject->getMembers()->contains($user);
+    }
+
+    private function isOrganizationMember(OrganizationGroup $subject, User $user): bool
+    {
+        return $subject->getOrganization()->getOwner() === $user;
     }
 }

@@ -10,7 +10,6 @@ use LogicException;
 use WoohooLabs\Yin\JsonApi\Schema\Link;
 use WoohooLabs\Yin\JsonApi\Schema\Links;
 use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToOneRelationship;
-use WoohooLabs\Yin\JsonApi\Schema\Resource\AbstractResource;
 
 /**
  * Secret Resource Transformer.
@@ -52,7 +51,7 @@ class SecretResourceTransformer extends AbstractResource
     /**
      * {@inheritdoc}
      */
-    public function getAttributes($secret): array
+    public function getResourceAttributes($secret): array
     {
         return [
             'content' => function (Secret $secret) {
@@ -75,17 +74,17 @@ class SecretResourceTransformer extends AbstractResource
     /**
      * {@inheritdoc}
      */
-    public function getRelationships($secret): array
+    public function getResourceRelationships($secret): array
     {
         return [
             'owner' => function (Secret $secret) {
                 $owner = $secret->getOwner();
                 if ($owner instanceof User)
-                    $transformer = new UserResourceTransformer();
+                    $transformer = new UserResourceTransformer($this->authorizationChecker);
                 else if ($owner instanceof Vault)
-                    $transformer = new VaultResourceTransformer();
+                    $transformer = new VaultResourceTransformer($this->authorizationChecker);
                 else if ($owner instanceof OrganizationGroup)
-                    $transformer = new OrganizationGroupResourceTransformer();
+                    $transformer = new OrganizationGroupResourceTransformer($this->authorizationChecker);
                 else
                     throw new LogicException();
                 return ToOneRelationship::create()

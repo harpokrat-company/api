@@ -30,12 +30,12 @@ class SecretController extends AbstractResourceController
 {
     protected function getSingleDocument(): AbstractSuccessfulDocument
     {
-        return new SecretDocument(new SecretResourceTransformer());
+        return new SecretDocument(new SecretResourceTransformer($this->getAuthorizationChecker()));
     }
 
     protected function getCollectionDocument(): AbstractSuccessfulDocument
     {
-        return new SecretsDocument(new SecretResourceTransformer());
+        return new SecretsDocument(new SecretResourceTransformer($this->getAuthorizationChecker()));
     }
 
     protected function getRelatedResponses(): array
@@ -45,11 +45,11 @@ class SecretController extends AbstractResourceController
                 # TODO : abstract this
                 $owner = $secret->getOwner();
                 if ($owner instanceof User)
-                    $transformer = new UserResourceTransformer();
+                    $transformer = new UserResourceTransformer($this->getAuthorizationChecker());
                 else if ($owner instanceof Vault)
-                    $transformer = new VaultResourceTransformer();
+                    $transformer = new VaultResourceTransformer($this->getAuthorizationChecker());
                 else if ($owner instanceof OrganizationGroup)
-                    $transformer = new OrganizationGroupResourceTransformer();
+                    $transformer = $this->getAuthorizationChecker();
                 else
                     throw new LogicException();
                 return $this->jsonApi()->respond()->ok(
@@ -82,7 +82,7 @@ class SecretController extends AbstractResourceController
     public function new(ValidatorInterface $validator): ResponseInterface
     {
         return $this->resourceNew(
-            new Secret(), $validator, new CreateSecretHydrator($this->getDoctrine()->getManager())
+            new Secret(), $validator, new CreateSecretHydrator($this->getDoctrine()->getManager(), $this->getAuthorizationChecker())
         );
     }
 
@@ -108,7 +108,7 @@ class SecretController extends AbstractResourceController
     public function edit(Secret $secret, ValidatorInterface $validator): ResponseInterface
     {
         return $this->resourceHydrate(
-            $secret, $validator, new UpdateSecretHydrator($this->getDoctrine()->getManager())
+            $secret, $validator, new UpdateSecretHydrator($this->getDoctrine()->getManager(), $this->getAuthorizationChecker())
         );
     }
 

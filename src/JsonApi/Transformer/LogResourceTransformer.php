@@ -6,7 +6,6 @@ use App\Entity\Log;
 use WoohooLabs\Yin\JsonApi\Schema\Link;
 use WoohooLabs\Yin\JsonApi\Schema\Links;
 use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToOneRelationship;
-use WoohooLabs\Yin\JsonApi\Schema\Resource\AbstractResource;
 
 /**
  * Log Resource Transformer.
@@ -48,7 +47,7 @@ class LogResourceTransformer extends AbstractResource
     /**
      * {@inheritdoc}
      */
-    public function getAttributes($log): array
+    public function getResourceAttributes($log): array
     {
         return [
             'date' => function (Log $log) {
@@ -74,12 +73,12 @@ class LogResourceTransformer extends AbstractResource
     /**
      * {@inheritdoc}
      */
-    public function getRelationships($log): array
+    public function getResourceRelationships($log): array
     {
         return [
             'user' => function (Log $log) {
                 return ToOneRelationship::create()
-                    ->setData($log->getUser(), new UserResourceTransformer())
+                    ->setData($log->getUser(), new UserResourceTransformer($this->authorizationChecker))
                     ->setLinks(Links::createWithoutBaseUri([
                         'self' => new Link('/v1/logs/' . $log->getId() . '/relationships/user'),
                         'related' => new Link('/v1/logs/' . $log->getId() . '/user'),

@@ -34,12 +34,12 @@ class OrganizationGroupController extends AbstractResourceController
 {
     protected function getSingleDocument(): AbstractSuccessfulDocument
     {
-        return new OrganizationGroupDocument(new OrganizationGroupResourceTransformer());
+        return new OrganizationGroupDocument(new OrganizationGroupResourceTransformer($this->getAuthorizationChecker()));
     }
 
     protected function getCollectionDocument(): AbstractSuccessfulDocument
     {
-        return new OrganizationGroupsDocument(new OrganizationGroupResourceTransformer());
+        return new OrganizationGroupsDocument(new OrganizationGroupResourceTransformer($this->getAuthorizationChecker()));
     }
 
     protected function getRelatedResponses(): array
@@ -47,37 +47,37 @@ class OrganizationGroupController extends AbstractResourceController
         return [
             "children" => function (OrganizationGroup $group, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
-                    new OrganizationGroupRelatedEntitiesDocument(new OrganizationGroupResourceTransformer(), $group->getId(), $relationshipName),
+                    new OrganizationGroupRelatedEntitiesDocument(new OrganizationGroupResourceTransformer($this->getAuthorizationChecker()), $group->getId(), $relationshipName),
                     $group->getChildren()
                 );
             },
             "members" => function (OrganizationGroup $group, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
-                    new OrganizationGroupRelatedEntitiesDocument(new UserResourceTransformer(), $group->getId(), $relationshipName),
+                    new OrganizationGroupRelatedEntitiesDocument(new UserResourceTransformer($this->getAuthorizationChecker()), $group->getId(), $relationshipName),
                     $group->getMembers()
                 );
             },
             "organization" => function (OrganizationGroup $group, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
-                    new OrganizationGroupRelatedEntityDocument(new OrganizationResourceTransformer(), $group->getId(), $relationshipName),
+                    new OrganizationGroupRelatedEntityDocument(new OrganizationResourceTransformer($this->getAuthorizationChecker()), $group->getId(), $relationshipName),
                     $group->getOrganization()
                 );
             },
             "parent" => function (OrganizationGroup $group, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
-                    new OrganizationGroupRelatedEntityDocument(new OrganizationGroupResourceTransformer(), $group->getId(), $relationshipName),
+                    new OrganizationGroupRelatedEntityDocument(new OrganizationGroupResourceTransformer($this->getAuthorizationChecker()), $group->getId(), $relationshipName),
                     $group->getParent()
                 );
             },
             "secrets" => function (OrganizationGroup $group, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
-                    new OrganizationGroupRelatedEntitiesDocument(new SecretResourceTransformer(), $group->getId(), $relationshipName),
+                    new OrganizationGroupRelatedEntitiesDocument(new SecretResourceTransformer($this->getAuthorizationChecker()), $group->getId(), $relationshipName),
                     $group->getSecrets()
                 );
             },
             "vaults" => function (OrganizationGroup $group, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
-                    new OrganizationGroupRelatedEntitiesDocument(new VaultResourceTransformer(), $group->getId(), $relationshipName),
+                    new OrganizationGroupRelatedEntitiesDocument(new VaultResourceTransformer($this->getAuthorizationChecker()), $group->getId(), $relationshipName),
                     $group->getVaults()
                 );
             },
@@ -107,7 +107,7 @@ class OrganizationGroupController extends AbstractResourceController
     public function new(ValidatorInterface $validator): ResponseInterface
     {
         return $this->resourceNew(
-            new OrganizationGroup(), $validator, new CreateOrganizationGroupHydrator($this->getDoctrine()->getManager())
+            new OrganizationGroup(), $validator, new CreateOrganizationGroupHydrator($this->getDoctrine()->getManager(), $this->getAuthorizationChecker())
         );
     }
 
@@ -133,7 +133,7 @@ class OrganizationGroupController extends AbstractResourceController
     public function edit(OrganizationGroup $group, ValidatorInterface $validator): ResponseInterface
     {
         return $this->resourceHydrate(
-            $group, $validator, new UpdateOrganizationGroupHydrator($this->getDoctrine()->getManager())
+            $group, $validator, new UpdateOrganizationGroupHydrator($this->getDoctrine()->getManager(), $this->getAuthorizationChecker())
         );
     }
 
@@ -165,7 +165,7 @@ class OrganizationGroupController extends AbstractResourceController
     public function editRelationships(OrganizationGroup $group, ValidatorInterface $validator): ResponseInterface
     {
         return $this->resourceHydrateRelationships(
-            $group, $validator, new UpdateRelationshipOrganizationGroupHydrator($this->getDoctrine()->getManager())
+            $group, $validator, new UpdateRelationshipOrganizationGroupHydrator($this->getDoctrine()->getManager(), $this->getAuthorizationChecker())
         );
     }
 
@@ -178,7 +178,7 @@ class OrganizationGroupController extends AbstractResourceController
     public function addRelationships(OrganizationGroup $group, ValidatorInterface $validator): ResponseInterface
     {
         return $this->resourceHydrateRelationships(
-            $group, $validator, new CreateRelationshipOrganizationGroupHydrator($this->getDoctrine()->getManager())
+            $group, $validator, new CreateRelationshipOrganizationGroupHydrator($this->getDoctrine()->getManager(), $this->getAuthorizationChecker())
         );
     }
 
@@ -191,7 +191,7 @@ class OrganizationGroupController extends AbstractResourceController
     public function deleteRelationships(OrganizationGroup $group, ValidatorInterface $validator): ResponseInterface
     {
         return $this->resourceHydrateRelationships(
-            $group, $validator, new DeleteRelationshipOrganizationGroupHydrator($this->getDoctrine()->getManager())
+            $group, $validator, new DeleteRelationshipOrganizationGroupHydrator($this->getDoctrine()->getManager(), $this->getAuthorizationChecker())
         );
     }
 

@@ -12,7 +12,6 @@ use WoohooLabs\Yin\JsonApi\Schema\Link;
 use WoohooLabs\Yin\JsonApi\Schema\Links;
 use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToManyRelationship;
 use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToOneRelationship;
-use WoohooLabs\Yin\JsonApi\Schema\Resource\AbstractResource;
 
 /**
  * Vault Resource Transformer.
@@ -54,7 +53,7 @@ class VaultResourceTransformer extends AbstractResource
     /**
      * @inheritDoc
      */
-    public function getAttributes($vault): array
+    public function getResourceAttributes($vault): array
     {
         return [
             'name' => function(Vault $vault) {
@@ -74,12 +73,12 @@ class VaultResourceTransformer extends AbstractResource
     /**
      * @inheritDoc
      */
-    public function getRelationships($vault): array
+    public function getResourceRelationships($vault): array
     {
         return [
             'secrets' => function (Vault $vault) {
                 return ToManyRelationship::create()
-                    ->setData($vault->getSecrets(), new SecretResourceTransformer())
+                    ->setData($vault->getSecrets(), new SecretResourceTransformer($this->authorizationChecker))
                     ->setLinks(Links::createWithoutBaseUri([
                         'self' => new Link('/v1/vaults/'. $vault->getId() . '/relationships/secrets'),
                         'related' => new Link('/v1/vaults/'. $vault->getId() . '/secrets'),
@@ -88,9 +87,9 @@ class VaultResourceTransformer extends AbstractResource
             'owner' => function (Vault $vault) {
                 $owner = $vault->getOwner();
                 if ($owner instanceof User)
-                    $transformer = new UserResourceTransformer();
+                    $transformer = new UserResourceTransformer($this->authorizationChecker);
                 else if ($owner instanceof OrganizationGroup)
-                    $transformer = new OrganizationGroupResourceTransformer();
+                    $transformer = new OrganizationGroupResourceTransformer($this->authorizationChecker);
                 else
                     throw new LogicException();
                 return ToOneRelationship::create()

@@ -13,6 +13,11 @@ use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship;
 
 class CreateOrganizationGroupHydrator extends AbstractOrganizationGroupHydrator
 {
+    protected function getContext(): string
+    {
+        return self::CREATION;
+    }
+
     protected function getRelationshipHydrator($group): array
     {
         return [
