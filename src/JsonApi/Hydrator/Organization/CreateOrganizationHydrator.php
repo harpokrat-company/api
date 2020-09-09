@@ -42,6 +42,7 @@ class CreateOrganizationHydrator extends AbstractOrganizationHydrator
                     throw new AccessDeniedHttpException();
                 }
                 $organization->setOwner($owner);
+                $organization->addMember($owner);
             },
         ];
     }
