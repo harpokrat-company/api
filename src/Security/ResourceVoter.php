@@ -35,7 +35,7 @@ abstract class ResourceVoter extends Voter
         if (!array_key_exists($attribute, $attributesFunctions)) {
             foreach (self::MACROS as $from => $to) {
                 if (substr($attribute, 0, strlen($from)) === $from) {
-                    $this->voteOnAttribute($to, $subject, $token);
+                    return $this->voteOnAttribute($to, $subject, $token);
                 }
             }
             return $this->attributeDefault($attribute, $subject, $token);

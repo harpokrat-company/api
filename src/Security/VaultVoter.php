@@ -33,7 +33,9 @@ class VaultVoter extends ResourceVoter
             return $this->isMember($subject, $user);
         };
         return [
-            /* 'create' => $member, TODO : fix this*/
+            'create' => function ($subject, TokenInterface $token) {
+                return $token->getUser() instanceof User;
+            }, /* TODO : fix this */
             'view' => $member,
             'edit' => $owner,
             'edit-secrets' => $member,
