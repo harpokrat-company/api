@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Security;
-
 
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -22,6 +20,7 @@ class UserVoter extends ResourceVoter
         $false = function (User $subject, TokenInterface $token) {
             return false;
         };
+
         return [
             'edit' => $self,
             'delete' => $false,
@@ -32,10 +31,12 @@ class UserVoter extends ResourceVoter
         ];
     }
 
-    private function isUser(User $subject, TokenInterface $token) {
-        if (!$user = $token->getUser())
+    private function isUser(User $subject, TokenInterface $token)
+    {
+        if (!$user = $token->getUser()) {
             return false;
+        }
+
         return $user === $subject;
     }
-
 }

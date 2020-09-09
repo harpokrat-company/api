@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Security;
-
 
 use App\Entity\OrganizationGroup;
 use App\Entity\User;
@@ -23,6 +21,7 @@ class VaultVoter extends ResourceVoter
             if (!$user = $token->getUser()) {
                 return false;
             }
+
             return $this->isOwner($subject, $user);
         };
         $member = function ($subject, TokenInterface $token) {
@@ -30,8 +29,10 @@ class VaultVoter extends ResourceVoter
             if (!$user = $token->getUser()) {
                 return false;
             }
+
             return $this->isMember($subject, $user);
         };
+
         return [
             'create' => function ($subject, TokenInterface $token) {
                 return $token->getUser() instanceof User;
@@ -43,21 +44,29 @@ class VaultVoter extends ResourceVoter
         ];
     }
 
-    public function isOwner(Vault $vault, User $user) {
+    public function isOwner(Vault $vault, User $user)
+    {
         $owner = $vault->getOwner();
-        if ($owner instanceof User)
+        if ($owner instanceof User) {
             return $owner === $user;
-        if ($owner instanceof OrganizationGroup)
+        }
+        if ($owner instanceof OrganizationGroup) {
             return $owner->getOrganization()->getOwner() === $user;
+        }
+
         return false;
     }
 
-    public function isMember(Vault $vault, User $user) {
+    public function isMember(Vault $vault, User $user)
+    {
         $owner = $vault->getOwner();
-        if ($owner instanceof User)
+        if ($owner instanceof User) {
             return $owner === $user;
-        if ($owner instanceof OrganizationGroup)
+        }
+        if ($owner instanceof OrganizationGroup) {
             return $owner->getMembers()->contains($user);
+        }
+
         return false;
     }
 }

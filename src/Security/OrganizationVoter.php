@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Security;
-
 
 use App\Entity\Organization;
 use App\Entity\User;
@@ -21,6 +19,7 @@ class OrganizationVoter extends ResourceVoter
         if (!$user = $token->getUser()) {
             return false;
         }
+
         return $this->isOwner($subject, $user) || $this->isMember($subject, $user);
     }
 
@@ -31,6 +30,7 @@ class OrganizationVoter extends ResourceVoter
             if (!$user = $token->getUser()) {
                 return false;
             }
+
             return $this->isOwner($subject, $user);
         };
         $member = function ($subject, TokenInterface $token) {
@@ -38,8 +38,10 @@ class OrganizationVoter extends ResourceVoter
             if (!$user = $token->getUser()) {
                 return false;
             }
+
             return $this->isOwner($subject, $user) || $this->isMember($subject, $user);
         };
+
         return [
             'create' => function ($subject, TokenInterface $token) {
                 return $token->getUser() instanceof User;
@@ -50,11 +52,13 @@ class OrganizationVoter extends ResourceVoter
         ];
     }
 
-    private function isOwner(Organization $subject, User $user): bool {
+    private function isOwner(Organization $subject, User $user): bool
+    {
         return $subject->getOwner() === $user;
     }
 
-    private function isMember(Organization $subject, User $user): bool {
+    private function isMember(Organization $subject, User $user): bool
+    {
         return $subject->getMembers()->contains($user);
     }
 }

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Security;
 
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -20,6 +19,7 @@ abstract class ResourceVoter extends Voter
         if (!$subject instanceof $this->resourceClass) {
             return false;
         }
+
         return true;
     }
 
@@ -38,12 +38,15 @@ abstract class ResourceVoter extends Voter
                     return $this->voteOnAttribute($to, $subject, $token);
                 }
             }
+
             return $this->attributeDefault($attribute, $subject, $token);
         }
+
         return $attributesFunctions[$attribute]($subject, $token);
     }
 
-    protected function attributeDefault($attribute, $subject, TokenInterface $token) {
+    protected function attributeDefault($attribute, $subject, TokenInterface $token)
+    {
         return true;
     }
 

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Security;
-
 
 use App\Entity\OrganizationGroup;
 use App\Entity\User;
@@ -21,6 +19,7 @@ class OrganizationGroupVoter extends ResourceVoter
         if (!$user = $token->getUser()) {
             return false;
         }
+
         return $this->isOwner($subject, $user) || $this->isOrganizationMember($subject, $user);
     }
 
@@ -31,6 +30,7 @@ class OrganizationGroupVoter extends ResourceVoter
             if (!$user = $token->getUser()) {
                 return false;
             }
+
             return $this->isOwner($subject, $user);
         };
         $organizationMember = function ($subject, TokenInterface $token) {
@@ -38,6 +38,7 @@ class OrganizationGroupVoter extends ResourceVoter
             if (!$user = $token->getUser()) {
                 return false;
             }
+
             return $this->isOwner($subject, $user) || $this->isOrganizationMember($subject, $user);
         };
         $members = function ($subject, TokenInterface $token) {
@@ -45,8 +46,10 @@ class OrganizationGroupVoter extends ResourceVoter
             if (!$user = $token->getUser()) {
                 return false;
             }
+
             return $this->isOwner($subject, $user) || $this->isMember($subject, $user);
         };
+
         return [
             'create' => function ($subject, TokenInterface $token) {
                 return $token->getUser() instanceof User;
@@ -61,15 +64,18 @@ class OrganizationGroupVoter extends ResourceVoter
         ];
     }
 
-    private function isOwner(OrganizationGroup $subject, User $user): bool {
+    private function isOwner(OrganizationGroup $subject, User $user): bool
+    {
         return $subject->getOrganization()->getOwner() === $user;
     }
 
-    private function isMember(OrganizationGroup $subject, User $user): bool {
+    private function isMember(OrganizationGroup $subject, User $user): bool
+    {
         return $subject->getMembers()->contains($user);
     }
 
-    private function isOrganizationMember(OrganizationGroup $subject, User $user): bool {
+    private function isOrganizationMember(OrganizationGroup $subject, User $user): bool
+    {
         return $subject->getOrganization()->getOwner() === $user;
     }
 }

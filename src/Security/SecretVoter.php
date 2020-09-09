@@ -1,10 +1,7 @@
 <?php
 
-
 namespace App\Security;
 
-
-use App\Entity\Organization;
 use App\Entity\OrganizationGroup;
 use App\Entity\Secret;
 use App\Entity\User;
@@ -25,6 +22,7 @@ class SecretVoter extends ResourceVoter
             if (!$user = $token->getUser()) {
                 return false;
             }
+
             return $this->isOwner($subject, $user);
         };
         $private = function ($subject, TokenInterface $token) {
@@ -32,8 +30,10 @@ class SecretVoter extends ResourceVoter
             if (!$user = $token->getUser()) {
                 return false;
             }
+
             return $subject->isPrivate ? $this->isMember($subject, $user) : true;
         };
+
         return [
             'create' => function ($subject, TokenInterface $token) {
                 return $token->getUser() instanceof User;
@@ -44,33 +44,45 @@ class SecretVoter extends ResourceVoter
         ];
     }
 
-    public function isOwner(Secret $secret, User $user) {
+    public function isOwner(Secret $secret, User $user)
+    {
         $owner = $secret->getOwner();
-        if ($owner instanceof User)
+        if ($owner instanceof User) {
             return $owner === $user;
-        if ($owner instanceof OrganizationGroup)
-            return $owner->getOrganization()->getOwner() === $user;
-        if ($owner instanceof Vault) {
-            if ($owner instanceof User)
-                return $owner === $user;
-            if ($owner instanceof OrganizationGroup)
-                return $owner->getOrganization()->getOwner() === $user;
         }
+        if ($owner instanceof OrganizationGroup) {
+            return $owner->getOrganization()->getOwner() === $user;
+        }
+        if ($owner instanceof Vault) {
+            if ($owner instanceof User) {
+                return $owner === $user;
+            }
+            if ($owner instanceof OrganizationGroup) {
+                return $owner->getOrganization()->getOwner() === $user;
+            }
+        }
+
         return false;
     }
 
-    public function isMember(Secret $secret, User $user) {
+    public function isMember(Secret $secret, User $user)
+    {
         $owner = $secret->getOwner();
-        if ($owner instanceof User)
+        if ($owner instanceof User) {
             return $owner === $user;
-        if ($owner instanceof OrganizationGroup)
-            return $owner->getMembers()->contains($user);
-        if ($owner instanceof Vault) {
-            if ($owner instanceof User)
-                return $owner === $user;
-            if ($owner instanceof OrganizationGroup)
-                return $owner->getMembers()->contains($user);
         }
+        if ($owner instanceof OrganizationGroup) {
+            return $owner->getMembers()->contains($user);
+        }
+        if ($owner instanceof Vault) {
+            if ($owner instanceof User) {
+                return $owner === $user;
+            }
+            if ($owner instanceof OrganizationGroup) {
+                return $owner->getMembers()->contains($user);
+            }
+        }
+
         return false;
     }
 }
