@@ -1,13 +1,10 @@
 <?php
 
-
 namespace App\Controller;
 
-
-use App\JsonApi\Document\ReCaptchaDocument;
+use App\JsonApi\Document\ReCaptcha\ReCaptchaDocument;
 use Paknahad\JsonApiBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\LockedException;
 use WoohooLabs\Yin\JsonApi\JsonApi;
 
 /**
@@ -15,30 +12,28 @@ use WoohooLabs\Yin\JsonApi\JsonApi;
  */
 class ReCaptchaController extends Controller
 {
-    private $siteKey;
+    private $siteKeys;
 
     private $enabled;
 
     /**
      * ReCaptchaController constructor.
-     * @param JsonApi $jsonApi
-     * @param string $siteKey
-     * @param bool $enabled
      */
-    public function __construct(JsonApi $jsonApi, string $siteKey, bool $enabled)
+    public function __construct(JsonApi $jsonApi, array $siteKeys, bool $enabled)
     {
         parent::__construct($jsonApi);
-        $this->siteKey = $siteKey;
+        $this->siteKeys = $siteKeys;
         $this->enabled = $enabled;
     }
 
     /**
      * @Route("", name="recaptcha", methods="GET")
      */
-    public function siteKey() {
+    public function siteKey()
+    {
         return $this->jsonApi()->respond()->ok(
             new ReCaptchaDocument(),
-            ['siteKey' => $this->siteKey]
+            $this->siteKeys
         );
     }
 }

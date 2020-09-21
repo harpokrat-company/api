@@ -1,9 +1,16 @@
 services:
 
     # Inject this service in your controllers/services to verify a submitted captcha.
-    ReCaptcha\ReCaptcha:
+    ReCaptchaTickbox:
+        class: ReCaptcha\ReCaptcha
         arguments:
-            $secret: '%google_recaptcha_secret%'
+            $secret: '%google_recaptcha_tickbox_secret%'
+            $requestMethod: '@ReCaptcha\RequestMethod'
+
+    ReCaptchaAndroid:
+        class: ReCaptcha\ReCaptcha
+        arguments:
+            $secret: '%google_recaptcha_android_secret%'
             $requestMethod: '@ReCaptcha\RequestMethod'
 
     # Curl is set here as default transport to communicate with Google servers.

@@ -4,8 +4,10 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
-    google_recaptcha_secret: '%env(GOOGLE_RECAPTCHA_SECRET)%'
+    google_recaptcha_tickbox_site_key: '%env(GOOGLE_RECAPTCHA_TICKBOX_SITE_KEY)%'
+    google_recaptcha_tickbox_secret: '%env(GOOGLE_RECAPTCHA_TICKBOX_SECRET)%'
+    google_recaptcha_android_site_key: '%env(GOOGLE_RECAPTCHA_ANDROID_SITE_KEY)%'
+    google_recaptcha_android_secret: '%env(GOOGLE_RECAPTCHA_ANDROID_SECRET)%'
     google_recaptcha_enabled: '%env(bool:GOOGLE_RECAPTCHA_ENABLED)%'
 
 services:
@@ -14,8 +16,8 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
         public: false       # Allows optimizing the container by removing unused services; this also means
-                            # fetching services directly from the container via $container->get() won't work.
-                            # The best practice is to be explicit about your dependencies anyway.
+        # fetching services directly from the container via $container->get() won't work.
+        # The best practice is to be explicit about your dependencies anyway.
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -81,12 +83,17 @@ services:
     App\EventSubscriber\ReCaptchaSubscriber:
         class: App\EventSubscriber\ReCaptchaSubscriber
         arguments:
-            - '@ReCaptcha\ReCaptcha'
+            - '@ReCaptchaTickbox'
+            - '@ReCaptchaAndroid'
             - '%google_recaptcha_enabled%'
 
     App\Controller\ReCaptchaController:
         class: App\Controller\ReCaptchaController
         arguments:
             - '@WoohooLabs\Yin\JsonApi\JsonApi'
-            - '%google_recaptcha_site_key%'
+            -
+                - type: !php/const App\EventSubscriber\ReCaptchaSubscriber::RECAPTCHA_TYPE_ANDROID
+                  siteKey: '%google_recaptcha_android_site_key%'
+                - type: !php/const App\EventSubscriber\ReCaptchaSubscriber::RECAPTCHA_TYPE_TICKBOX
+                  siteKey: '%google_recaptcha_tickbox_site_key%'
             - '%google_recaptcha_enabled%'
