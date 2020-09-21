@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\JsonApi\Document;
+namespace App\JsonApi\Document\ReCaptcha;
 
 
 use WoohooLabs\Yin\JsonApi\Schema\Document\AbstractSimpleResourceDocument;
@@ -28,13 +28,18 @@ class ReCaptchaDocument extends AbstractSimpleResourceDocument
 
     protected function getResource(): array
     {
+        $attributes = [];
+        foreach ($this->domainObject as $recaptcha) {
+            $attributes[$recaptcha['type']] = [
+                'type' => $recaptcha['type'],
+                'siteKey' => $recaptcha['siteKey'],
+            ];
+        }
+
         return [
             'id' => '1',
             'type' => 'recaptcha',
-            'attributes' => [
-                'type' => 'v2 Tickbox',
-                'siteKey' => $this->domainObject['siteKey'],
-            ],
+            'attributes' => $attributes
         ];
     }
 }
