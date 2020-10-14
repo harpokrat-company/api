@@ -10,7 +10,7 @@
         "google/recaptcha": "^1.2",
         "lexik/jwt-authentication-bundle": "^2.6",
         "nelmio/cors-bundle": "^1.5",
-        "paknahad/jsonapi-bundle": "^2.2",
+        "paknahad/jsonapi-bundle": "^3.1",
         "ramsey/uuid-doctrine": "^1.5",
         "symfony/console": "^4.3",
         "symfony/dotenv": "^4.3",
