@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e640908513a1213427d1bf7644182838",
+    "content-hash": "71826839a9cc86d259e83a9f1514e32d",
     "packages": [
         {
             "name": "brick/math",
@@ -5906,20 +5906,20 @@
         },
         {
             "name": "symfony/templating",
-            "version": "v4.4.9",
+            "version": "v5.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/templating.git",
-                "reference": "c28d2d167b7e8487b1f14f2da358ce19e703d14b"
+                "reference": "da663fb642e2c0aea7c8fa27056fe978dd618170"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/templating/zipball/c28d2d167b7e8487b1f14f2da358ce19e703d14b",
-                "reference": "c28d2d167b7e8487b1f14f2da358ce19e703d14b",
+                "url": "https://api.github.com/repos/symfony/templating/zipball/da663fb642e2c0aea7c8fa27056fe978dd618170",
+                "reference": "da663fb642e2c0aea7c8fa27056fe978dd618170",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.1.3",
+                "php": ">=7.2.5",
                 "symfony/polyfill-ctype": "~1.8"
             },
             "require-dev": {
@@ -5931,7 +5931,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.4-dev"
+                    "dev-master": "5.1-dev"
                 }
             },
             "autoload": {
@@ -5972,7 +5972,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-05-26T09:42:42+00:00"
+            "time": "2020-09-02T16:23:27+00:00"
         },
         {
             "name": "symfony/translation-contracts",
