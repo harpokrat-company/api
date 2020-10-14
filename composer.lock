@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e640908513a1213427d1bf7644182838",
+    "content-hash": "3d9f5eecd90a440d557a777a42b99fea",
     "packages": [
         {
             "name": "brick/math",
@@ -6825,30 +6825,26 @@
         },
         {
             "name": "phootwork/collection",
-            "version": "v1.6.1",
+            "version": "v2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phootwork/collection.git",
-                "reference": "87def4453e84b98ce516d647bf23e4c497d4b95c"
+                "reference": "bcb40b96a9d8ac48078d67d4dc46302692554862"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phootwork/collection/zipball/87def4453e84b98ce516d647bf23e4c497d4b95c",
-                "reference": "87def4453e84b98ce516d647bf23e4c497d4b95c",
+                "url": "https://api.github.com/repos/phootwork/collection/zipball/bcb40b96a9d8ac48078d67d4dc46302692554862",
+                "reference": "bcb40b96a9d8ac48078d67d4dc46302692554862",
                 "shasum": ""
             },
             "require": {
-                "phootwork/lang": "~0",
-                "php": ">=5.6"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^5.7",
-                "sami/sami": "^4|^3"
+                "phootwork/lang": "^2.0",
+                "php": ">=7.2"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "phootwork\\collection\\": "src"
+                    "phootwork\\collection\\": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -6861,44 +6857,45 @@
                     "homepage": "http://gos.si"
                 }
             ],
-            "description": "PHP Collections library (List, Set, Map, Queue & Stack)",
+            "description": "The phootwork library fills gaps in the php language and provides better solutions than the existing ones php offers.",
+            "homepage": "https://phootwork.github.io/collection/",
             "keywords": [
+                "Array object",
+                "Text object",
                 "collection",
                 "collections",
+                "json",
                 "list",
                 "map",
                 "queue",
                 "set",
-                "stack"
+                "stack",
+                "xml"
             ],
-            "time": "2018-09-15T11:41:17+00:00"
+            "time": "2020-02-05T06:21:39+00:00"
         },
         {
             "name": "phootwork/lang",
-            "version": "v0.9",
+            "version": "v2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phootwork/lang.git",
-                "reference": "752482b0c8f60d005414b0cb81646f72bf929724"
+                "reference": "637577f250ec25457fa44f6f1171079ee4c55da9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phootwork/lang/zipball/752482b0c8f60d005414b0cb81646f72bf929724",
-                "reference": "752482b0c8f60d005414b0cb81646f72bf929724",
+                "url": "https://api.github.com/repos/phootwork/lang/zipball/637577f250ec25457fa44f6f1171079ee4c55da9",
+                "reference": "637577f250ec25457fa44f6f1171079ee4c55da9",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.6",
-                "symfony/polyfill-mbstring": "~1.8"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^5.7",
-                "sami/sami": "^4.1.0"
+                "php": ">=7.2",
+                "symfony/polyfill-mbstring": "^1.12"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "phootwork\\lang\\": "src"
+                    "phootwork\\lang\\": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -6912,13 +6909,14 @@
                 }
             ],
             "description": "Missing PHP language constructs",
+            "homepage": "https://phootwork.github.io/lang/",
             "keywords": [
                 "array",
                 "comparator",
                 "comparison",
                 "string"
             ],
-            "time": "2018-08-04T14:22:05+00:00"
+            "time": "2020-01-08T16:32:36+00:00"
         },
         {
             "name": "symfony/maker-bundle",

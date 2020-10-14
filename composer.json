@@ -71,7 +71,7 @@
         }
     },
     "require-dev": {
-        "phootwork/collection": "^1.6",
+        "phootwork/collection": "^2.0",
         "symfony/maker-bundle": "^1.13"
     }
 }
