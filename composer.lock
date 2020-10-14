@@ -5976,16 +5976,16 @@
         },
         {
             "name": "symfony/translation-contracts",
-            "version": "v2.1.2",
+            "version": "v2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/translation-contracts.git",
-                "reference": "e5ca07c8f817f865f618aa072c2fe8e0e637340e"
+                "reference": "e2eaa60b558f26a4b0354e1bbb25636efaaad105"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/e5ca07c8f817f865f618aa072c2fe8e0e637340e",
-                "reference": "e5ca07c8f817f865f618aa072c2fe8e0e637340e",
+                "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/e2eaa60b558f26a4b0354e1bbb25636efaaad105",
+                "reference": "e2eaa60b558f26a4b0354e1bbb25636efaaad105",
                 "shasum": ""
             },
             "require": {
@@ -5997,7 +5997,11 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.1-dev"
+                    "dev-master": "2.3-dev"
+                },
+                "thanks": {
+                    "name": "symfony/contracts",
+                    "url": "https://github.com/symfony/contracts"
                 }
             },
             "autoload": {
@@ -6043,7 +6047,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-05-20T17:43:50+00:00"
+            "time": "2020-09-28T13:05:58+00:00"
         },
         {
             "name": "symfony/twig-bridge",
@@ -6253,16 +6257,16 @@
         },
         {
             "name": "symfony/validator",
-            "version": "v4.4.9",
+            "version": "v4.4.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/validator.git",
-                "reference": "2fae3378102cff29976ce9e35f6964c78fce02b6"
+                "reference": "8da71f775b7e1ffeed784d27f526527bb8e9504b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/validator/zipball/2fae3378102cff29976ce9e35f6964c78fce02b6",
-                "reference": "2fae3378102cff29976ce9e35f6964c78fce02b6",
+                "url": "https://api.github.com/repos/symfony/validator/zipball/8da71f775b7e1ffeed784d27f526527bb8e9504b",
+                "reference": "8da71f775b7e1ffeed784d27f526527bb8e9504b",
                 "shasum": ""
             },
             "require": {
@@ -6356,7 +6360,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-05-30T18:50:54+00:00"
+            "time": "2020-09-27T03:36:23+00:00"
         },
         {
             "name": "symfony/var-dumper",
