@@ -3,7 +3,7 @@
 namespace App\JsonApi\Hydrator\Secret;
 
 use App\Entity\Secret;
-use App\Exception\NotImplementedException;
+use App\Exception\InvalidPropertyException;
 use App\JsonApi\Hydrator\AbstractHydrator;
 use App\JsonApi\Hydrator\ResourceHydratorTrait;
 use Paknahad\JsonApiBundle\Exception\InvalidAttributeException;
@@ -95,7 +95,7 @@ abstract class AbstractSecretHydrator extends AbstractHydrator
     {
         return [
             'owner' => function (Secret $secret, ToOneRelationship $relationship, $data, $relationshipName) {
-                throw new NotImplementedException();
+                throw new InvalidPropertyException($relationshipName);
             },
         ];
     }

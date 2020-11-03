@@ -11,6 +11,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use WoohooLabs\Yin\JsonApi\Exception\JsonApiExceptionInterface;
 use WoohooLabs\Yin\JsonApi\Hydrator\HydratorInterface;
 use WoohooLabs\Yin\JsonApi\Hydrator\UpdateRelationshipHydratorInterface;
 use WoohooLabs\Yin\JsonApi\Schema\Document\AbstractSuccessfulDocument;
@@ -32,6 +33,40 @@ abstract class AbstractResourceController extends Controller
 
     abstract protected function getRelatedResponses(): array;
 
+    private function hydrate(object $domainObject, ValidatorInterface $validator, HydratorInterface $hydrator)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        try {
+            $domainObject = $this->jsonApi()->hydrate(
+                $hydrator,
+                $domainObject
+            );
+        } catch (JsonApiExceptionInterface $exception) {
+            $entityManager->clear();
+
+            return $this->jsonApi()->respond()->genericError(
+                $exception->getErrorDocument()
+            );
+        }
+
+        /** @var ConstraintViolationList $errors */
+        $errors = $validator->validate($domainObject);
+        if ($errors->count() > 0) {
+            $entityManager->clear();
+
+            return $this->validationErrorResponse($errors);
+        }
+
+        $entityManager->persist($domainObject);
+        $entityManager->flush();
+
+        return $this->jsonApi()->respond()->ok(
+            $this->getSingleDocument(),
+            $domainObject
+        );
+    }
+
     /**
      * @throws EntityNotFoundException
      */
@@ -52,28 +87,7 @@ abstract class AbstractResourceController extends Controller
     {
         $this->denyAccessUnlessGranted('create', $domainObject);
 
-        $domainObject = $this->jsonApi()->hydrate(
-            $hydrator,
-            $domainObject
-        );
-
-        $entityManager = $this->getDoctrine()->getManager();
-
-        /** @var ConstraintViolationList $errors */
-        $errors = $validator->validate($domainObject);
-        if ($errors->count() > 0) {
-            $entityManager->clear();
-
-            return $this->validationErrorResponse($errors);
-        }
-
-        $entityManager->persist($domainObject);
-        $entityManager->flush();
-
-        return $this->jsonApi()->respond()->ok(
-            $this->getSingleDocument(),
-            $domainObject
-        );
+        return $this->hydrate($domainObject, $validator, $hydrator);
     }
 
     public function resourceShow(object $domainObject)
@@ -90,27 +104,7 @@ abstract class AbstractResourceController extends Controller
     {
         $this->denyAccessUnlessGranted('edit', $domainObject);
 
-        $domainObject = $this->jsonApi()->hydrate(
-            $hydrator,
-            $domainObject
-        );
-
-        $entityManager = $this->getDoctrine()->getManager();
-
-        /** @var ConstraintViolationList $errors */
-        $errors = $validator->validate($domainObject);
-        if ($errors->count() > 0) {
-            $entityManager->clear();
-
-            return $this->validationErrorResponse($errors);
-        }
-
-        $entityManager->flush();
-
-        return $this->jsonApi()->respond()->ok(
-            $this->getSingleDocument(),
-            $domainObject
-        );
+        return $this->hydrate($domainObject, $validator, $hydrator);
     }
 
     public function resourceDelete(object $domainObject)
@@ -146,14 +140,22 @@ abstract class AbstractResourceController extends Controller
         $this->denyAccessUnlessGranted('edit', $domainObject);
         $this->denyAccessUnlessGranted('edit-'.$relationshipName, $domainObject);
 
-        // TODO : relationship not exist
-        $domainObject = $this->jsonApi()->hydrateRelationship(
-            $relationshipName,
-            $hydrator,
-            $domainObject
-        );
-
         $entityManager = $this->getDoctrine()->getManager();
+
+        // TODO : relationship not exist
+        try {
+            $domainObject = $this->jsonApi()->hydrateRelationship(
+                $relationshipName,
+                $hydrator,
+                $domainObject
+            );
+        } catch (JsonApiExceptionInterface $exception) {
+            $entityManager->clear();
+
+            return $this->jsonApi()->respond()->genericError(
+                $exception->getErrorDocument()
+            );
+        }
 
         /** @var ConstraintViolationList $errors */
         $errors = $validator->validate($domainObject);

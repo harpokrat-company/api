@@ -5,7 +5,7 @@ namespace App\JsonApi\Hydrator\OrganizationGroup;
 use App\Entity\Organization;
 use App\Entity\OrganizationGroup;
 use App\Entity\User;
-use App\Exception\NotImplementedException;
+use App\Exception\InvalidPropertyException;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToManyRelationship;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship;
 
@@ -45,7 +45,7 @@ class CreateOrganizationGroupHydrator extends AbstractOrganizationGroupHydrator
                 $group->setOrganization($organization);
             },
             'secrets' => function (OrganizationGroup $group, ToManyRelationship $relationship, $data, $relationshipName) {
-                throw new NotImplementedException();
+                throw new InvalidPropertyException($relationshipName);
             },
             'parent' => function (OrganizationGroup $group, ToOneRelationship $relationship, $data, $relationshipName) {
                 /** @var OrganizationGroup $parent */

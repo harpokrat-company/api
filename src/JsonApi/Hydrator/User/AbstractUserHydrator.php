@@ -3,7 +3,7 @@
 namespace App\JsonApi\Hydrator\User;
 
 use App\Entity\User;
-use App\Exception\NotImplementedException;
+use App\Exception\InvalidPropertyException;
 use App\JsonApi\Hydrator\AbstractHydrator;
 use App\JsonApi\Hydrator\ResourceHydratorTrait;
 use Paknahad\JsonApiBundle\Exception\InvalidAttributeException;
@@ -104,16 +104,16 @@ abstract class AbstractUserHydrator extends AbstractHydrator
     {
         return [
             'logs' => function (User $user, ToManyRelationship $relationship, $data, $relationshipName) {
-                throw new NotImplementedException();
+                throw new InvalidPropertyException($relationshipName);
             },
             'organizations' => function (User $user, ToManyRelationship $relationship, $data, $relationshipName) {
-                throw new NotImplementedException();
+                throw new InvalidPropertyException($relationshipName);
             },
             'ownedOrganizations' => function (User $user, ToManyRelationship $relationship, $data, $relationshipName) {
-                throw new NotImplementedException();
+                throw new InvalidPropertyException($relationshipName);
             },
             'secrets' => function (User $user, ToManyRelationship $relationship, $data, $relationshipName) {
-                throw new NotImplementedException();
+                throw new InvalidPropertyException($relationshipName);
             },
         ];
     }
