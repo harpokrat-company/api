@@ -4,7 +4,7 @@ namespace App\JsonApi\Hydrator\User;
 
 use App\Entity\Organization;
 use App\Entity\User;
-use App\Exception\NotImplementedException;
+use App\Exception\InvalidPropertyException;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToManyRelationship;
 
 class DeleteRelationshipUserHydrator extends AbstractUserHydrator
@@ -13,7 +13,7 @@ class DeleteRelationshipUserHydrator extends AbstractUserHydrator
     {
         return [
             'logs' => function (User $user, ToManyRelationship $relationship, $data, $relationshipName) {
-                throw new NotImplementedException();
+                throw new InvalidPropertyException($relationshipName);
             },
             'organizations' => function (User $user, ToManyRelationship $relationship, $data, $relationshipName) {
                 /** @var Organization[] $organizations */
@@ -26,10 +26,10 @@ class DeleteRelationshipUserHydrator extends AbstractUserHydrator
                 }
             },
             'ownedOrganizations' => function (User $user, ToManyRelationship $relationship, $data, $relationshipName) {
-                throw new NotImplementedException();
+                throw new InvalidPropertyException($relationshipName);
             },
             'secrets' => function (User $user, ToManyRelationship $relationship, $data, $relationshipName) {
-                throw new NotImplementedException();
+                throw new InvalidPropertyException($relationshipName);
             },
         ];
     }
