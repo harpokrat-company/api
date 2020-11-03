@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Entity;
 
 use App\Entity\SecretOwnership\OrganizationGroupSecretOwnership;
@@ -114,6 +113,7 @@ class OrganizationGroup implements SecretOwnerInterface, VaultOwnerInterface
     public function setOrganization(Organization $organization): self
     {
         $this->organization = $organization;
+
         return $this;
     }
 
@@ -125,6 +125,7 @@ class OrganizationGroup implements SecretOwnerInterface, VaultOwnerInterface
     public function setMembers(array $members): self
     {
         $this->members = $members;
+
         return $this;
     }
 
@@ -142,6 +143,7 @@ class OrganizationGroup implements SecretOwnerInterface, VaultOwnerInterface
         if ($this->members->contains($member)) {
             $this->members->removeElement($member);
         }
+
         return $this;
     }
 
@@ -153,6 +155,7 @@ class OrganizationGroup implements SecretOwnerInterface, VaultOwnerInterface
     public function setChildren($children): self
     {
         $this->children = $children;
+
         return $this;
     }
 
@@ -161,6 +164,7 @@ class OrganizationGroup implements SecretOwnerInterface, VaultOwnerInterface
         if (!$this->children->contains($child)) {
             $this->children[] = $child;
         }
+
         return $this;
     }
 
@@ -169,20 +173,15 @@ class OrganizationGroup implements SecretOwnerInterface, VaultOwnerInterface
         if ($this->children->contains($child)) {
             $this->children->removeElement($child);
         }
+
         return $this;
     }
 
-    /**
-     * @return OrganizationGroup|null
-     */
     public function getParent(): ?OrganizationGroup
     {
         return $this->parent;
     }
 
-    /**
-     * @param OrganizationGroup|null $parent
-     */
     public function setParent(?OrganizationGroup $parent): void
     {
         $this->parent = $parent;

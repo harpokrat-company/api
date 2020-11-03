@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -81,6 +80,7 @@ class Organization
     public function setOwner(?User $owner): self
     {
         $this->owner = $owner;
+
         return $this;
     }
 
@@ -94,6 +94,7 @@ class Organization
         if (!$this->members->contains($member)) {
             $this->members[] = $member;
         }
+
         return $this;
     }
 
@@ -102,6 +103,7 @@ class Organization
         if ($this->members->contains($member)) {
             $this->members->removeElement($member);
         }
+
         return $this;
     }
 

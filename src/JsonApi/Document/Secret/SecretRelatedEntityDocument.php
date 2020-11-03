@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\JsonApi\Document\Secret;
-
 
 use WoohooLabs\Yin\JsonApi\Schema\Document\AbstractSingleResourceDocument;
 use WoohooLabs\Yin\JsonApi\Schema\JsonApiObject;
@@ -43,7 +41,7 @@ class SecretRelatedEntityDocument extends AbstractSingleResourceDocument
     public function getLinks(): Links
     {
         return Links::createWithoutBaseUri([
-            'self' => new Link('/v1/secrets/' . $this->secretId . '/' . $this->relationshipName),
+            'self' => new Link('/v1/secrets/'.$this->secretId.'/'.$this->relationshipName),
         ]);
     }
 }

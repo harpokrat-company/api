@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Service;
-
 
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -30,11 +28,6 @@ class EmailSenderService
     }
 
     /**
-     * @param string $sendTo
-     * @param string $subject
-     * @param string $template
-     * @param array  $variables
-     *
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
@@ -46,24 +39,24 @@ class EmailSenderService
         $mail->setFrom(self::SENDER_EMAIL_ADDRESS, 'Harpokrat');
         $mail->setTo($sendTo);
         // TODO Cleaner way to do the following ?
-        if ($this->twig->getLoader()->exists('mails/' . $template . '.html.twig')) {
+        if ($this->twig->getLoader()->exists('mails/'.$template.'.html.twig')) {
             $mail->setBody(
-                $this->twig->render('mails/' . $template . '.html.twig', $variables),
+                $this->twig->render('mails/'.$template.'.html.twig', $variables),
                 'text/html'
             );
-            if ($this->twig->getLoader()->exists('mails/' . $template . '.txt.twig')) {
+            if ($this->twig->getLoader()->exists('mails/'.$template.'.txt.twig')) {
                 $mail->addPart(
-                    $this->twig->render('mails/' . $template . '.txt.twig', $variables),
+                    $this->twig->render('mails/'.$template.'.txt.twig', $variables),
                     'text/plain'
                 );
             }
-        } elseif ($this->twig->getLoader()->exists('mails/' . $template . '.txt.twig')) {
+        } elseif ($this->twig->getLoader()->exists('mails/'.$template.'.txt.twig')) {
             $mail->setBody(
-                $this->twig->render('mails/' . $template . '.txt.twig', $variables),
+                $this->twig->render('mails/'.$template.'.txt.twig', $variables),
                 'text/plain'
             );
         } else {
-            throw new LoaderError('No HTML nor TXT twig template found for email type "' .  $template . '"');
+            throw new LoaderError('No HTML nor TXT twig template found for email type "'.$template.'"');
         }
         // TODO Sign mail
         $this->mailer->send($mail);

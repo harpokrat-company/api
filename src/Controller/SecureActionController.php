@@ -10,13 +10,11 @@ use App\JsonApi\Hydrator\SecureAction\UpdateSecureActionHydrator;
 use App\JsonApi\Transformer\SecureActionResourceTransformer;
 use App\Provider\SecureActionProvider;
 use Paknahad\JsonApiBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
-use Symfony\Component\Validator\ConstraintViolationList;
-use Symfony\Component\Routing\Annotation\Route;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use WoohooLabs\Yin\JsonApi\Document\ErrorDocument;
 use WoohooLabs\Yin\JsonApi\Schema\Error\Error;
@@ -30,8 +28,6 @@ class SecureActionController extends Controller
 {
     /**
      * @Route("/{id}", name="secure_actions_show", methods="GET")
-     * @param SecureAction $secureAction
-     * @return ResponseInterface
      */
     public function show(SecureAction $secureAction): ResponseInterface
     {
@@ -43,10 +39,7 @@ class SecureActionController extends Controller
 
     /**
      * @Route("", name="secure_actions_new", methods="POST")
-     * @param ValidatorInterface   $validator
-     * @param SecureActionProvider $secureActionProvider
      *
-     * @return ResponseInterface
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
@@ -63,7 +56,7 @@ class SecureActionController extends Controller
         }
 
         $secureAction = $secureActionProvider->userRegister($user, $secureAction);
-        if (is_null($secureAction)) {
+        if (\is_null($secureAction)) {
             throw new UnauthorizedHttpException('Bearer');
         }
 
@@ -75,11 +68,7 @@ class SecureActionController extends Controller
 
     /**
      * @Route("/{id}", name="secure_actions_edit", methods="PATCH")
-     * @param Request            $request
-     * @param SecureAction       $secureAction
-     * @param ValidatorInterface $validator
      *
-     * @return ResponseInterface
      * @throws \Exception
      */
     public function edit(Request $request, SecureAction $secureAction, ValidatorInterface $validator): ResponseInterface
@@ -114,6 +103,7 @@ class SecureActionController extends Controller
         $errors = $validator->validate($secureAction);
         if ($errors->count() > 0) {
             $entityManager->clear();
+
             return $this->validationErrorResponse($errors);
         }
 
@@ -138,7 +128,7 @@ class SecureActionController extends Controller
         );
     }
 
-    /**
+    /*
      * @Route("/{id}", name="secure_actions_delete", methods="DELETE")
      * @param Request      $request
      * @param SecureAction $secureAction

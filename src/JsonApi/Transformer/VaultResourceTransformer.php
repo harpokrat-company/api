@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\JsonApi\Transformer;
-
 
 use App\Entity\OrganizationGroup;
 use App\Entity\User;
@@ -19,7 +17,7 @@ use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToOneRelationship;
 class VaultResourceTransformer extends AbstractResource
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getType($vault): string
     {
@@ -27,7 +25,7 @@ class VaultResourceTransformer extends AbstractResource
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getId($vault): string
     {
@@ -35,7 +33,7 @@ class VaultResourceTransformer extends AbstractResource
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getMeta($vault): array
     {
@@ -43,7 +41,7 @@ class VaultResourceTransformer extends AbstractResource
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getLinks($vault): ?Links
     {
@@ -51,19 +49,19 @@ class VaultResourceTransformer extends AbstractResource
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getResourceAttributes($vault): array
     {
         return [
-            'name' => function(Vault $vault) {
+            'name' => function (Vault $vault) {
                 return $vault->getName();
-            }
+            },
         ];
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getDefaultIncludedRelationships($vault): array
     {
@@ -71,7 +69,7 @@ class VaultResourceTransformer extends AbstractResource
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getResourceRelationships($vault): array
     {
@@ -80,23 +78,25 @@ class VaultResourceTransformer extends AbstractResource
                 return ToManyRelationship::create()
                     ->setData($vault->getSecrets(), new SecretResourceTransformer($this->authorizationChecker))
                     ->setLinks(Links::createWithoutBaseUri([
-                        'self' => new Link('/v1/vaults/'. $vault->getId() . '/relationships/secrets'),
-                        'related' => new Link('/v1/vaults/'. $vault->getId() . '/secrets'),
+                        'self' => new Link('/v1/vaults/'.$vault->getId().'/relationships/secrets'),
+                        'related' => new Link('/v1/vaults/'.$vault->getId().'/secrets'),
                     ]));
             },
             'owner' => function (Vault $vault) {
                 $owner = $vault->getOwner();
-                if ($owner instanceof User)
+                if ($owner instanceof User) {
                     $transformer = new UserResourceTransformer($this->authorizationChecker);
-                else if ($owner instanceof OrganizationGroup)
+                } elseif ($owner instanceof OrganizationGroup) {
                     $transformer = new OrganizationGroupResourceTransformer($this->authorizationChecker);
-                else
+                } else {
                     throw new LogicException();
+                }
+
                 return ToOneRelationship::create()
                     ->setData($owner, $transformer)
                     ->setLinks(Links::createWithoutBaseUri([
-                        'self' => new Link('/v1/vaults/' . $vault->getId() . '/relationships/owner'),
-                        'related' => new Link('/v1/vaults/' . $vault->getId() . '/owner'),
+                        'self' => new Link('/v1/vaults/'.$vault->getId().'/relationships/owner'),
+                        'related' => new Link('/v1/vaults/'.$vault->getId().'/owner'),
                     ]));
             },
         ];

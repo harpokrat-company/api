@@ -12,9 +12,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -206,8 +206,6 @@ class User implements UserInterface, SecretOwnerInterface, VaultOwnerInterface
 
     /**
      * @param string $firstName
-     *
-     * @return User
      */
     public function setFirstName(?string $firstName): User
     {
@@ -226,8 +224,6 @@ class User implements UserInterface, SecretOwnerInterface, VaultOwnerInterface
 
     /**
      * @param string $lastName
-     *
-     * @return User
      */
     public function setLastName(?string $lastName): User
     {
@@ -267,19 +263,11 @@ class User implements UserInterface, SecretOwnerInterface, VaultOwnerInterface
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isEmailAddressValidated(): bool
     {
         return $this->emailAddressValidated;
     }
 
-    /**
-     * @param bool $emailAddressValidated
-     *
-     * @return User
-     */
     public function setEmailAddressValidated(bool $emailAddressValidated): User
     {
         $this->emailAddressValidated = $emailAddressValidated;
@@ -297,6 +285,7 @@ class User implements UserInterface, SecretOwnerInterface, VaultOwnerInterface
         if (!$this->organizations->contains($organization)) {
             $this->organizations[] = $organization;
         }
+
         return $this;
     }
 
@@ -305,6 +294,7 @@ class User implements UserInterface, SecretOwnerInterface, VaultOwnerInterface
         if ($this->organizations->contains($organization)) {
             $this->organizations->removeElement($organization);
         }
+
         return $this;
     }
 
@@ -318,6 +308,7 @@ class User implements UserInterface, SecretOwnerInterface, VaultOwnerInterface
         if (!$this->ownedOrganizations->contains($organization)) {
             $this->ownedOrganizations[] = $organization;
         }
+
         return $this;
     }
 
@@ -326,6 +317,7 @@ class User implements UserInterface, SecretOwnerInterface, VaultOwnerInterface
         if ($this->ownedOrganizations->contains($organization)) {
             $this->ownedOrganizations->removeElement($organization);
         }
+
         return $this;
     }
 }

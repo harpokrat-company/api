@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\JsonApi\Document\JsonWebToken;
-
 
 use App\Entity\User;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
@@ -48,14 +46,17 @@ class JsonWebTokenDocument extends AbstractSimpleResourceDocument
 
     /**
      * {@inheritdoc}
+     *
      * @throws \Exception
      */
     protected function getResource(): array
     {
         $user = $this->domainObject['user'];
-        if (!$user instanceof User)
+        if (!$user instanceof User) {
             throw new \Exception('Incorrect user given to JWT document');
+        }
         $jwt = $this->JWTTokenManager->create($user);
+
         return [
             'type' => 'json-web-tokens',
             'id' => $this->domainObject['jti'],
@@ -65,11 +66,11 @@ class JsonWebTokenDocument extends AbstractSimpleResourceDocument
             'relationships' => [
                 'user' => [
                     'data' => [
-                        'type'=> 'users',
-                        'id'=> $user->getId()
-                    ]
-                ]
-            ]
+                        'type' => 'users',
+                        'id' => $user->getId(),
+                    ],
+                ],
+            ],
         ];
     }
 }

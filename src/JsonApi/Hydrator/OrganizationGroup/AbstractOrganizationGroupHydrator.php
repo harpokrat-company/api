@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\JsonApi\Hydrator\OrganizationGroup;
-
 
 use App\Entity\OrganizationGroup;
 use App\Entity\User;
@@ -34,10 +32,7 @@ abstract class AbstractOrganizationGroupHydrator extends AbstractHydrator
         ExceptionFactoryInterface $exceptionFactory
     ): void {
         if (!empty($clientGeneratedId)) {
-            throw $exceptionFactory->createClientGeneratedIdNotSupportedException(
-                $request,
-                $clientGeneratedId
-            );
+            throw $exceptionFactory->createClientGeneratedIdNotSupportedException($request, $clientGeneratedId);
         }
     }
 
@@ -71,6 +66,7 @@ abstract class AbstractOrganizationGroupHydrator extends AbstractHydrator
 
     /**
      * {@inheritdoc}
+     *
      * @throws InvalidAttributeException
      */
     protected function validateRequest(JsonApiRequestInterface $request): void

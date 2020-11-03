@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Entity\VaultOwnership;
-
 
 use App\Entity\Vault;
 use Doctrine\Common\Collections\Collection;
@@ -25,6 +23,7 @@ trait VaultOwnerTrait
             $this->vaultOwnership[] = $vault;
             $vault->setOwner($this);
         }
+
         return $this;
     }
 

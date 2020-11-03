@@ -2,10 +2,10 @@
 
 namespace App\JsonApi\Hydrator\SecureAction;
 
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Entity\SecureAction;
-use Paknahad\JsonApiBundle\Hydrator\ValidatorTrait;
 use Paknahad\JsonApiBundle\Hydrator\AbstractHydrator;
+use Paknahad\JsonApiBundle\Hydrator\ValidatorTrait;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;
 use WoohooLabs\Yin\JsonApi\Request\JsonApiRequestInterface;
 
@@ -25,10 +25,7 @@ abstract class AbstractSecureActionHydrator extends AbstractHydrator
         ExceptionFactoryInterface $exceptionFactory
     ): void {
         if (!empty($clientGeneratedId)) {
-            throw $exceptionFactory->createClientGeneratedIdNotSupportedException(
-                $request,
-                $clientGeneratedId
-            );
+            throw $exceptionFactory->createClientGeneratedIdNotSupportedException($request, $clientGeneratedId);
         }
     }
 

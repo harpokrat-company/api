@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\JsonApi\Hydrator\Organization;
-
 
 use App\Entity\Organization;
 use App\Entity\User;
@@ -46,5 +44,4 @@ class CreateOrganizationHydrator extends AbstractOrganizationHydrator
             },
         ];
     }
-
 }

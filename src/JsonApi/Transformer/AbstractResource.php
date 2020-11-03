@@ -1,13 +1,12 @@
 <?php
 
-
 namespace App\JsonApi\Transformer;
 
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use WoohooLabs\Yin\JsonApi\Schema\Resource\AbstractResource as BaseResource;
 
 /**
- * Class AbstractResource
+ * Class AbstractResource.
  */
 abstract class AbstractResource extends BaseResource
 {
@@ -21,7 +20,8 @@ abstract class AbstractResource extends BaseResource
         $this->authorizationChecker = $authorizationChecker;
     }
 
-    private function filter(array $relationships, $domainObject) {
+    private function filter(array $relationships, $domainObject)
+    {
         return array_filter($relationships, function ($relationName) use ($domainObject) {
             return $this->authorizationChecker->isGranted('view-'.$relationName, $domainObject);
         }, ARRAY_FILTER_USE_KEY);
@@ -30,16 +30,18 @@ abstract class AbstractResource extends BaseResource
     public function getAttributes($domainObject): array
     {
         $attributes = $this->getResourceAttributes($domainObject);
+
         return $this->filter($attributes, $domainObject);
     }
 
-    abstract function getResourceAttributes($domainObject): array;
+    abstract public function getResourceAttributes($domainObject): array;
 
     public function getRelationships($domainObject): array
     {
         $relationships = $this->getResourceRelationships($domainObject);
+
         return $this->filter($relationships, $domainObject);
     }
 
-    abstract function getResourceRelationships($domainObject): array;
+    abstract public function getResourceRelationships($domainObject): array;
 }

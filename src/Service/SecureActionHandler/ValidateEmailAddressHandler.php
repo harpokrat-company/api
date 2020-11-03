@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Service\SecureActionHandler;
-
 
 use App\Entity\SecureAction;
 use App\Entity\User;
@@ -22,9 +20,6 @@ class ValidateEmailAddressHandler extends AbstractSecureActionHandler
     }
 
     /**
-     * @param SecureAction $action
-     * @param UnitOfWork   $unitOfWork
-     *
      * @throws \Exception
      */
     public function handleAction(SecureAction $action, UnitOfWork $unitOfWork)

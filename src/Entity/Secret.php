@@ -2,8 +2,8 @@
 
 namespace App\Entity;
 
-use App\Entity\SecretOwnership\SecretOwnership;
 use App\Entity\SecretOwnership\SecretOwnerInterface;
+use App\Entity\SecretOwnership\SecretOwnership;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 
@@ -35,7 +35,7 @@ class Secret
     private $owner;
 
     /**
-     * @var boolean
+     * @var bool
      * @ORM\Column(type="boolean")
      */
     private $private = true;
@@ -65,6 +65,7 @@ class Secret
     public function setOwner(?SecretOwnerInterface $owner): self
     {
         $this->owner = $owner->getSecretOwnership();
+
         return $this;
     }
 

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\JsonApi\Document\Organization;
-
 
 use WoohooLabs\Yin\JsonApi\Schema\Document\AbstractSingleResourceDocument;
 use WoohooLabs\Yin\JsonApi\Schema\JsonApiObject;
@@ -15,7 +13,7 @@ use WoohooLabs\Yin\JsonApi\Schema\Links;
 class OrganizationDocument extends AbstractSingleResourceDocument
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getJsonApi(): ?JsonApiObject
     {
@@ -23,7 +21,7 @@ class OrganizationDocument extends AbstractSingleResourceDocument
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getMeta(): array
     {
@@ -31,7 +29,7 @@ class OrganizationDocument extends AbstractSingleResourceDocument
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getLinks(): ?Links
     {

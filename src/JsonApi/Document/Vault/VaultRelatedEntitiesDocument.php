@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\JsonApi\Document\Vault;
-
 
 use WoohooLabs\Yin\JsonApi\Document\AbstractCollectionDocument;
 use WoohooLabs\Yin\JsonApi\Schema\JsonApiObject;
@@ -43,7 +41,7 @@ class VaultRelatedEntitiesDocument extends AbstractCollectionDocument
     public function getLinks(): Links
     {
         return Links::createWithoutBaseUri([
-            'self' => new Link('/v1/vaults/' . $this->vaultId . '/' . $this->relationshipName),
+            'self' => new Link('/v1/vaults/'.$this->vaultId.'/'.$this->relationshipName),
         ]);
     }
 }

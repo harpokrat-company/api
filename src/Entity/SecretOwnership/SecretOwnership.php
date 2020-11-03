@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Entity\SecretOwnership;
 
 use App\Entity\Secret;
@@ -61,6 +60,7 @@ abstract class SecretOwnership
         if (!$this->secrets->contains($secret)) {
             $this->secrets[] = $secret;
         }
+
         return $this;
     }
 
@@ -69,11 +69,11 @@ abstract class SecretOwnership
         if ($this->secrets->contains($secret)) {
             $this->secrets->removeElement($secret);
         }
+
         return $this;
     }
 
-    abstract function getOwner(): ?SecretOwnerInterface;
+    abstract public function getOwner(): ?SecretOwnerInterface;
 
-    abstract function setOwner(?SecretOwnerInterface $owner): self;
+    abstract public function setOwner(?SecretOwnerInterface $owner): self;
 }
-

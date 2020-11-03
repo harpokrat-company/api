@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Controller;
-
 
 use App\Entity\OrganizationGroup;
 use App\JsonApi\Document\OrganizationGroup\OrganizationGroupDocument;
@@ -45,37 +43,37 @@ class OrganizationGroupController extends AbstractResourceController
     protected function getRelatedResponses(): array
     {
         return [
-            "children" => function (OrganizationGroup $group, string $relationshipName) {
+            'children' => function (OrganizationGroup $group, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
                     new OrganizationGroupRelatedEntitiesDocument(new OrganizationGroupResourceTransformer($this->getAuthorizationChecker()), $group->getId(), $relationshipName),
                     $group->getChildren()
                 );
             },
-            "members" => function (OrganizationGroup $group, string $relationshipName) {
+            'members' => function (OrganizationGroup $group, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
                     new OrganizationGroupRelatedEntitiesDocument(new UserResourceTransformer($this->getAuthorizationChecker()), $group->getId(), $relationshipName),
                     $group->getMembers()
                 );
             },
-            "organization" => function (OrganizationGroup $group, string $relationshipName) {
+            'organization' => function (OrganizationGroup $group, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
                     new OrganizationGroupRelatedEntityDocument(new OrganizationResourceTransformer($this->getAuthorizationChecker()), $group->getId(), $relationshipName),
                     $group->getOrganization()
                 );
             },
-            "parent" => function (OrganizationGroup $group, string $relationshipName) {
+            'parent' => function (OrganizationGroup $group, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
                     new OrganizationGroupRelatedEntityDocument(new OrganizationGroupResourceTransformer($this->getAuthorizationChecker()), $group->getId(), $relationshipName),
                     $group->getParent()
                 );
             },
-            "secrets" => function (OrganizationGroup $group, string $relationshipName) {
+            'secrets' => function (OrganizationGroup $group, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
                     new OrganizationGroupRelatedEntitiesDocument(new SecretResourceTransformer($this->getAuthorizationChecker()), $group->getId(), $relationshipName),
                     $group->getSecrets()
                 );
             },
-            "vaults" => function (OrganizationGroup $group, string $relationshipName) {
+            'vaults' => function (OrganizationGroup $group, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
                     new OrganizationGroupRelatedEntitiesDocument(new VaultResourceTransformer($this->getAuthorizationChecker()), $group->getId(), $relationshipName),
                     $group->getVaults()
@@ -86,10 +84,7 @@ class OrganizationGroupController extends AbstractResourceController
 
     /**
      * @Route("", name="groups_index", methods="GET")
-     * @param OrganizationGroupRepository $groupRepository
-     * @param ResourceCollection $resourceCollection
      *
-     * @return ResponseInterface
      * @throws EntityNotFoundException
      */
     public function index(OrganizationGroupRepository $groupRepository, ResourceCollection $resourceCollection): ResponseInterface
@@ -101,8 +96,6 @@ class OrganizationGroupController extends AbstractResourceController
 
     /**
      * @Route("", name="groups_new", methods="POST")
-     * @param ValidatorInterface $validator
-     * @return ResponseInterface
      */
     public function new(ValidatorInterface $validator): ResponseInterface
     {
@@ -113,8 +106,6 @@ class OrganizationGroupController extends AbstractResourceController
 
     /**
      * @Route("/{id}", name="groups_show", methods="GET")
-     * @param OrganizationGroup $group
-     * @return ResponseInterface
      */
     public function show(OrganizationGroup $group): ResponseInterface
     {
@@ -123,12 +114,8 @@ class OrganizationGroupController extends AbstractResourceController
         );
     }
 
-
     /**
      * @Route("/{id}", name="groups_edit", methods="PATCH")
-     * @param OrganizationGroup $group
-     * @param ValidatorInterface $validator
-     * @return ResponseInterface
      */
     public function edit(OrganizationGroup $group, ValidatorInterface $validator): ResponseInterface
     {
@@ -139,8 +126,6 @@ class OrganizationGroupController extends AbstractResourceController
 
     /**
      * @Route("/{id}", name="groups_delete", methods="DELETE")
-     * @param OrganizationGroup $group
-     * @return ResponseInterface
      */
     public function delete(OrganizationGroup $group): ResponseInterface
     {
@@ -149,18 +134,16 @@ class OrganizationGroupController extends AbstractResourceController
 
     /**
      * @Route("/{id}/relationships/{rel}", name="groups_relationship", methods="GET")
-     * @param OrganizationGroup $group
+     *
      * @return ResponseInterface
      */
-    public function showRelationships(OrganizationGroup $group) {
+    public function showRelationships(OrganizationGroup $group)
+    {
         return $this->resourceShowRelationships($group);
     }
 
     /**
      * @Route("/{id}/relationships/{rel}", name="groups_relationships_edit", methods="PATCH")
-     * @param OrganizationGroup $group
-     * @param ValidatorInterface $validator
-     * @return ResponseInterface
      */
     public function editRelationships(OrganizationGroup $group, ValidatorInterface $validator): ResponseInterface
     {
@@ -171,9 +154,6 @@ class OrganizationGroupController extends AbstractResourceController
 
     /**
      * @Route("/{id}/relationships/{rel}", name="groups_relationships_new", methods="POST")
-     * @param OrganizationGroup $group
-     * @param ValidatorInterface $validator
-     * @return ResponseInterface
      */
     public function addRelationships(OrganizationGroup $group, ValidatorInterface $validator): ResponseInterface
     {
@@ -184,9 +164,6 @@ class OrganizationGroupController extends AbstractResourceController
 
     /**
      * @Route("/{id}/relationships/{rel}", name="groups_relationships_delete", methods="DELETE")
-     * @param OrganizationGroup $group
-     * @param ValidatorInterface $validator
-     * @return ResponseInterface
      */
     public function deleteRelationships(OrganizationGroup $group, ValidatorInterface $validator): ResponseInterface
     {
@@ -197,10 +174,11 @@ class OrganizationGroupController extends AbstractResourceController
 
     /**
      * @Route("/{id}/{rel}", name="groups_related", methods="GET")
-     * @param OrganizationGroup $group
+     *
      * @return ResponseInterface
      */
-    public function showRelatedEntities(OrganizationGroup $group) {
+    public function showRelatedEntities(OrganizationGroup $group)
+    {
         return $this->resourceRelatedEntities($group);
     }
 }

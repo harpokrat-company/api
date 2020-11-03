@@ -80,8 +80,8 @@ class LogResourceTransformer extends AbstractResource
                 return ToOneRelationship::create()
                     ->setData($log->getUser(), new UserResourceTransformer($this->authorizationChecker))
                     ->setLinks(Links::createWithoutBaseUri([
-                        'self' => new Link('/v1/logs/' . $log->getId() . '/relationships/user'),
-                        'related' => new Link('/v1/logs/' . $log->getId() . '/user'),
+                        'self' => new Link('/v1/logs/'.$log->getId().'/relationships/user'),
+                        'related' => new Link('/v1/logs/'.$log->getId().'/user'),
                     ]));
             },
         ];

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\JsonApi\Document\User;
-
 
 use WoohooLabs\Yin\JsonApi\Document\AbstractCollectionDocument;
 use WoohooLabs\Yin\JsonApi\Schema\JsonApiObject;
@@ -43,7 +41,7 @@ class UserRelatedEntitiesDocument extends AbstractCollectionDocument
     public function getLinks(): Links
     {
         return Links::createWithoutBaseUri([
-            'self' => new Link('/v1/users/' . $this->userId . '/' . $this->relationshipName),
+            'self' => new Link('/v1/users/'.$this->userId.'/'.$this->relationshipName),
         ]);
     }
 }

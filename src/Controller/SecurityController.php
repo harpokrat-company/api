@@ -4,10 +4,10 @@ namespace App\Controller;
 
 use App\JsonApi\Document\JsonWebToken\JsonWebTokenDocument;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+use Paknahad\JsonApiBundle\Controller\Controller;
 use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Request;
-use Paknahad\JsonApiBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -17,10 +17,9 @@ class SecurityController extends Controller
 {
     /**
      * @Route("", name="json-web-tokens_new", methods="POST")
-     * @param Request                  $request
-     * @param JWTTokenManagerInterface $jwtManager
      *
      * @return ResponseInterface
+     *
      * @throws \Exception
      */
     public function createJsonWebToken(Request $request, JWTTokenManagerInterface $jwtManager)
@@ -30,11 +29,12 @@ class SecurityController extends Controller
         // still valid
         $jti = Uuid::uuid4()->toString();
         $request->attributes->set('jti', $jti);
+
         return $this->jsonApi()->respond()->ok(
             new JsonWebTokenDocument($jwtManager),
             [
-                'user'=> $this->getUser(),
-                'jti'=> $jti,
+                'user' => $this->getUser(),
+                'jti' => $jti,
             ]
         );
     }

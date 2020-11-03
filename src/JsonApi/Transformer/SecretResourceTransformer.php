@@ -59,7 +59,7 @@ class SecretResourceTransformer extends AbstractResource
             },
             'private' => function (Secret $secret) {
                 return $secret->isPrivate();
-            }
+            },
         ];
     }
 
@@ -79,19 +79,21 @@ class SecretResourceTransformer extends AbstractResource
         return [
             'owner' => function (Secret $secret) {
                 $owner = $secret->getOwner();
-                if ($owner instanceof User)
+                if ($owner instanceof User) {
                     $transformer = new UserResourceTransformer($this->authorizationChecker);
-                else if ($owner instanceof Vault)
+                } elseif ($owner instanceof Vault) {
                     $transformer = new VaultResourceTransformer($this->authorizationChecker);
-                else if ($owner instanceof OrganizationGroup)
+                } elseif ($owner instanceof OrganizationGroup) {
                     $transformer = new OrganizationGroupResourceTransformer($this->authorizationChecker);
-                else
+                } else {
                     throw new LogicException();
+                }
+
                 return ToOneRelationship::create()
                     ->setData($owner, $transformer)
                     ->setLinks(Links::createWithoutBaseUri([
-                        'self' => new Link('/v1/secrets/' . $secret->getId() . '/relationships/owner'),
-                        'related' => new Link('/v1/secrets/' . $secret->getId() . '/owner'),
+                        'self' => new Link('/v1/secrets/'.$secret->getId().'/relationships/owner'),
+                        'related' => new Link('/v1/secrets/'.$secret->getId().'/owner'),
                     ]));
             },
         ];

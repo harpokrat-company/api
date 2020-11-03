@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Entity;
 
 use App\Entity\SecretOwnership\SecretOwnerInterface;
@@ -80,6 +79,7 @@ class Vault implements SecretOwnerInterface
     public function setOwner(?VaultOwnerInterface $owner): self
     {
         $this->owner = $owner->getVaultOwnership();
+
         return $this;
     }
 }

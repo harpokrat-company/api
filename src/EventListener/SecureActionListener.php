@@ -21,10 +21,6 @@ class SecureActionListener
     }
 
     /**
-     * @param EntityManager $entityManager
-     * @param UnitOfWork    $unitOfWork
-     * @param SecureAction  $action
-     *
      * @throws \Exception
      */
     public function onFlush(EntityManager $entityManager, UnitOfWork $unitOfWork, SecureAction $action)
@@ -33,9 +29,9 @@ class SecureActionListener
         if (key_exists('validated', $changes) && $action->getValidated()) {
             $handler = $this->secureActionHandlersLocator->get($action->getType());
 
-            if (!$handler instanceof AbstractSecureActionHandler)
+            if (!$handler instanceof AbstractSecureActionHandler) {
                 throw new \Exception('Unhandled SecureAction');
-
+            }
             $handler->handleAction($action, $unitOfWork);
         }
     }

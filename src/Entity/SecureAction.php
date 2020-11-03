@@ -131,17 +131,12 @@ class SecureAction
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
     public function getType()
     {
         return $this->type;
     }
 
     /**
-     * @param mixed $type
-     *
      * @return SecureAction
      */
     public function setType($type)
@@ -157,8 +152,8 @@ class SecureAction
     public function getValidationLink()
     {
         $link = SecureAction::VALIDATION_URL_BASE;
-        $link .= '?' . SecureAction::VALIDATION_URL_ID_PARAM . '=' . $this->getId()->toString();
-        $link .= '&' . SecureAction::VALIDATION_URL_TOKEN_PARAM . '=' . $this->getToken();
+        $link .= '?'.SecureAction::VALIDATION_URL_ID_PARAM.'='.$this->getId()->toString();
+        $link .= '&'.SecureAction::VALIDATION_URL_TOKEN_PARAM.'='.$this->getToken();
 
         return $link;
     }
@@ -171,14 +166,12 @@ class SecureAction
         return self::ACTION_IDENTIFIER[$this->type];
     }
 
-    /**
-     * @param string $actionType
-     */
     public function setActionType(string $actionType)
     {
         foreach (SecureAction::ACTION_IDENTIFIER as $type => $identifier) {
             if ($actionType === $identifier) {
                 $this->setType($type);
+
                 return;
             }
         }

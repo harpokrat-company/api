@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\EventListener;
-
 
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Symfony\Component\DependencyInjection\ServiceLocator;
@@ -16,8 +14,6 @@ class FlushListener
 
     /**
      * FlushListener constructor.
-     *
-     * @param ServiceLocator $serviceLocator
      */
     public function __construct(ServiceLocator $serviceLocator)
     {
@@ -30,7 +26,7 @@ class FlushListener
         $unitOfWork = $entityManager->getUnitOfWork();
 
         foreach ($unitOfWork->getScheduledEntityUpdates() as $entity) {
-            $class = get_class($entity);
+            $class = \get_class($entity);
             if ($this->flushListenerServiceLocator->has($class)) {
                 $this->flushListenerServiceLocator->get($class)->onFlush($entityManager, $unitOfWork, $entity);
             }

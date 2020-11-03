@@ -35,21 +35,17 @@ class LogController extends AbstractResourceController
     protected function getRelatedResponses(): array
     {
         return [
-            "user" => function (Log $log, string $relationshipName) {
+            'user' => function (Log $log, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
                     new LogRelatedEntityDocument(new UserResourceTransformer($this->getAuthorizationChecker()), $log->getId(), $relationshipName),
                     $log->getUser()
                 );
-            }
+            },
         ];
     }
 
     /**
      * @Route("", name="logs_index", methods="GET")
-     * @param LogRepository      $logRepository
-     * @param ResourceCollection $resourceCollection
-     *
-     * @return ResponseInterface
      */
     public function index(LogRepository $logRepository, ResourceCollection $resourceCollection): ResponseInterface
     {
@@ -60,8 +56,6 @@ class LogController extends AbstractResourceController
 
     /**
      * @Route("", name="logs_new", methods="POST")
-     * @param ValidatorInterface $validator
-     * @return ResponseInterface
      */
     public function new(ValidatorInterface $validator): ResponseInterface
     {
@@ -72,8 +66,6 @@ class LogController extends AbstractResourceController
 
     /**
      * @Route("/{id}", name="logs_show", methods="GET")
-     * @param Log $log
-     * @return ResponseInterface
      */
     public function show(Log $log): ResponseInterface
     {
@@ -82,12 +74,8 @@ class LogController extends AbstractResourceController
         );
     }
 
-
     /**
      * @Route("/{id}", name="logs_edit", methods="PATCH")
-     * @param Log                $log
-     * @param ValidatorInterface $validator
-     * @return ResponseInterface
      */
     public function edit(Log $log, ValidatorInterface $validator): ResponseInterface
     {
@@ -98,8 +86,6 @@ class LogController extends AbstractResourceController
 
     /**
      * @Route("/{id}", name="logs_delete", methods="DELETE")
-     * @param Log     $log
-     * @return ResponseInterface
      */
     public function delete(Log $log): ResponseInterface
     {
@@ -108,19 +94,21 @@ class LogController extends AbstractResourceController
 
     /**
      * @Route("/{id}/relationships/{rel}", name="logs_relationship", methods="GET")
-     * @param Log $log
+     *
      * @return ResponseInterface
      */
-    public function showRelationships(Log $log) {
+    public function showRelationships(Log $log)
+    {
         return $this->resourceShowRelationships($log);
     }
 
     /**
      * @Route("/{id}/{rel}", name="logs_related", methods="GET")
-     * @param Log $log
+     *
      * @return ResponseInterface
      */
-    public function showRelatedEntities(Log $log) {
+    public function showRelatedEntities(Log $log)
+    {
         return $this->resourceRelatedEntities($log);
     }
 }

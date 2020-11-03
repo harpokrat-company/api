@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\JsonApi\Transformer;
-
 
 use App\Entity\Organization;
 use WoohooLabs\Yin\JsonApi\Schema\Link;
@@ -16,7 +14,7 @@ use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToOneRelationship;
 class OrganizationResourceTransformer extends AbstractResource
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getType($organization): string
     {
@@ -24,7 +22,7 @@ class OrganizationResourceTransformer extends AbstractResource
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getId($organization): string
     {
@@ -32,7 +30,7 @@ class OrganizationResourceTransformer extends AbstractResource
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getMeta($organization): array
     {
@@ -40,7 +38,7 @@ class OrganizationResourceTransformer extends AbstractResource
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getLinks($organization): ?Links
     {
@@ -50,14 +48,14 @@ class OrganizationResourceTransformer extends AbstractResource
     public function getResourceAttributes($organization): array
     {
         return [
-            'name' => function(Organization $organization) {
+            'name' => function (Organization $organization) {
                 return $organization->getName();
-            }
+            },
         ];
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getDefaultIncludedRelationships($organization): array
     {
@@ -71,24 +69,24 @@ class OrganizationResourceTransformer extends AbstractResource
                 return ToManyRelationship::create()
                     ->setData($organization->getGroups(), new OrganizationGroupResourceTransformer($this->authorizationChecker))
                     ->setLinks(Links::createWithoutBaseUri([
-                        'self' => new Link('/v1/organizations/'. $organization->getId() . '/relationships/groups'),
-                        'related' => new Link('/v1/organizations/'. $organization->getId() . '/groups'),
+                        'self' => new Link('/v1/organizations/'.$organization->getId().'/relationships/groups'),
+                        'related' => new Link('/v1/organizations/'.$organization->getId().'/groups'),
                     ]));
             },
             'members' => function (Organization $organization) {
                 return ToManyRelationship::create()
                     ->setData($organization->getMembers(), new UserResourceTransformer($this->authorizationChecker))
                     ->setLinks(Links::createWithoutBaseUri([
-                        'self' => new Link('/v1/organizations/'. $organization->getId() . '/relationships/members'),
-                        'related' => new Link('/v1/organizations/'. $organization->getId() . '/members'),
+                        'self' => new Link('/v1/organizations/'.$organization->getId().'/relationships/members'),
+                        'related' => new Link('/v1/organizations/'.$organization->getId().'/members'),
                     ]));
             },
             'owner' => function (Organization $organization) {
                 return ToOneRelationship::create()
                     ->setData($organization->getOwner(), new UserResourceTransformer($this->authorizationChecker))
                     ->setLinks(Links::createWithoutBaseUri([
-                        'self' => new Link('/v1/organizations/'. $organization->getId() . '/relationships/owner'),
-                        'related' => new Link('/v1/organizations/'. $organization->getId() . '/owner'),
+                        'self' => new Link('/v1/organizations/'.$organization->getId().'/relationships/owner'),
+                        'related' => new Link('/v1/organizations/'.$organization->getId().'/owner'),
                     ]));
             },
         ];

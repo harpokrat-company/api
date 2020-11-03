@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Controller;
-
 
 use App\Entity\Organization;
 use App\JsonApi\Document\Organization\OrganizationDocument;
@@ -42,33 +40,29 @@ class OrganizationController extends AbstractResourceController
     protected function getRelatedResponses(): array
     {
         return [
-            "groups" => function (Organization $organization, string $relationshipName) {
+            'groups' => function (Organization $organization, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
                     new OrganizationRelatedEntitiesDocument(new OrganizationGroupResourceTransformer($this->getAuthorizationChecker()), $organization->getId(), $relationshipName),
                     $organization->getGroups()
                 );
             },
-            "members" => function (Organization $organization, string $relationshipName) {
+            'members' => function (Organization $organization, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
                     new OrganizationRelatedEntitiesDocument(new UserResourceTransformer($this->getAuthorizationChecker()), $organization->getId(), $relationshipName),
                     $organization->getMembers()
                 );
             },
-            "owner" => function (Organization $organization, string $relationshipName) {
+            'owner' => function (Organization $organization, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
                     new OrganizationRelatedEntityDocument(new UserResourceTransformer($this->getAuthorizationChecker()), $organization->getId(), $relationshipName),
                     $organization->getOwner()
                 );
-            }
+            },
         ];
     }
 
     /**
      * @Route("", name="organizations_index", methods="GET")
-     * @param OrganizationRepository $organizationRepository
-     * @param ResourceCollection $resourceCollection
-     *
-     * @return ResponseInterface
      */
     public function index(OrganizationRepository $organizationRepository, ResourceCollection $resourceCollection): ResponseInterface
     {
@@ -79,8 +73,6 @@ class OrganizationController extends AbstractResourceController
 
     /**
      * @Route("", name="organizations_new", methods="POST")
-     * @param ValidatorInterface $validator
-     * @return ResponseInterface
      */
     public function new(ValidatorInterface $validator): ResponseInterface
     {
@@ -91,8 +83,6 @@ class OrganizationController extends AbstractResourceController
 
     /**
      * @Route("/{id}", name="organizations_show", methods="GET")
-     * @param Organization $organization
-     * @return ResponseInterface
      */
     public function show(Organization $organization): ResponseInterface
     {
@@ -101,12 +91,8 @@ class OrganizationController extends AbstractResourceController
         );
     }
 
-
     /**
      * @Route("/{id}", name="organizations_edit", methods="PATCH")
-     * @param Organization       $organization
-     * @param ValidatorInterface $validator
-     * @return ResponseInterface
      */
     public function edit(Organization $organization, ValidatorInterface $validator): ResponseInterface
     {
@@ -117,8 +103,6 @@ class OrganizationController extends AbstractResourceController
 
     /**
      * @Route("/{id}", name="organizations_delete", methods="DELETE")
-     * @param Organization $organization
-     * @return ResponseInterface
      */
     public function delete(Organization $organization): ResponseInterface
     {
@@ -127,18 +111,16 @@ class OrganizationController extends AbstractResourceController
 
     /**
      * @Route("/{id}/relationships/{rel}", name="organizations_relationship", methods="GET")
-     * @param Organization $organization
+     *
      * @return ResponseInterface
      */
-    public function showRelationships(Organization $organization) {
+    public function showRelationships(Organization $organization)
+    {
         return $this->resourceShowRelationships($organization);
     }
 
     /**
      * @Route("/{id}/relationships/{rel}", name="organizations_relationships_edit", methods="PATCH")
-     * @param Organization $organization
-     * @param ValidatorInterface $validator
-     * @return ResponseInterface
      */
     public function editRelationships(Organization $organization, ValidatorInterface $validator): ResponseInterface
     {
@@ -149,9 +131,6 @@ class OrganizationController extends AbstractResourceController
 
     /**
      * @Route("/{id}/relationships/{rel}", name="organizations_relationships_new", methods="POST")
-     * @param Organization $organization
-     * @param ValidatorInterface $validator
-     * @return ResponseInterface
      */
     public function addRelationships(Organization $organization, ValidatorInterface $validator): ResponseInterface
     {
@@ -162,9 +141,6 @@ class OrganizationController extends AbstractResourceController
 
     /**
      * @Route("/{id}/relationships/{rel}", name="organizations_relationships_delete", methods="DELETE")
-     * @param Organization $organization
-     * @param ValidatorInterface $validator
-     * @return ResponseInterface
      */
     public function deleteRelationships(Organization $organization, ValidatorInterface $validator): ResponseInterface
     {
@@ -175,10 +151,11 @@ class OrganizationController extends AbstractResourceController
 
     /**
      * @Route("/{id}/{rel}", name="organizations_related", methods="GET")
-     * @param Organization $organization
+     *
      * @return ResponseInterface
      */
-    public function showRelatedEntities(Organization $organization) {
+    public function showRelatedEntities(Organization $organization)
+    {
         return $this->resourceRelatedEntities($organization);
     }
 }

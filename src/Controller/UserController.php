@@ -18,8 +18,8 @@ use App\JsonApi\Transformer\UserResourceTransformer;
 use App\JsonApi\Transformer\VaultResourceTransformer;
 use App\Repository\UserRepository;
 use Paknahad\JsonApiBundle\Helper\ResourceCollection;
-use Symfony\Component\Routing\Annotation\Route;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use WoohooLabs\Yin\JsonApi\Document\AbstractSuccessfulDocument;
 
@@ -38,33 +38,34 @@ class UserController extends AbstractResourceController
         return new UsersDocument(new UserResourceTransformer($this->getAuthorizationChecker()));
     }
 
-    protected function getRelatedResponses(): array {
+    protected function getRelatedResponses(): array
+    {
         return [
-            "logs" => function (User $user, string $relationshipName) {
+            'logs' => function (User $user, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
                     new UserRelatedEntitiesDocument(new LogResourceTransformer($this->getAuthorizationChecker()), $user->getId(), $relationshipName),
                     $user->getLogs()
                 );
             },
-            "organizations" => function (User $user, string $relationshipName) {
+            'organizations' => function (User $user, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
                     new UserRelatedEntitiesDocument(new OrganizationResourceTransformer($this->getAuthorizationChecker()), $user->getId(), $relationshipName),
                     $user->getOrganizations()
                 );
             },
-            "ownedOrganizations" => function (User $user, string $relationshipName) {
+            'ownedOrganizations' => function (User $user, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
                     new UserRelatedEntitiesDocument(new OrganizationResourceTransformer($this->getAuthorizationChecker()), $user->getId(), $relationshipName),
                     $user->getOwnedOrganizations()
                 );
             },
-            "secrets" => function (User $user, string $relationshipName) {
+            'secrets' => function (User $user, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
                     new UserRelatedEntitiesDocument(new SecretResourceTransformer($this->getAuthorizationChecker()), $user->getId(), $relationshipName),
                     $user->getSecrets()
                 );
             },
-            "vaults" => function (User $user, string $relationshipName) {
+            'vaults' => function (User $user, string $relationshipName) {
                 return $this->jsonApi()->respond()->ok(
                     new UserRelatedEntitiesDocument(new VaultResourceTransformer($this->getAuthorizationChecker()), $user->getId(), $relationshipName),
                     $user->getVaults()
@@ -75,10 +76,6 @@ class UserController extends AbstractResourceController
 
     /**
      * @Route("", name="users_index", methods="GET")
-     * @param UserRepository     $userRepository
-     * @param ResourceCollection $resourceCollection
-     *
-     * @return ResponseInterface
      */
     public function index(UserRepository $userRepository, ResourceCollection $resourceCollection): ResponseInterface
     {
@@ -90,8 +87,6 @@ class UserController extends AbstractResourceController
     /**
      * @Route("", name="users_new", methods="POST")
      * @ReCaptcha
-     * @param ValidatorInterface $validator
-     * @return ResponseInterface
      */
     public function new(ValidatorInterface $validator): ResponseInterface
     {
@@ -102,8 +97,6 @@ class UserController extends AbstractResourceController
 
     /**
      * @Route("/{id}", name="users_show", methods="GET")
-     * @param User $user
-     * @return ResponseInterface
      */
     public function show(User $user): ResponseInterface
     {
@@ -114,9 +107,6 @@ class UserController extends AbstractResourceController
 
     /**
      * @Route("/{id}", name="users_edit", methods="PATCH")
-     * @param User               $user
-     * @param ValidatorInterface $validator
-     * @return ResponseInterface
      */
     public function edit(User $user, ValidatorInterface $validator): ResponseInterface
     {
@@ -127,8 +117,6 @@ class UserController extends AbstractResourceController
 
     /**
      * @Route("/{id}", name="users_delete", methods="DELETE")
-     * @param User    $user
-     * @return ResponseInterface
      */
     public function delete(User $user): ResponseInterface
     {
@@ -137,18 +125,16 @@ class UserController extends AbstractResourceController
 
     /**
      * @Route("/{id}/relationships/{rel}", name="users_relationship", methods="GET")
-     * @param User $user
+     *
      * @return ResponseInterface
      */
-    public function showRelationships(User $user) {
+    public function showRelationships(User $user)
+    {
         return $this->resourceShowRelationships($user);
     }
 
     /**
      * @Route("/{id}/relationships/{rel}", name="users_relationships_edit", methods="PATCH")
-     * @param User $user
-     * @param ValidatorInterface $validator
-     * @return ResponseInterface
      */
     public function editRelationships(User $user, ValidatorInterface $validator): ResponseInterface
     {
@@ -159,9 +145,6 @@ class UserController extends AbstractResourceController
 
     /**
      * @Route("/{id}/relationships/{rel}", name="users_relationships_new", methods="POST")
-     * @param User $user
-     * @param ValidatorInterface $validator
-     * @return ResponseInterface
      */
     public function addRelationships(User $user, ValidatorInterface $validator): ResponseInterface
     {
@@ -172,9 +155,6 @@ class UserController extends AbstractResourceController
 
     /**
      * @Route("/{id}/relationships/{rel}", name="users_relationships_delete", methods="DELETE")
-     * @param User $user
-     * @param ValidatorInterface $validator
-     * @return ResponseInterface
      */
     public function deleteRelationships(User $user, ValidatorInterface $validator): ResponseInterface
     {
@@ -185,10 +165,11 @@ class UserController extends AbstractResourceController
 
     /**
      * @Route("/{id}/{rel}", name="users_related", methods="GET")
-     * @param User $user
+     *
      * @return ResponseInterface
      */
-    public function showRelatedEntities(User $user) {
+    public function showRelatedEntities(User $user)
+    {
         return $this->resourceRelatedEntities($user);
     }
 }

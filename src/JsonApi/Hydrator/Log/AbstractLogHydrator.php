@@ -2,15 +2,13 @@
 
 namespace App\JsonApi\Hydrator\Log;
 
+use App\Entity\Log;
 use App\Entity\User;
 use App\JsonApi\Hydrator\ResourceHydratorTrait;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use App\Entity\Log;
-use Paknahad\JsonApiBundle\Hydrator\ValidatorTrait;
 use Paknahad\JsonApiBundle\Hydrator\AbstractHydrator;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship;
-use Paknahad\JsonApiBundle\Exception\InvalidRelationshipValueException;
 use WoohooLabs\Yin\JsonApi\Request\JsonApiRequestInterface;
 
 /**
@@ -29,10 +27,7 @@ abstract class AbstractLogHydrator extends AbstractHydrator
         ExceptionFactoryInterface $exceptionFactory
     ): void {
         if (!empty($clientGeneratedId)) {
-            throw $exceptionFactory->createClientGeneratedIdNotSupportedException(
-                $request,
-                $clientGeneratedId
-            );
+            throw $exceptionFactory->createClientGeneratedIdNotSupportedException($request, $clientGeneratedId);
         }
     }
 

@@ -64,7 +64,7 @@ class UserResourceTransformer extends AbstractResource
             },
             'emailAddressValidated' => function (User $user) {
                 return $user->isEmailAddressValidated();
-            }
+            },
         ];
     }
 
@@ -86,40 +86,40 @@ class UserResourceTransformer extends AbstractResource
                 return ToManyRelationship::create()
                     ->setData($user->getLogs(), new LogResourceTransformer($this->authorizationChecker))
                     ->setLinks(Links::createWithoutBaseUri([
-                        'self' => new Link('/v1/users/'. $user->getId() . '/relationships/logs'),
-                        'related' => new Link('/v1/users/'. $user->getId() . '/logs'),
+                        'self' => new Link('/v1/users/'.$user->getId().'/relationships/logs'),
+                        'related' => new Link('/v1/users/'.$user->getId().'/logs'),
                     ]));
             },
             'organizations' => function (User $user) {
                 return ToManyRelationship::create()
                     ->setData($user->getOrganizations(), new OrganizationResourceTransformer($this->authorizationChecker))
                     ->setLinks(Links::createWithoutBaseUri([
-                        'self' => new Link('/v1/users/'. $user->getId() . '/relationships/organizations'),
-                        'related' => new Link('/v1/users/'. $user->getId() . '/organizations'),
+                        'self' => new Link('/v1/users/'.$user->getId().'/relationships/organizations'),
+                        'related' => new Link('/v1/users/'.$user->getId().'/organizations'),
                     ]));
             },
             'ownedOrganizations' => function (User $user) {
                 return ToManyRelationship::create()
                     ->setData($user->getOwnedOrganizations(), new OrganizationResourceTransformer($this->authorizationChecker))
                     ->setLinks(Links::createWithoutBaseUri([
-                        'self' => new Link('/v1/users/'. $user->getId() . '/relationships/ownedOrganizations'),
-                        'related' => new Link('/v1/users/'. $user->getId() . '/ownedOrganizations'),
+                        'self' => new Link('/v1/users/'.$user->getId().'/relationships/ownedOrganizations'),
+                        'related' => new Link('/v1/users/'.$user->getId().'/ownedOrganizations'),
                     ]));
             },
             'secrets' => function (User $user) {
                 return ToManyRelationship::create()
                     ->setData($user->getSecrets(), new SecretResourceTransformer($this->authorizationChecker))
                     ->setLinks(Links::createWithoutBaseUri([
-                        'self' => new Link('/v1/users/'. $user->getId() . '/relationships/secrets'),
-                        'related' => new Link('/v1/users/'. $user->getId() . '/secrets'),
+                        'self' => new Link('/v1/users/'.$user->getId().'/relationships/secrets'),
+                        'related' => new Link('/v1/users/'.$user->getId().'/secrets'),
                     ]));
             },
             'vaults' => function (User $user) {
                 return ToManyRelationship::create()
                     ->setData($user->getVaults(), new VaultResourceTransformer($this->authorizationChecker))
                     ->setLinks(Links::createWithoutBaseUri([
-                        'self' => new Link('/v1/users/'. $user->getId() . '/relationships/vaults'),
-                        'related' => new Link('/v1/users/'. $user->getId() . '/vaults'),
+                        'self' => new Link('/v1/users/'.$user->getId().'/relationships/vaults'),
+                        'related' => new Link('/v1/users/'.$user->getId().'/vaults'),
                     ]));
             },
         ];

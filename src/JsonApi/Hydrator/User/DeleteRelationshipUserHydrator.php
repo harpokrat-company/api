@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\JsonApi\Hydrator\User;
-
 
 use App\Entity\Organization;
 use App\Entity\User;
@@ -35,5 +33,4 @@ class DeleteRelationshipUserHydrator extends AbstractUserHydrator
             },
         ];
     }
-
 }

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Validator\Constraints;
-
 
 use App\Entity\OrganizationGroup;
 use App\Entity\User;
@@ -12,7 +10,6 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class OrganizationGroupMembersOrganizationValidator extends ConstraintValidator
 {
-
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof OrganizationGroupMembersOrganization) {
@@ -29,7 +26,7 @@ class OrganizationGroupMembersOrganizationValidator extends ConstraintValidator
             if (!$organizationMembers->contains($member)) {
                 $this->context->buildViolation($constraint->message)
                     ->setInvalidValue($value->getId())
-                    ->setParameter("{{id}}", $member->getId())
+                    ->setParameter('{{id}}', $member->getId())
                     ->addViolation();
             }
         }

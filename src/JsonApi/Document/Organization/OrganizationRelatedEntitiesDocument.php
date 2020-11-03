@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\JsonApi\Document\Organization;
-
 
 use WoohooLabs\Yin\JsonApi\Document\AbstractCollectionDocument;
 use WoohooLabs\Yin\JsonApi\Schema\JsonApiObject;
@@ -43,7 +41,7 @@ class OrganizationRelatedEntitiesDocument extends AbstractCollectionDocument
     public function getLinks(): Links
     {
         return Links::createWithoutBaseUri([
-            'self' => new Link('/v1/organizations/' . $this->organizationId . '/' . $this->relationshipName),
+            'self' => new Link('/v1/organizations/'.$this->organizationId.'/'.$this->relationshipName),
         ]);
     }
 }

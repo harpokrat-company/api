@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Entity\SecretOwnership;
 
 use App\Entity\OrganizationGroup;
@@ -24,17 +23,18 @@ class OrganizationGroupSecretOwnership extends SecretOwnership
         $this->group = $group;
     }
 
-    function getOwner(): SecretOwnerInterface
+    public function getOwner(): SecretOwnerInterface
     {
         return $this->group;
     }
 
-    function setOwner(?SecretOwnerInterface $owner): SecretOwnership
+    public function setOwner(?SecretOwnerInterface $owner): SecretOwnership
     {
         if ($owner && !$owner instanceof OrganizationGroup) {
             throw new \TypeError();
         }
         $this->group = $owner;
+
         return $this;
     }
 }

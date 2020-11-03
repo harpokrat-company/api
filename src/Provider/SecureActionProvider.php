@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Provider;
-
 
 use App\Entity\SecureAction;
 use App\Entity\User;
@@ -32,10 +30,7 @@ class SecureActionProvider
     }
 
     /**
-     * @param User           $user
-     * @param                $actionType
-     * @param array          $details
-     * @param DateTime|null  $expirationDate
+     * @param $actionType
      *
      * @throws LoaderError
      * @throws RuntimeError
@@ -44,7 +39,7 @@ class SecureActionProvider
      */
     public function register(User $user, $actionType, array $details = [], DateTime $expirationDate = null)
     {
-        if (is_null($expirationDate)) {
+        if (\is_null($expirationDate)) {
             $expirationDate = new DateTime('+15 minutes');
         }
 
@@ -64,10 +59,8 @@ class SecureActionProvider
     }
 
     /**
-     * @param User         $user
-     * @param SecureAction $action
-     *
      * @return null
+     *
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
@@ -75,7 +68,7 @@ class SecureActionProvider
      */
     public function userRegister(User $user, SecureAction $action)
     {
-        if (!in_array($action->getType(), SecureAction::USER_CREATED_ACTIONS)) {
+        if (!\in_array($action->getType(), SecureAction::USER_CREATED_ACTIONS)) {
             return null;
         }
 

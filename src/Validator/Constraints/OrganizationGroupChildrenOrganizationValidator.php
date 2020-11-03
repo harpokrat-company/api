@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Validator\Constraints;
-
 
 use App\Entity\OrganizationGroup;
 use Symfony\Component\Validator\Constraint;
@@ -13,7 +11,6 @@ class OrganizationGroupChildrenOrganizationValidator extends ConstraintValidator
 {
     /**
      * @param OrganizationGroup $value
-     * @param Constraint $constraint
      */
     public function validate($value, Constraint $constraint)
     {
@@ -29,7 +26,7 @@ class OrganizationGroupChildrenOrganizationValidator extends ConstraintValidator
             if ($child->getOrganization() !== $value->getOrganization()) {
                 $this->context->buildViolation($constraint->message)
                     ->setInvalidValue($value->getId())
-                    ->setParameter("{{id}}", $child->getId())
+                    ->setParameter('{{id}}', $child->getId())
                     ->addViolation();
             }
         }

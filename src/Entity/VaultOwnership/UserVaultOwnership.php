@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Entity\VaultOwnership;
 
 use App\Entity\User;
@@ -25,17 +24,18 @@ class UserVaultOwnership extends VaultOwnership
         $this->user = $organizationGroup;
     }
 
-    function getOwner(): VaultOwnerInterface
+    public function getOwner(): VaultOwnerInterface
     {
         return $this->user;
     }
 
-    function setOwner(?VaultOwnerInterface $owner): VaultOwnership
+    public function setOwner(?VaultOwnerInterface $owner): VaultOwnership
     {
         if ($owner && !$owner instanceof User) {
             throw new TypeError();
         }
         $this->user = $owner;
+
         return $this;
     }
 }

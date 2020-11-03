@@ -32,9 +32,9 @@ abstract class ResourceVoter extends Voter
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
         $attributesFunctions = $this->getAttributesFunctions();
-        if (!array_key_exists($attribute, $attributesFunctions)) {
+        if (!\array_key_exists($attribute, $attributesFunctions)) {
             foreach (self::MACROS as $from => $to) {
-                if (substr($attribute, 0, strlen($from)) === $from) {
+                if (substr($attribute, 0, \strlen($from)) === $from) {
                     return $this->voteOnAttribute($to, $subject, $token);
                 }
             }

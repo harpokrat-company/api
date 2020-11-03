@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\JsonApi\Document\ReCaptcha;
-
 
 use WoohooLabs\Yin\JsonApi\Schema\Document\AbstractSimpleResourceDocument;
 use WoohooLabs\Yin\JsonApi\Schema\JsonApiObject;
@@ -10,7 +8,6 @@ use WoohooLabs\Yin\JsonApi\Schema\Links;
 
 class ReCaptchaDocument extends AbstractSimpleResourceDocument
 {
-
     public function getJsonApi(): ?JsonApiObject
     {
         return new JsonApiObject('1.0');
@@ -39,7 +36,7 @@ class ReCaptchaDocument extends AbstractSimpleResourceDocument
         return [
             'id' => '1',
             'type' => 'recaptcha',
-            'attributes' => $attributes
+            'attributes' => $attributes,
         ];
     }
 }

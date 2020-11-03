@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\JsonApi\Hydrator\OrganizationGroup;
-
 
 use App\Entity\Organization;
 use App\Entity\OrganizationGroup;

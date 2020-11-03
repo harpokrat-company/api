@@ -2,12 +2,12 @@
 
 namespace App\JsonApi\Hydrator\User;
 
+use App\Entity\User;
 use App\Exception\NotImplementedException;
 use App\JsonApi\Hydrator\AbstractHydrator;
 use App\JsonApi\Hydrator\ResourceHydratorTrait;
 use Paknahad\JsonApiBundle\Exception\InvalidAttributeException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use App\Entity\User;
 use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToManyRelationship;
 use WoohooLabs\Yin\JsonApi\Request\JsonApiRequestInterface;
@@ -33,10 +33,7 @@ abstract class AbstractUserHydrator extends AbstractHydrator
         ExceptionFactoryInterface $exceptionFactory
     ): void {
         if (!empty($clientGeneratedId)) {
-            throw $exceptionFactory->createClientGeneratedIdNotSupportedException(
-                $request,
-                $clientGeneratedId
-            );
+            throw $exceptionFactory->createClientGeneratedIdNotSupportedException($request, $clientGeneratedId);
         }
     }
 
@@ -82,6 +79,7 @@ abstract class AbstractUserHydrator extends AbstractHydrator
 
     /**
      * {@inheritdoc}
+     *
      * @throws InvalidAttributeException
      */
     protected function validateRequest(JsonApiRequestInterface $request): void

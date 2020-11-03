@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\EventSubscriber;
-
 
 use App\Annotation\ReCaptcha;
 use Doctrine\Common\Annotations\Reader;
@@ -43,7 +41,6 @@ class AnnotationReaderSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @param ControllerEvent $event
      * @throws ReflectionException
      */
     public function onKernelController(ControllerEvent $event): void
@@ -52,15 +49,15 @@ class AnnotationReaderSubscriber implements EventSubscriberInterface
             return;
         }
         $controllers = $event->getController();
-        if (!is_array($controllers) || !$this->jsonApi->getRequest()) {
+        if (!\is_array($controllers) || !$this->jsonApi->getRequest()) {
             return;
         }
         $this->handleAnnotation($controllers, $this->jsonApi->getRequest());
     }
 
     /**
-     * @param iterable $controllers
      * @param $event
+     *
      * @throws ReflectionException
      */
     private function handleAnnotation(iterable $controllers, $event): void

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Validator\Constraints;
-
 
 use App\Entity\OrganizationGroup;
 use Symfony\Component\Validator\Constraint;
@@ -16,19 +14,19 @@ class OrganizationGroupChildrenRecursionValidator extends ConstraintValidator
         $parent[] = $group->getId();
         /** @var OrganizationGroup $child */
         foreach ($group->getChildren() as $child) {
-            if (in_array($child->getId(), $parent)) {
+            if (\in_array($child->getId(), $parent)) {
                 return true;
             }
             if ($this->getChild($child, $parent)) {
                 return true;
             }
         }
+
         return false;
     }
 
     /**
      * @param OrganizationGroup $value
-     * @param Constraint $constraint
      */
     public function validate($value, Constraint $constraint)
     {

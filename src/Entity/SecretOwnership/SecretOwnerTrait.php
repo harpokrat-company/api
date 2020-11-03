@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Entity\SecretOwnership;
-
 
 use App\Entity\Secret;
 use Doctrine\Common\Collections\Collection;
@@ -25,6 +23,7 @@ trait SecretOwnerTrait
             $this->secretOwnership[] = $secret;
             $secret->setOwner($this);
         }
+
         return $this;
     }
 

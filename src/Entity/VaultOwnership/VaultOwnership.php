@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Entity\VaultOwnership;
 
 use App\Entity\Vault;
@@ -60,6 +59,7 @@ abstract class VaultOwnership
         if (!$this->vaults->contains($vault)) {
             $this->vaults[] = $vault;
         }
+
         return $this;
     }
 
@@ -68,11 +68,11 @@ abstract class VaultOwnership
         if ($this->vaults->contains($vault)) {
             $this->vaults->removeElement($vault);
         }
+
         return $this;
     }
 
-    abstract function getOwner(): ?VaultOwnerInterface;
+    abstract public function getOwner(): ?VaultOwnerInterface;
 
-    abstract function setOwner(?VaultOwnerInterface $owner): self;
+    abstract public function setOwner(?VaultOwnerInterface $owner): self;
 }
-

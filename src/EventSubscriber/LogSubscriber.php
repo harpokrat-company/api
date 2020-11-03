@@ -36,9 +36,9 @@ class LogSubscriber implements EventSubscriberInterface
         $log->setIp($event->getRequest()->getClientIp()); // TODO Find a way to log port
         $log->setUri($event->getRequest()->getRequestUri());
         $token = $this->tokenStorage->getToken();
-        if (!is_null($token)) {
+        if (!\is_null($token)) {
             $user = $token->getUser();
-            if (!is_null($user) && $user instanceof User) {
+            if (!\is_null($user) && $user instanceof User) {
                 /** @var User $user */
                 $user = $this->entityManager->merge($user);
                 $log->setUser($user);

@@ -35,8 +35,7 @@ class UserListener
         EntityManagerInterface $entityManager,
         UserPasswordEncoderInterface $passwordEncoder,
         SecureActionProvider $secureActionProvider
-    )
-    {
+    ) {
         $this->entityManager = $entityManager;
         $this->passwordEncoder = $passwordEncoder;
         $this->secureActionProvider = $secureActionProvider;
@@ -48,8 +47,6 @@ class UserListener
     }
 
     /**
-     * @param User $user
-     *
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
@@ -67,19 +64,12 @@ class UserListener
         );
     }
 
-    /**
-     * @param User               $user
-     * @param LifecycleEventArgs $args
-     */
     public function prePersist(User $user, LifecycleEventArgs $args)
     {
         $this->encodeUserPassword($user);
     }
 
     /**
-     * @param User               $user
-     * @param LifecycleEventArgs $args
-     *
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
@@ -90,19 +80,18 @@ class UserListener
     }
 
     /**
-     * @param User               $user
-     * @param PreUpdateEventArgs $args
-     *
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
      */
     public function preUpdate(User $user, PreUpdateEventArgs $args)
     {
-        if ($args->hasChangedField('password'))
+        if ($args->hasChangedField('password')) {
             $this->encodeUserPassword($user);
+        }
 
-        if ($args->hasChangedField('email'))
+        if ($args->hasChangedField('email')) {
             $this->handleMailModification($user);
+        }
     }
 }

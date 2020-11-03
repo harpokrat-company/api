@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\JsonApi\Hydrator;
-
 
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\ORM\Query\Expr;
@@ -18,16 +16,15 @@ trait ResourceHydratorTrait
     use ValidatorTrait;
 
     /**
-     * @param ToOneRelationship $relationship
      * @param $relationshipName
-     * @param array $resourceValidTypes
-     * @param ObjectRepository $repository
-     * @param bool $nullable
+     *
      * @return object|null
+     *
      * @throws InvalidRelationshipValueException
      * @throws \Exception
      */
-    protected function getSingleAssociation(ToOneRelationship $relationship, $relationshipName, array $resourceValidTypes, ObjectRepository $repository, bool $nullable = true) {
+    protected function getSingleAssociation(ToOneRelationship $relationship, $relationshipName, array $resourceValidTypes, ObjectRepository $repository, bool $nullable = true)
+    {
         $this->validateRelationType($relationship, $resourceValidTypes);
         $association = null;
         $identifier = $relationship->getResourceIdentifier();
@@ -42,21 +39,22 @@ trait ResourceHydratorTrait
             }
         }
         if (!$association && !$nullable) {
-            throw new BadRequestHttpException($relationshipName . ' cannot be null');
+            throw new BadRequestHttpException($relationshipName.' cannot be null');
         }
+
         return $association;
     }
 
     /**
-     * @param ToManyRelationship $relationship
      * @param $relationshipName
-     * @param array $resourceValidTypes
-     * @param ObjectRepository $repository
+     *
      * @return array
+     *
      * @throws InvalidRelationshipValueException
      * @throws \Exception
      */
-    protected function getCollectionAssociation(ToManyRelationship $relationship, $relationshipName, array $resourceValidTypes, ObjectRepository $repository) {
+    protected function getCollectionAssociation(ToManyRelationship $relationship, $relationshipName, array $resourceValidTypes, ObjectRepository $repository)
+    {
         $this->validateRelationType($relationship, $resourceValidTypes);
         if (!$relationship->isEmpty()) {
             $association = $repository
@@ -68,6 +66,7 @@ trait ResourceHydratorTrait
         } else {
             $association = [];
         }
+
         return $association;
     }
 }

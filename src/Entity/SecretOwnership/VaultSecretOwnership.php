@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Entity\SecretOwnership;
 
 use App\Entity\Vault;
@@ -24,17 +23,18 @@ class VaultSecretOwnership extends SecretOwnership
         $this->vault = $organizationGroup;
     }
 
-    function getOwner(): SecretOwnerInterface
+    public function getOwner(): SecretOwnerInterface
     {
         return $this->vault;
     }
 
-    function setOwner(?SecretOwnerInterface $owner): SecretOwnership
+    public function setOwner(?SecretOwnerInterface $owner): SecretOwnership
     {
         if ($owner && !$owner instanceof Vault) {
             throw new \TypeError();
         }
         $this->vault = $owner;
+
         return $this;
     }
 }

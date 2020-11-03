@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Controller;
-
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityNotFoundException;
@@ -19,7 +17,8 @@ use WoohooLabs\Yin\JsonApi\Schema\Document\AbstractSuccessfulDocument;
 
 abstract class AbstractResourceController extends Controller
 {
-    protected function getAuthorizationChecker(): AuthorizationChecker {
+    protected function getAuthorizationChecker(): AuthorizationChecker
+    {
         if (!$this->container->has('security.authorization_checker')) {
             throw new \LogicException('The SecurityBundle is not registered in your application. Try running "composer require symfony/security-bundle".');
         }
@@ -34,15 +33,13 @@ abstract class AbstractResourceController extends Controller
     abstract protected function getRelatedResponses(): array;
 
     /**
-     * @param ServiceEntityRepository $entityRepository
-     * @param ResourceCollection $resourceCollection
-     * @return ResponseInterface
      * @throws EntityNotFoundException
      */
-    public function resourceIndex(ServiceEntityRepository $entityRepository, ResourceCollection $resourceCollection): ResponseInterface {
+    public function resourceIndex(ServiceEntityRepository $entityRepository, ResourceCollection $resourceCollection): ResponseInterface
+    {
         $resourceCollection->setRepository($entityRepository);
 
-        # TODO : access control
+        // TODO : access control
         $resourceCollection->handleIndexRequest();
 
         return $this->jsonApi()->respond()->ok(
@@ -51,7 +48,8 @@ abstract class AbstractResourceController extends Controller
         );
     }
 
-    public function resourceNew(object $domainObject, ValidatorInterface $validator, HydratorInterface $hydrator) {
+    public function resourceNew(object $domainObject, ValidatorInterface $validator, HydratorInterface $hydrator)
+    {
         $this->denyAccessUnlessGranted('create', $domainObject);
 
         $domainObject = $this->jsonApi()->hydrate(
@@ -65,6 +63,7 @@ abstract class AbstractResourceController extends Controller
         $errors = $validator->validate($domainObject);
         if ($errors->count() > 0) {
             $entityManager->clear();
+
             return $this->validationErrorResponse($errors);
         }
 
@@ -77,7 +76,8 @@ abstract class AbstractResourceController extends Controller
         );
     }
 
-    public function resourceShow(object $domainObject) {
+    public function resourceShow(object $domainObject)
+    {
         $this->denyAccessUnlessGranted('view', $domainObject);
 
         return $this->jsonApi()->respond()->ok(
@@ -86,7 +86,8 @@ abstract class AbstractResourceController extends Controller
         );
     }
 
-    public function resourceHydrate(object $domainObject, ValidatorInterface $validator, HydratorInterface $hydrator): ResponseInterface {
+    public function resourceHydrate(object $domainObject, ValidatorInterface $validator, HydratorInterface $hydrator): ResponseInterface
+    {
         $this->denyAccessUnlessGranted('edit', $domainObject);
 
         $domainObject = $this->jsonApi()->hydrate(
@@ -100,6 +101,7 @@ abstract class AbstractResourceController extends Controller
         $errors = $validator->validate($domainObject);
         if ($errors->count() > 0) {
             $entityManager->clear();
+
             return $this->validationErrorResponse($errors);
         }
 
@@ -111,7 +113,8 @@ abstract class AbstractResourceController extends Controller
         );
     }
 
-    public function resourceDelete(object $domainObject) {
+    public function resourceDelete(object $domainObject)
+    {
         $this->denyAccessUnlessGranted('delete', $domainObject);
 
         $entityManager = $this->getDoctrine()->getManager();
@@ -121,12 +124,13 @@ abstract class AbstractResourceController extends Controller
         return $this->jsonApi()->respond()->genericSuccess(204);
     }
 
-    public function resourceShowRelationships(object $domainObject) {
+    public function resourceShowRelationships(object $domainObject)
+    {
         $relationshipName = $this->jsonApi()->getRequest()->getAttribute('rel');
-        # TODO : relationship not exist
+        // TODO : relationship not exist
 
         $this->denyAccessUnlessGranted('view', $domainObject);
-        $this->denyAccessUnlessGranted('view-' . $relationshipName, $domainObject);
+        $this->denyAccessUnlessGranted('view-'.$relationshipName, $domainObject);
 
         return $this->jsonApi()->respond()->okWithRelationship(
             $relationshipName,
@@ -140,9 +144,9 @@ abstract class AbstractResourceController extends Controller
         $relationshipName = $this->jsonApi()->getRequest()->getAttribute('rel');
 
         $this->denyAccessUnlessGranted('edit', $domainObject);
-        $this->denyAccessUnlessGranted('edit-' . $relationshipName, $domainObject);
+        $this->denyAccessUnlessGranted('edit-'.$relationshipName, $domainObject);
 
-        # TODO : relationship not exist
+        // TODO : relationship not exist
         $domainObject = $this->jsonApi()->hydrateRelationship(
             $relationshipName,
             $hydrator,
@@ -155,12 +159,13 @@ abstract class AbstractResourceController extends Controller
         $errors = $validator->validate($domainObject);
         if ($errors->count() > 0) {
             $entityManager->clear();
+
             return $this->validationErrorResponse($errors);
         }
 
         $this->getDoctrine()->getManager()->flush();
 
-        # TODO : 204 No Content
+        // TODO : 204 No Content
         return $this->jsonApi()->respond()->okWithRelationship(
             $relationshipName,
             $this->getSingleDocument(),
@@ -172,12 +177,12 @@ abstract class AbstractResourceController extends Controller
     {
         $relatedResponses = $this->getRelatedResponses();
         $relationshipName = $this->jsonApi()->getRequest()->getAttribute('rel');
-        if (!array_key_exists($relationshipName, $relatedResponses)) {
+        if (!\array_key_exists($relationshipName, $relatedResponses)) {
             throw new NotFoundHttpException('relationship not exist');
         }
 
         $this->denyAccessUnlessGranted('view', $domainObject);
-        $this->denyAccessUnlessGranted('view-' . $relationshipName, $domainObject);
+        $this->denyAccessUnlessGranted('view-'.$relationshipName, $domainObject);
 
         return $relatedResponses[$relationshipName]($domainObject, $relationshipName);
     }
