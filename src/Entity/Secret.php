@@ -6,6 +6,7 @@ use App\Entity\SecretOwnership\SecretOwnerInterface;
 use App\Entity\SecretOwnership\SecretOwnership;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\SecretRepository")
@@ -31,6 +32,7 @@ class Secret
      * @var SecretOwnership
      * @ORM\ManyToOne(targetEntity="App\Entity\SecretOwnership\SecretOwnership", inversedBy="secrets")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
     private $owner;
 

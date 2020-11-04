@@ -33,7 +33,7 @@ abstract class AbstractResourceController extends Controller
 
     abstract protected function getRelatedResponses(): array;
 
-    private function hydrate(object $domainObject, ValidatorInterface $validator, HydratorInterface $hydrator)
+    private function hydrate(object $domainObject, ValidatorInterface $validator, HydratorInterface $hydrator): ResponseInterface
     {
         $entityManager = $this->getDoctrine()->getManager();
 
