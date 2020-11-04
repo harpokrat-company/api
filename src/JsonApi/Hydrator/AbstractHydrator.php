@@ -5,7 +5,6 @@ namespace App\JsonApi\Hydrator;
 use App\Exception\PropertyAccessDeniedException;
 use Doctrine\Common\Persistence\ObjectManager;
 use Paknahad\JsonApiBundle\Hydrator\AbstractHydrator as BaseHydrator;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;
 
@@ -34,6 +33,7 @@ abstract class AbstractHydrator extends BaseHydrator
     abstract protected function getContext(): string;
 
     // TODO : maybe find a better way
+
     /**
      * @throws PropertyAccessDeniedException
      */
@@ -46,7 +46,7 @@ abstract class AbstractHydrator extends BaseHydrator
         $attributeHydrator = $this->getAttributeHydrator($domainObject);
 
         foreach ($data['attributes'] as $name => $value) {
-            if (!array_key_exists($name, $attributeHydrator)) {
+            if (!\array_key_exists($name, $attributeHydrator)) {
                 continue;
             }
 
@@ -76,11 +76,10 @@ abstract class AbstractHydrator extends BaseHydrator
             return $domainObject;
         }
 
-
         $relationshipHydrator = $this->getRelationshipHydrator($domainObject);
 
         foreach ($data['relationships'] as $name => $value) {
-            if (!array_key_exists($name, $relationshipHydrator)) {
+            if (!\array_key_exists($name, $relationshipHydrator)) {
                 continue;
             }
 

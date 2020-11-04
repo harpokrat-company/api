@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Exception;
-
 
 use WoohooLabs\Yin\JsonApi\Exception\AbstractJsonApiException;
 use WoohooLabs\Yin\JsonApi\Schema\Error\Error;

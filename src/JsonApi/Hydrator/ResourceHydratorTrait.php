@@ -2,20 +2,13 @@
 
 namespace App\JsonApi\Hydrator;
 
-use App\Exception\ResourceIdentifierIdInvalidNotFound;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\Persistence\ObjectRepository;
 use Paknahad\JsonApiBundle\Exception\InvalidRelationshipValueException;
 use Paknahad\JsonApiBundle\Hydrator\ValidatorTrait;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\Validator\Exception\ValidatorException;
 use WoohooLabs\Yin\JsonApi\Exception\JsonApiExceptionInterface;
 use WoohooLabs\Yin\JsonApi\Exception\RelationshipTypeInappropriate;
-use WoohooLabs\Yin\JsonApi\Exception\ResourceIdentifierIdInvalid;
-use WoohooLabs\Yin\JsonApi\Exception\ResourceIdentifierTypeInvalid;
-use WoohooLabs\Yin\JsonApi\Exception\ResourceIdInvalid;
-use WoohooLabs\Yin\JsonApi\Exception\ResourceNotFound;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToManyRelationship;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship;
 
@@ -47,7 +40,6 @@ trait ResourceHydratorTrait
             throw new InvalidRelationshipValueException($relationshipName, [$identifier->getId()], 'not found');
         }
 
-
         return $association;
     }
 
@@ -60,13 +52,7 @@ trait ResourceHydratorTrait
         try {
             $this->validateRelationType($relationship, $resourceValidTypes);
         } catch (\Exception $exception) {
-            throw new RelationshipTypeInappropriate(
-                $relationshipName,
-                join(array_filter($relationship->getResourceIdentifierTypes(), function (string $type) use ($resourceValidTypes) {
-                    return !\in_array($type, $resourceValidTypes);
-                }), '/'),
-                join($resourceValidTypes, '/')
-            );
+            throw new RelationshipTypeInappropriate($relationshipName, join(array_filter($relationship->getResourceIdentifierTypes(), function (string $type) use ($resourceValidTypes) { return !\in_array($type, $resourceValidTypes); }), '/'), join($resourceValidTypes, '/'));
         }
         if (!$relationship->isEmpty()) {
             $association = $repository
