@@ -10,6 +10,7 @@ use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\Exception\ValidatorException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use WoohooLabs\Yin\JsonApi\Exception\JsonApiExceptionInterface;
 use WoohooLabs\Yin\JsonApi\Hydrator\HydratorInterface;
@@ -33,7 +34,7 @@ abstract class AbstractResourceController extends Controller
 
     abstract protected function getRelatedResponses(): array;
 
-    private function hydrate(object $domainObject, ValidatorInterface $validator, HydratorInterface $hydrator)
+    private function hydrate(object $domainObject, ValidatorInterface $validator, HydratorInterface $hydrator): ResponseInterface
     {
         $entityManager = $this->getDoctrine()->getManager();
 

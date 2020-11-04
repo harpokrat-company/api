@@ -2,12 +2,20 @@
 
 namespace App\JsonApi\Hydrator;
 
+use App\Exception\ResourceIdentifierIdInvalidNotFound;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\Persistence\ObjectRepository;
 use Paknahad\JsonApiBundle\Exception\InvalidRelationshipValueException;
 use Paknahad\JsonApiBundle\Hydrator\ValidatorTrait;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\Validator\Exception\ValidatorException;
+use WoohooLabs\Yin\JsonApi\Exception\JsonApiExceptionInterface;
+use WoohooLabs\Yin\JsonApi\Exception\RelationshipTypeInappropriate;
+use WoohooLabs\Yin\JsonApi\Exception\ResourceIdentifierIdInvalid;
+use WoohooLabs\Yin\JsonApi\Exception\ResourceIdentifierTypeInvalid;
+use WoohooLabs\Yin\JsonApi\Exception\ResourceIdInvalid;
+use WoohooLabs\Yin\JsonApi\Exception\ResourceNotFound;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToManyRelationship;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship;
 
@@ -16,46 +24,50 @@ trait ResourceHydratorTrait
     use ValidatorTrait;
 
     /**
-     * @param $relationshipName
-     *
-     * @return object|null
-     *
+     * @throws JsonApiExceptionInterface
      * @throws InvalidRelationshipValueException
-     * @throws \Exception
      */
     protected function getSingleAssociation(ToOneRelationship $relationship, $relationshipName, array $resourceValidTypes, ObjectRepository $repository, bool $nullable = true)
     {
-        $this->validateRelationType($relationship, $resourceValidTypes);
-        $association = null;
-        $identifier = $relationship->getResourceIdentifier();
-        if ($identifier) {
-            try {
-                $association = $repository->find($identifier->getId());
-            } catch (ConversionException $exception) {
-                throw new InvalidRelationshipValueException($relationshipName, [$identifier->getId()], 'invalid id format');
-            }
-            if (!$association) {
-                throw new InvalidRelationshipValueException($relationshipName, [$identifier->getId()], 'not found');
-            }
+        if (!$identifier = $relationship->getResourceIdentifier()) {
+            return null;
         }
-        if (!$association && !$nullable) {
-            throw new BadRequestHttpException($relationshipName.' cannot be null');
+        try {
+            $this->validateRelationType($relationship, $resourceValidTypes);
+        } catch (\Exception $exception) {
+            throw new RelationshipTypeInappropriate($relationshipName, $relationship->getResourceIdentifier()->getType(), join($resourceValidTypes, '/'));
         }
+        try {
+            $association = $repository->find($identifier->getId());
+        } catch (ConversionException $exception) {
+            throw new InvalidRelationshipValueException($relationshipName, [$identifier->getId()], '');
+        }
+
+        if (null === $association) {
+            throw new InvalidRelationshipValueException($relationshipName, [$identifier->getId()], 'not found');
+        }
+
 
         return $association;
     }
 
     /**
-     * @param $relationshipName
-     *
-     * @return array
-     *
+     * @throws JsonApiExceptionInterface
      * @throws InvalidRelationshipValueException
-     * @throws \Exception
      */
     protected function getCollectionAssociation(ToManyRelationship $relationship, $relationshipName, array $resourceValidTypes, ObjectRepository $repository)
     {
-        $this->validateRelationType($relationship, $resourceValidTypes);
+        try {
+            $this->validateRelationType($relationship, $resourceValidTypes);
+        } catch (\Exception $exception) {
+            throw new RelationshipTypeInappropriate(
+                $relationshipName,
+                join(array_filter($relationship->getResourceIdentifierTypes(), function (string $type) use ($resourceValidTypes) {
+                    return !\in_array($type, $resourceValidTypes);
+                }), '/'),
+                join($resourceValidTypes, '/')
+            );
+        }
         if (!$relationship->isEmpty()) {
             $association = $repository
                 ->createQueryBuilder('l')

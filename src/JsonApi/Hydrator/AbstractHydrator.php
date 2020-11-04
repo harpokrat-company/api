@@ -2,6 +2,7 @@
 
 namespace App\JsonApi\Hydrator;
 
+use App\Exception\PropertyAccessDeniedException;
 use Doctrine\Common\Persistence\ObjectManager;
 use Paknahad\JsonApiBundle\Hydrator\AbstractHydrator as BaseHydrator;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -33,6 +34,9 @@ abstract class AbstractHydrator extends BaseHydrator
     abstract protected function getContext(): string;
 
     // TODO : maybe find a better way
+    /**
+     * @throws PropertyAccessDeniedException
+     */
     protected function hydrateAttributes($domainObject, array $data)
     {
         if (empty($data['attributes'])) {
@@ -40,16 +44,23 @@ abstract class AbstractHydrator extends BaseHydrator
         }
 
         $attributeHydrator = $this->getAttributeHydrator($domainObject);
-        foreach ($attributeHydrator as $attribute => $hydrator) {
-            if (false === \array_key_exists($attribute, $data['attributes'])) {
+
+        foreach ($data['attributes'] as $name => $value) {
+            if (!array_key_exists($name, $attributeHydrator)) {
                 continue;
             }
 
-            if ($this->checkHydrate && !$this->authorizationChecker->isGranted($this->getContext().'-'.$attribute, $domainObject)) {
-                throw new AccessDeniedHttpException();
+            if ($this->checkHydrate && !$this->authorizationChecker->isGranted($this->getContext().'-'.$name, $domainObject)) {
+                throw new PropertyAccessDeniedException($name);
             }
 
-            $result = $hydrator($domainObject, $data['attributes'][$attribute], $data, $attribute);
+            $result = $attributeHydrator[$name](
+                $domainObject,
+                $value,
+                $data,
+                $name
+            );
+
             if ($result) {
                 $domainObject = $result;
             }
@@ -65,22 +76,24 @@ abstract class AbstractHydrator extends BaseHydrator
             return $domainObject;
         }
 
+
         $relationshipHydrator = $this->getRelationshipHydrator($domainObject);
-        foreach ($relationshipHydrator as $relationship => $hydrator) {
-            if (false === isset($data['relationships'][$relationship])) {
+
+        foreach ($data['relationships'] as $name => $value) {
+            if (!array_key_exists($name, $relationshipHydrator)) {
                 continue;
             }
 
-            if ($this->checkHydrate && !$this->authorizationChecker->isGranted($this->getContext().'-'.$relationship, $domainObject)) {
-                throw new AccessDeniedHttpException();
+            if ($this->checkHydrate && !$this->authorizationChecker->isGranted($this->getContext().'-'.$value, $domainObject)) {
+                throw new PropertyAccessDeniedException($name);
             }
 
             $domainObject = $this->doHydrateRelationship(
                 $domainObject,
-                $relationship,
-                $hydrator,
+                $name,
+                $relationshipHydrator[$name],
                 $exceptionFactory,
-                $data['relationships'][$relationship],
+                $value,
                 $data
             );
         }

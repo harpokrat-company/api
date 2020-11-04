@@ -34,6 +34,7 @@ class Organization
      * @var User
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="organizations")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
     private $owner;
 

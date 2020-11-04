@@ -43,6 +43,7 @@ class OrganizationGroup implements SecretOwnerInterface, VaultOwnerInterface
      * @var Organization
      * @ORM\ManyToOne(targetEntity="App\Entity\Organization", inversedBy="groups")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull()
      */
     private $organization;
 
