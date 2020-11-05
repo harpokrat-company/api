@@ -14,6 +14,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
+            sudo su -
             cd /var/docker-repositories/api-dev
             git pull origin dev
             docker-compose -f .build/docker-compose.yml -p api.dev up -d
