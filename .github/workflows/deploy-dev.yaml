@@ -14,7 +14,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd /var/api-dev
+            cd /var/docker-repositories/api-dev
             git pull origin dev
             docker-compose -f .build/docker-compose.yml -p api.dev up -d
             docker exec -ti build_php_1 bash -c "cd ..; ./.deploy/container.sh"
