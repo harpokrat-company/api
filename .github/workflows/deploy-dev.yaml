@@ -1,6 +1,9 @@
 name: Deploy
 
-on: [push]
+on:
+  push:
+    branches:
+      - dev
 
 jobs:
   build:
@@ -15,6 +18,8 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd /var/docker-repositories/api-dev
-            sudo git pull origin
+            sudo git fetch origin dev
+            sudo git checkout dev
+            sudo git pull origin dev
             sudo docker-compose -f .build/docker-compose.yml -p api.dev up -d
             sudo docker exec -ti apidev_php_1 bash -c "cd ..; ./.deploy/container.sh"
