@@ -15,9 +15,8 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd /var/docker-repositories/api-dev
-            sudo su -
-            git remote add github https://${{ secrets.GITHUB_TOKEN }}/harpokrat-company/api
-            git pull github dev
-            git remote remove github
-            docker-compose -f .build/docker-compose.yml -p api.dev up -d
-            docker exec -ti apidev_php_1 bash -c "cd ..; ./.deploy/container.sh"
+            sudo git remote add github https://${{ secrets.GITHUB_TOKEN }}/harpokrat-company/api
+            sudo git pull github dev
+            sudo git remote remove github
+            sudo docker-compose -f .build/docker-compose.yml -p api.dev up -d
+            sudo docker exec -ti apidev_php_1 bash -c "cd ..; ./.deploy/container.sh"
