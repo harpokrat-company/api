@@ -9,7 +9,7 @@ jobs:
       - name: Deploying Harpokrat to dev
         uses: appleboy/ssh-action@master
         env:
-          GITHUB_TOKEN: ${{ GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
