@@ -10,13 +10,15 @@ jobs:
         uses: appleboy/ssh-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FOO: enormecul
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          envs: GITHUB_TOKEN
+          envs: GITHUB_TOKEN, FOO
           script: |
+            echo $FOO
             cd /var/docker-repositories/api-dev
             sudo git remote add aled https://$GITHUB_TOKEN@github.com/harpokrat-company/api
             sudo git pull github dev
