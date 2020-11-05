@@ -8,18 +8,13 @@ jobs:
     steps:
       - name: Deploying Harpokrat to dev
         uses: appleboy/ssh-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          envs: GITHUB_TOKEN
           script: |
             cd /var/docker-repositories/api-dev
-            sudo git remote add github https://$GITHUB_TOKEN@github.com/harpokrat-company/api
-            sudo git pull github
-            sudo git remote remove github
+            sudo git pull origin
             sudo docker-compose -f .build/docker-compose.yml -p api.dev up -d
             sudo docker exec -ti apidev_php_1 bash -c "cd ..; ./.deploy/container.sh"
