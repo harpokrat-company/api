@@ -99,6 +99,14 @@ class VaultResourceTransformer extends AbstractResource
                         'related' => new Link('/v1/vaults/'.$vault->getId().'/owner'),
                     ]));
             },
+            'encryption-key' => function (Vault $vault) {
+                return ToOneRelationship::create()
+                    ->setData($vault->getEncryptionKey(), new SecretResourceTransformer($this->authorizationChecker))
+                    ->setLinks(Links::createWithoutBaseUri([
+                        'self' => new Link('/v1/vaults/'.$vault->getId().'/relationships/encryption-key'),
+                        'related' => new Link('/v1/vaults/'.$vault->getId().'/encryption-key'),
+                    ]));
+            },
         ];
     }
 }

@@ -8,6 +8,7 @@ use App\Entity\Vault;
 use App\JsonApi\Document\Secret\SecretRelatedEntityDocument;
 use App\JsonApi\Document\Vault\VaultDocument;
 use App\JsonApi\Document\Vault\VaultRelatedEntitiesDocument;
+use App\JsonApi\Document\Vault\VaultRelatedEntityDocument;
 use App\JsonApi\Document\Vault\VaultsDocument;
 use App\JsonApi\Hydrator\Vault\CreateVaultHydrator;
 use App\JsonApi\Hydrator\Vault\UpdateVaultHydrator;
@@ -63,6 +64,12 @@ class VaultController extends AbstractResourceController
                     $vault->getSecrets()
                 );
             },
+            'encryption-key' => function (Vault $vault, string $relationshipName) {
+                return $this->jsonApi()->respond()->ok(
+                    new VaultRelatedEntityDocument(new SecretResourceTransformer($this->getAuthorizationChecker()), $vault->getId(), $relationshipName),
+                    $vault->getEncryptionKey()
+                );
+            },
         ];
     }
 
@@ -112,6 +119,16 @@ class VaultController extends AbstractResourceController
     public function delete(Vault $vault): ResponseInterface
     {
         return $this->resourceDelete($vault);
+    }
+
+    /**
+     * @Route("/{id}/relationships/{rel}", name="vaults_relationships_edit", methods="PATCH")
+     */
+    public function editRelationships(Vault $vault, ValidatorInterface $validator): ResponseInterface
+    {
+        return $this->resourceHydrateRelationships(
+            $vault, $validator, new UpdateVaultHydrator($this->getDoctrine()->getManager(), $this->getAuthorizationChecker())
+        );
     }
 
     /**
