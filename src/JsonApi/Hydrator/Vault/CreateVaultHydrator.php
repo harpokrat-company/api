@@ -6,7 +6,6 @@ use App\Entity\User;
 use App\Entity\Vault;
 use App\Exception\InvalidPropertyException;
 use Symfony\Component\Validator\Exception\ValidatorException;
-use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToManyRelationship;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship;
 
 class CreateVaultHydrator extends AbstractVaultHydrator
@@ -34,7 +33,10 @@ class CreateVaultHydrator extends AbstractVaultHydrator
                 );
                 $vault->setOwner($owner);
             },
-            'secrets' => function (User $user, ToManyRelationship $relationship, $data, $relationshipName) {
+            'secrets' => function (Vault $vault, ToOneRelationship $relationship, $data, $relationshipName) {
+                throw new InvalidPropertyException($relationshipName);
+            },
+            'encryption-key' => function (Vault $vault, ToOneRelationship $relationship, $data, $relationshipName) {
                 throw new InvalidPropertyException($relationshipName);
             },
         ];

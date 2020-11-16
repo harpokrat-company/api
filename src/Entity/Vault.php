@@ -8,12 +8,14 @@ use App\Entity\SecretOwnership\UserSecretOwnership;
 use App\Entity\SecretOwnership\VaultSecretOwnership;
 use App\Entity\VaultOwnership\VaultOwnerInterface;
 use App\Entity\VaultOwnership\VaultOwnership;
+use App\Validator\Constraints\VaultEncryptionKey;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\VaultRepository")
+ * @VaultEncryptionKey()
  */
 class Vault implements SecretOwnerInterface
 {
@@ -50,6 +52,13 @@ class Vault implements SecretOwnerInterface
      */
     private $owner;
 
+    /**
+     * @var ?Secret
+     * @ORM\OneToOne(targetEntity="App\Entity\Secret")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $encryptionKey;
+
     public function __construct()
     {
         $this->secretOwnership = new VaultSecretOwnership($this);
@@ -80,6 +89,18 @@ class Vault implements SecretOwnerInterface
     public function setOwner(?VaultOwnerInterface $owner): self
     {
         $this->owner = $owner->getVaultOwnership();
+
+        return $this;
+    }
+
+    public function getEncryptionKey(): ?Secret
+    {
+        return $this->encryptionKey;
+    }
+
+    public function setEncryptionKey(?Secret $encryptionKey): self
+    {
+        $this->encryptionKey = $encryptionKey;
 
         return $this;
     }

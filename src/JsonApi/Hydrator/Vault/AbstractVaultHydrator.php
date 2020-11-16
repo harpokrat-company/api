@@ -89,10 +89,13 @@ abstract class AbstractVaultHydrator extends AbstractHydrator
     protected function getRelationshipHydrator($vault): array
     {
         return [
-            'owner' => function (Vault $user, ToOneRelationship $relationship, $data, $relationshipName) {
+            'owner' => function (Vault $vault, ToOneRelationship $relationship, $data, $relationshipName) {
                 throw new InvalidPropertyException($relationshipName);
             },
-            'secrets' => function (Vault $user, ToManyRelationship $relationship, $data, $relationshipName) {
+            'secrets' => function (Vault $vault, ToManyRelationship $relationship, $data, $relationshipName) {
+                throw new InvalidPropertyException($relationshipName);
+            },
+            'encryption-key' => function (Vault $vault, ToOneRelationship $relationship, $data, $relationshipName) {
                 throw new InvalidPropertyException($relationshipName);
             },
         ];
