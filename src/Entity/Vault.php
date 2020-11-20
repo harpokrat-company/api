@@ -8,16 +8,16 @@ use App\Entity\SecretOwnership\UserSecretOwnership;
 use App\Entity\SecretOwnership\VaultSecretOwnership;
 use App\Entity\VaultOwnership\VaultOwnerInterface;
 use App\Entity\VaultOwnership\VaultOwnership;
-use App\Validator\Constraints\VaultEncryptionKey;
+use App\Validator\Constraints\EncryptionKey;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\VaultRepository")
- * @VaultEncryptionKey()
+ * @EncryptionKey()
  */
-class Vault implements SecretOwnerInterface
+class Vault implements SecretOwnerInterface, EncryptionKeyInterface
 {
     use SecretOwnerTrait;
 

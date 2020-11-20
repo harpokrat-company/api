@@ -3,6 +3,7 @@
 namespace App\JsonApi\Hydrator\User;
 
 use App\Entity\User;
+use App\Entity\Vault;
 use App\Exception\InvalidPropertyException;
 use App\JsonApi\Hydrator\AbstractHydrator;
 use App\JsonApi\Hydrator\ResourceHydratorTrait;
@@ -10,6 +11,7 @@ use Paknahad\JsonApiBundle\Exception\InvalidAttributeException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use WoohooLabs\Yin\JsonApi\Exception\ExceptionFactoryInterface;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToManyRelationship;
+use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship;
 use WoohooLabs\Yin\JsonApi\Request\JsonApiRequestInterface;
 
 /**
@@ -113,6 +115,9 @@ abstract class AbstractUserHydrator extends AbstractHydrator
                 throw new InvalidPropertyException($relationshipName);
             },
             'secrets' => function (User $user, ToManyRelationship $relationship, $data, $relationshipName) {
+                throw new InvalidPropertyException($relationshipName);
+            },
+            'encryption-key' => function (User $user, ToOneRelationship $relationship, $data, $relationshipName) {
                 throw new InvalidPropertyException($relationshipName);
             },
         ];
