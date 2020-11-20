@@ -8,7 +8,6 @@ use App\JsonApi\Document\User\UserDocument;
 use App\JsonApi\Document\User\UserRelatedEntitiesDocument;
 use App\JsonApi\Document\User\UserRelatedEntityDocument;
 use App\JsonApi\Document\User\UsersDocument;
-use App\JsonApi\Document\Vault\VaultRelatedEntityDocument;
 use App\JsonApi\Hydrator\User\CreateRelationshipUserHydrator;
 use App\JsonApi\Hydrator\User\CreateUserHydrator;
 use App\JsonApi\Hydrator\User\DeleteRelationshipUserHydrator;

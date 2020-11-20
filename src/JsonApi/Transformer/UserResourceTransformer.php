@@ -3,7 +3,6 @@
 namespace App\JsonApi\Transformer;
 
 use App\Entity\User;
-use App\Entity\Vault;
 use WoohooLabs\Yin\JsonApi\Schema\Link;
 use WoohooLabs\Yin\JsonApi\Schema\Links;
 use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToManyRelationship;

@@ -3,7 +3,6 @@
 namespace App\JsonApi\Hydrator\User;
 
 use App\Entity\User;
-use App\Entity\Vault;
 use App\Exception\InvalidPropertyException;
 use App\JsonApi\Hydrator\AbstractHydrator;
 use App\JsonApi\Hydrator\ResourceHydratorTrait;
