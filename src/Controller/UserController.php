@@ -6,7 +6,9 @@ use App\Annotation\ReCaptcha;
 use App\Entity\User;
 use App\JsonApi\Document\User\UserDocument;
 use App\JsonApi\Document\User\UserRelatedEntitiesDocument;
+use App\JsonApi\Document\User\UserRelatedEntityDocument;
 use App\JsonApi\Document\User\UsersDocument;
+use App\JsonApi\Document\Vault\VaultRelatedEntityDocument;
 use App\JsonApi\Hydrator\User\CreateRelationshipUserHydrator;
 use App\JsonApi\Hydrator\User\CreateUserHydrator;
 use App\JsonApi\Hydrator\User\DeleteRelationshipUserHydrator;
@@ -69,6 +71,12 @@ class UserController extends AbstractResourceController
                 return $this->jsonApi()->respond()->ok(
                     new UserRelatedEntitiesDocument(new VaultResourceTransformer($this->getAuthorizationChecker()), $user->getId(), $relationshipName),
                     $user->getVaults()
+                );
+            },
+            'encryption-key' => function (User $user, string $relationshipName) {
+                return $this->jsonApi()->respond()->ok(
+                    new UserRelatedEntityDocument(new SecretResourceTransformer($this->getAuthorizationChecker()), $user->getId(), $relationshipName),
+                    $user->getEncryptionKey()
                 );
             },
         ];

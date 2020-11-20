@@ -6,6 +6,7 @@ use App\Entity\Organization;
 use App\Entity\User;
 use App\Exception\InvalidPropertyException;
 use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToManyRelationship;
+use WoohooLabs\Yin\JsonApi\Hydrator\Relationship\ToOneRelationship;
 
 class DeleteRelationshipUserHydrator extends AbstractUserHydrator
 {
@@ -29,6 +30,9 @@ class DeleteRelationshipUserHydrator extends AbstractUserHydrator
                 throw new InvalidPropertyException($relationshipName);
             },
             'secrets' => function (User $user, ToManyRelationship $relationship, $data, $relationshipName) {
+                throw new InvalidPropertyException($relationshipName);
+            },
+            'encryption-key' => function (User $user, ToOneRelationship $relationship, $data, $relationshipName) {
                 throw new InvalidPropertyException($relationshipName);
             },
         ];

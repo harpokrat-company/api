@@ -2,7 +2,7 @@
 
 namespace App\Validator\Constraints;
 
-use App\Entity\Secret;
+use App\Entity\EncryptionKeyInterface;
 use App\Entity\Vault;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -15,14 +15,16 @@ class EncryptionKeyValidator extends ConstraintValidator
         if (!$constraint instanceof EncryptionKey) {
             throw new UnexpectedTypeException($constraint, EncryptionKey::class);
         }
-        if (!$value instanceof Secret) {
+        if (!$value instanceof EncryptionKeyInterface) {
             throw new UnexpectedTypeException($value, Vault::class);
         }
 
-        if (!$value->isEncryptionKey()) {
+        $ek = $value->getEncryptionKey();
+        if (null !== $ek && $value !== $ek->getOwner()) {
             $this->context->buildViolation($constraint->message)
                 ->setInvalidValue($value->getId())
-                ->setParameter('{{id}}', $value->getId())
+                ->setParameter('{{sid}}', $ek->getId())
+                ->setParameter('{{vid}}', $value->getId())
                 ->addViolation();
         }
     }

@@ -8,6 +8,7 @@ use App\Entity\SecretOwnership\UserSecretOwnership;
 use App\Entity\VaultOwnership\UserVaultOwnership;
 use App\Entity\VaultOwnership\VaultOwnerInterface;
 use App\Entity\VaultOwnership\VaultOwnerTrait;
+use App\Validator\Constraints\EncryptionKey;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -19,8 +20,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @UniqueEntity("email")
+ * @EncryptionKey()
  */
-class User implements UserInterface, SecretOwnerInterface, VaultOwnerInterface
+class User implements UserInterface, SecretOwnerInterface, VaultOwnerInterface, EncryptionKeyInterface
 {
     use SecretOwnerTrait;
     use VaultOwnerTrait;
@@ -107,6 +109,13 @@ class User implements UserInterface, SecretOwnerInterface, VaultOwnerInterface
      * @ORM\OneToOne(targetEntity="App\Entity\VaultOwnership\UserVaultOwnership", mappedBy="user", cascade={"persist", "remove"})
      */
     private $vaultOwnership;
+
+    /**
+     * @var ?Secret
+     * @ORM\OneToOne(targetEntity="App\Entity\Secret")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $encryptionKey;
 
     public function __construct()
     {
@@ -317,6 +326,18 @@ class User implements UserInterface, SecretOwnerInterface, VaultOwnerInterface
         if ($this->ownedOrganizations->contains($organization)) {
             $this->ownedOrganizations->removeElement($organization);
         }
+
+        return $this;
+    }
+
+    public function getEncryptionKey(): ?Secret
+    {
+        return $this->encryptionKey;
+    }
+
+    public function setEncryptionKey(?Secret $encryptionKey): self
+    {
+        $this->encryptionKey = $encryptionKey;
 
         return $this;
     }

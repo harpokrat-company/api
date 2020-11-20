@@ -7,13 +7,13 @@ use Symfony\Component\Validator\Constraint;
 /**
  * @Annotation
  */
-class VaultEncryptionKey extends Constraint
+class EncryptionKey extends Constraint
 {
     public $message = 'the {{sid}} secret is not in the {{vid}} vault';
 
     public function validatedBy()
     {
-        return VaultEncryptionKeyValidator::class;
+        return EncryptionKeyValidator::class;
     }
 
     public function getTargets()

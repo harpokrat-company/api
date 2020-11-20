@@ -3,9 +3,11 @@
 namespace App\JsonApi\Transformer;
 
 use App\Entity\User;
+use App\Entity\Vault;
 use WoohooLabs\Yin\JsonApi\Schema\Link;
 use WoohooLabs\Yin\JsonApi\Schema\Links;
 use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToManyRelationship;
+use WoohooLabs\Yin\JsonApi\Schema\Relationship\ToOneRelationship;
 
 /**
  * User Resource Transformer.
@@ -120,6 +122,14 @@ class UserResourceTransformer extends AbstractResource
                     ->setLinks(Links::createWithoutBaseUri([
                         'self' => new Link('/v1/users/'.$user->getId().'/relationships/vaults'),
                         'related' => new Link('/v1/users/'.$user->getId().'/vaults'),
+                    ]));
+            },
+            'encryption-key' => function (User $vault) {
+                return ToOneRelationship::create()
+                    ->setData($vault->getEncryptionKey(), new SecretResourceTransformer($this->authorizationChecker))
+                    ->setLinks(Links::createWithoutBaseUri([
+                        'self' => new Link('/v1/users/'.$vault->getId().'/relationships/encryption-key'),
+                        'related' => new Link('/v1/users/'.$vault->getId().'/encryption-key'),
                     ]));
             },
         ];
