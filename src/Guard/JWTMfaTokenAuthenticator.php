@@ -35,9 +35,12 @@ class JWTMfaTokenAuthenticator extends JWTTokenAuthenticator
         $preAuthToken = parent::getCredentials($request);
 
         $payload = $preAuthToken->getPayload();
-        if (\array_key_exists('mfa-secure-action', $payload)) {
+        if (
+            \array_key_exists('mfa-secure-action', $payload)
+            && null !== ($mfaSecureAction = $payload['mfa-secure-action'])
+        ) {
             /** @var SecureAction $secureAction */
-            $secureAction = $this->secureActionRepository->find($payload['mfa-secure-action']);
+            $secureAction = $this->secureActionRepository->find($mfaSecureAction);
             if (!$secureAction->getValidated()) {
                 throw new MFAInvalidTokenException();
             }

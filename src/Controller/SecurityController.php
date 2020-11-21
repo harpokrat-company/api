@@ -57,7 +57,7 @@ class SecurityController extends Controller
             [
                 'user' => $user,
                 'jti' => $jti,
-                'mfa-secure-action' => $mfaSecureAction->getId(),
+                'mfa-secure-action' => $mfaSecureAction ? $mfaSecureAction->getId() : null,
             ]
         );
     }
