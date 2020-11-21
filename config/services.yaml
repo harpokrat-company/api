@@ -80,6 +80,11 @@ services:
         tags:
             - { name: secure_action.handler, key: !php/const App\Entity\SecureAction::ACTION_RESET_PASSWORD }
 
+    mfa.handler:
+        class: App\Service\SecureActionHandler\MfaHandler
+        tags:
+            - { name: secure_action.handler, key: !php/const App\Entity\SecureAction::ACTION_MFA }
+
     App\EventSubscriber\ReCaptchaSubscriber:
         class: App\EventSubscriber\ReCaptchaSubscriber
         arguments:

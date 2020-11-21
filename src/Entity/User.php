@@ -93,6 +93,12 @@ class User implements UserInterface, SecretOwnerInterface, VaultOwnerInterface, 
     private $emailAddressValidated;
 
     /**
+     * @var bool
+     * @ORM\Column(type="boolean")
+     */
+    private $mfaActivated = false;
+
+    /**
      * @var array
      * @ORM\ManyToMany(targetEntity="App\Entity\Organization", mappedBy="members")
      */
@@ -282,6 +288,16 @@ class User implements UserInterface, SecretOwnerInterface, VaultOwnerInterface, 
         $this->emailAddressValidated = $emailAddressValidated;
 
         return $this;
+    }
+
+    public function isMfaActivated(): bool
+    {
+        return $this->mfaActivated;
+    }
+
+    public function setMfaActivated(bool $mfaActivated): void
+    {
+        $this->mfaActivated = $mfaActivated;
     }
 
     public function getOrganizations(): Collection

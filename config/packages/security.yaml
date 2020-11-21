@@ -29,12 +29,16 @@ security:
             stateless: true
             http_basic:
                 realm: Basic authentication
+        secure_actions:
+            pattern: ^/v1/secure-actions
+            methods: [GET, POST, PATCH]
+            security: false
         api:
             pattern: ^/
             stateless: true
             guard:
                 authenticators:
-                    - lexik_jwt_authentication.jwt_token_authenticator
+                    - App\Guard\JWTMfaTokenAuthenticator
         main:
             anonymous: true
             stateless: true

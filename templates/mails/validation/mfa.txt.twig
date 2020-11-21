@@ -1,0 +1,17 @@
+{% extends 'mails/_email_base.html.twig' %}
+
+{% block title %}Password reset request{% endblock %}
+
+{% block header_subject %}Password reset request{% endblock %}
+
+{% block content %}
+Hello {{  user.firstName }},
+
+Your validation code is : {{ action.token }}
+
+Warning: this email and validation link are only valid until the {{ action.expirationDate|date('Y/m/d \\a\\t G:i') }}
+
+
+Thanks,
+Harpokrat
+{% endblock %}

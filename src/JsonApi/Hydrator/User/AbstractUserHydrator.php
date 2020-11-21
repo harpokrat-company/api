@@ -75,6 +75,9 @@ abstract class AbstractUserHydrator extends AbstractHydrator
             'lastName' => function (User $user, $attribute, $data, $attributeName) {
                 $user->setLastName($attribute);
             },
+            'mfaActivated' => function (User $user, $attribute, $data, $attributeName) {
+                $user->setMfaActivated($attribute);
+            },
         ];
     }
 

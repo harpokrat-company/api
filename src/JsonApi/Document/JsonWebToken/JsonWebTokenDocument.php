@@ -70,6 +70,12 @@ class JsonWebTokenDocument extends AbstractSimpleResourceDocument
                         'id' => $user->getId(),
                     ],
                 ],
+                'mfa' => [
+                    'data' => [
+                        'type' => 'secure-actions',
+                        'id' => $this->domainObject['mfa-secure-action'],
+                    ],
+                ],
             ],
         ];
     }

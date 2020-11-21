@@ -16,10 +16,12 @@ class SecureAction
 
     const ACTION_VALIDATE_EMAIL_ADDRESS = 0;
     const ACTION_RESET_PASSWORD = 1;
+    const ACTION_MFA = 2;
 
     const ACTION_IDENTIFIER = [
         self::ACTION_VALIDATE_EMAIL_ADDRESS => 'validate_email_address',
         self::ACTION_RESET_PASSWORD => 'reset_password',
+        self::ACTION_MFA => 'mfa',
     ];
 
     const USER_CREATED_ACTIONS = [

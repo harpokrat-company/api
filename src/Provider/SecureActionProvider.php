@@ -88,4 +88,28 @@ class SecureActionProvider
 
         return $action;
     }
+
+    public function mfaRegister(User $user, SecureAction $action)
+    {
+        if (!$user->isMfaActivated()) {
+            return null;
+        }
+
+        $action->setAction([
+            'user_id' => $user->getId(),
+            'user_email' => $user->getEmail(),
+        ]);
+        $action->setType(SecureAction::ACTION_MFA);
+        $action->setCreationDate(new DateTime());
+        $action->setExpirationDate(new DateTime('+15 minutes'));
+        $action->setValidated(false);
+        $action->setToken(sprintf('%06d', rand(0, 10 ** 6 - 1)));
+
+        $this->entityManager->persist($action);
+        $this->entityManager->flush();
+
+        $this->validationEmailService->sendValidationMail($user, $action);
+
+        return $action;
+    }
 }
