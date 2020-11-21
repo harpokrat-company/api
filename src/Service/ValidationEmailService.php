@@ -46,6 +46,9 @@ class ValidationEmailService
             case SecureAction::ACTION_RESET_PASSWORD:
                 $subject .= ', password reset confirmation';
                 break;
+            case SecureAction::ACTION_MFA:
+                $subject .= ', mfa';
+                break;
         }
         $this->emailSenderService->sendMail(
             $user->getEmail(),

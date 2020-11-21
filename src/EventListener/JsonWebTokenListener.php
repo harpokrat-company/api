@@ -21,8 +21,10 @@ class JsonWebTokenListener
     {
         $payload = $event->getData();
         $jti = $this->requestStack->getCurrentRequest()->attributes->get('jti');
+        $mfaSecureAction = $this->requestStack->getCurrentRequest()->attributes->get('mfa-secure-action');
 
         $payload['jti'] = $jti;
+        $payload['mfa-secure-action'] = $mfaSecureAction;
 
         $event->setData($payload);
     }

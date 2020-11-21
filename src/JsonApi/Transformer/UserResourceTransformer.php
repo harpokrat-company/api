@@ -66,6 +66,9 @@ class UserResourceTransformer extends AbstractResource
             'emailAddressValidated' => function (User $user) {
                 return $user->isEmailAddressValidated();
             },
+            'mfaActivated' => function (User $user) {
+                return $user->isMfaActivated();
+            },
         ];
     }
 

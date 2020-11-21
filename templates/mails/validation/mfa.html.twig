@@ -1,0 +1,30 @@
+{% extends 'mails/_email_base.html.twig' %}
+
+{% block title %}Password reset request{% endblock %}
+
+{% block header_subject %}Password reset request{% endblock %}
+
+{% block content %}
+    <p>
+        Hello {{ user.firstName }},<br>
+    </p>
+    <br>
+
+    Your validation code is : {{ action.token }}
+
+    <br>
+    <p>
+        Warning: this email and validation link are only valid until the
+        <b>{{ action.expirationDate|date('Y/m/d \\a\\t G:i') }}</b>
+    </p>
+    <br>
+    <p>
+        If the link is not working you can enter the following address manually in your web browser:<br>
+        <br>
+        <small>{{ validation_link }}</small><br>
+        <br>
+        <br>
+        Thanks,<br>
+        Harpokrat
+    </p>
+{% endblock %}
