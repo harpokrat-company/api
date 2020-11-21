@@ -11,7 +11,7 @@
     	"id": "{{currentUserId}}",
         "type": "users",
         "attributes": {
-            "mfaActivated": trye
+            "mfaActivated": true
         }
     }
 }
@@ -37,7 +37,7 @@
             "mfa": {
                 "data": {
                     "type": "secure-actions",
-                    "id": "{{mfa-secures-actions}}"
+                    "id": "{{mfa-secure-action-id}}"
                 }
             }
         }
@@ -51,13 +51,13 @@ Take code from e-mail `{{mfa-code}}`
 
 #### Activate Secure Action
 
-`PATCH {{host}}:{{port}}/v1/secure-actions/{{mfa-secures-actions}}`
+`PATCH {{host}}:{{port}}/v1/secure-actions/{{mfa-secure-action-id}}`
 
 * Request Body
 ```
 {
     "data": {
-    	"id": "{{mfa-secures-actions}}",
+    	"id": "{{mfa-secure-action-id}}",
         "type": "secure-actions",
         "attributes": {
             "validated": true
