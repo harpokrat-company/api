@@ -54,11 +54,12 @@ class SecretVoter extends ResourceVoter
             return $owner->getOrganization()->getOwner() === $user;
         }
         if ($owner instanceof Vault) {
-            if ($owner instanceof User) {
-                return $owner === $user;
+            $ownerOwner = $owner->getOwner();
+            if ($ownerOwner instanceof User) {
+                return $ownerOwner === $user;
             }
-            if ($owner instanceof OrganizationGroup) {
-                return $owner->getOrganization()->getOwner() === $user;
+            if ($ownerOwner instanceof OrganizationGroup) {
+                return $ownerOwner->getOrganization()->getOwner() === $user;
             }
         }
 
@@ -75,11 +76,12 @@ class SecretVoter extends ResourceVoter
             return $owner->getMembers()->contains($user);
         }
         if ($owner instanceof Vault) {
-            if ($owner instanceof User) {
-                return $owner === $user;
+            $ownerOwner = $owner->getOwner();
+            if ($ownerOwner instanceof User) {
+                return $ownerOwner === $user;
             }
-            if ($owner instanceof OrganizationGroup) {
-                return $owner->getMembers()->contains($user);
+            if ($ownerOwner instanceof OrganizationGroup) {
+                return $ownerOwner->getMembers()->contains($user);
             }
         }
 
