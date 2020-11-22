@@ -57,26 +57,30 @@ class JsonWebTokenDocument extends AbstractSimpleResourceDocument
         }
         $jwt = $this->JWTTokenManager->create($user);
 
+        $relationships = [
+            'user' => [
+                'data' => [
+                    'type' => 'users',
+                    'id' => $user->getId(),
+                ],
+            ],
+        ];
+        if ($this->domainObject['mfa-secure-action']) {
+            $relationships['mfa'] =[
+                'data' => [
+                    'type' => 'secure-actions',
+                    'id' => $this->domainObject['mfa-secure-action'],
+                ]
+            ];
+        }
+
         return [
             'type' => 'json-web-tokens',
             'id' => $this->domainObject['jti'],
             'attributes' => [
                 'token' => $jwt,
             ],
-            'relationships' => [
-                'user' => [
-                    'data' => [
-                        'type' => 'users',
-                        'id' => $user->getId(),
-                    ],
-                ],
-                'mfa' => [
-                    'data' => [
-                        'type' => 'secure-actions',
-                        'id' => $this->domainObject['mfa-secure-action'],
-                    ],
-                ],
-            ],
+            'relationships' => $relationships,
         ];
     }
 }
