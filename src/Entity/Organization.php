@@ -32,7 +32,7 @@ class Organization
 
     /**
      * @var User
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="organizations")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="ownedOrganizations")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull()
      */
@@ -46,7 +46,7 @@ class Organization
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="App\Entity\OrganizationGroup", mappedBy="organization", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="App\Entity\OrganizationGroup", mappedBy="organization")
      */
     private $groups;
 

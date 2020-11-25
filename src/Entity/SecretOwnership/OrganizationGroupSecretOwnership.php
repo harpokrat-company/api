@@ -13,7 +13,7 @@ class OrganizationGroupSecretOwnership extends SecretOwnership
     /**
      * @var OrganizationGroup
      * @ORM\OneToOne(targetEntity="App\Entity\OrganizationGroup", inversedBy="secretOwnership", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
      */
     private $group;
 

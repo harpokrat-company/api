@@ -13,8 +13,8 @@ class UserVaultOwnership extends VaultOwnership
 {
     /**
      * @var User
-     * @ORM\OneToOne(targetEntity="App\Entity\User", inversedBy="vaultOwnership", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\OneToOne(targetEntity="App\Entity\User", inversedBy="vaultOwnership")
+     * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
      */
     private $user;
 

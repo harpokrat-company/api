@@ -31,7 +31,7 @@ class Secret
     /**
      * @var SecretOwnership
      * @ORM\ManyToOne(targetEntity="App\Entity\SecretOwnership\SecretOwnership", inversedBy="secrets")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      * @Assert\NotNull()
      */
     private $owner;

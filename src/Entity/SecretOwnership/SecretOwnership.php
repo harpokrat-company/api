@@ -14,7 +14,7 @@ use Ramsey\Uuid\UuidInterface;
 
 /**
  * @Entity
- * @InheritanceType("JOINED")
+ * @InheritanceType("SINGLE_TABLE")
  * @DiscriminatorColumn(name="discr", type="string")
  * @DiscriminatorMap({
  *     "group" = "OrganizationGroupSecretOwnership",

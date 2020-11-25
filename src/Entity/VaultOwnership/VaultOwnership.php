@@ -14,7 +14,7 @@ use Ramsey\Uuid\UuidInterface;
 
 /**
  * @Entity
- * @InheritanceType("JOINED")
+ * @InheritanceType("SINGLE_TABLE")
  * @DiscriminatorColumn(name="discr", type="string")
  * @DiscriminatorMap({
  *     "group" = "OrganizationGroupVaultOwnership",
@@ -35,7 +35,7 @@ abstract class VaultOwnership
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="App\Entity\Vault", mappedBy="owner", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Vault", mappedBy="owner")
      */
     private $vaults;
 

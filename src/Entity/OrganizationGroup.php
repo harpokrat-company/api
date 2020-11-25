@@ -42,39 +42,39 @@ class OrganizationGroup implements SecretOwnerInterface, VaultOwnerInterface
     /**
      * @var Organization
      * @ORM\ManyToOne(targetEntity="App\Entity\Organization", inversedBy="groups")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
      * @Assert\NotNull()
      */
     private $organization;
 
     /**
      * @var array
-     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="organizations")
+     * @ORM\ManyToMany(targetEntity="App\Entity\User")
      */
     private $members;
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="App\Entity\OrganizationGroup", mappedBy="parent", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="App\Entity\OrganizationGroup", mappedBy="parent", cascade={"persist"})
      */
     private $children;
 
     /**
      * @var OrganizationGroup
-     * @ORM\ManyToOne(targetEntity="App\Entity\OrganizationGroup", inversedBy="children")
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\ManyToOne(targetEntity="App\Entity\OrganizationGroup", inversedBy="children", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
      */
     private $parent;
 
     /**
      * @var OrganizationGroupSecretOwnership
-     * @ORM\OneToOne(targetEntity="App\Entity\SecretOwnership\OrganizationGroupSecretOwnership", mappedBy="group", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\SecretOwnership\OrganizationGroupSecretOwnership", mappedBy="group", cascade={"persist"})
      */
     private $secretOwnership;
 
     /**
      * @var OrganizationGroupVaultOwnership
-     * @ORM\OneToOne(targetEntity="App\Entity\VaultOwnership\OrganizationGroupVaultOwnership", mappedBy="group", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\VaultOwnership\OrganizationGroupVaultOwnership", mappedBy="group", cascade={"persist"})
      */
     private $vaultOwnership;
 
