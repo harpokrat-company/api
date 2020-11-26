@@ -3,6 +3,7 @@
 namespace App\Entity\VaultOwnership;
 
 use App\Entity\Vault;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
 trait VaultOwnerTrait
@@ -14,7 +15,9 @@ trait VaultOwnerTrait
 
     public function getVaults(): Collection
     {
-        return $this->vaultOwnership->getVaults();
+        return $this->vaultOwnership
+            ? $this->vaultOwnership->getVaults()
+            : new ArrayCollection();
     }
 
     public function addVault(Vault $vault): self

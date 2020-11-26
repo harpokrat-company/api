@@ -3,6 +3,7 @@
 namespace App\Entity\SecretOwnership;
 
 use App\Entity\Secret;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
 trait SecretOwnerTrait
@@ -14,7 +15,9 @@ trait SecretOwnerTrait
 
     public function getSecrets(): Collection
     {
-        return $this->secretOwnership->getSecrets();
+        return $this->secretOwnership
+            ? $this->secretOwnership->getSecrets()
+            : new ArrayCollection();
     }
 
     public function addSecret(Secret $secret): self
