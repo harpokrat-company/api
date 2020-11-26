@@ -41,6 +41,9 @@ class VaultVoter extends ResourceVoter
                 return $token->getUser() instanceof User;
             }, /* TODO : fix this */
             'view' => $member,
+            'view-vaults' => $member,
+            'view-groups' => $member,
+            'view-organizations' => $member,
             'edit' => $owner,
             'edit-secrets' => $member,
             'delete' => $owner,

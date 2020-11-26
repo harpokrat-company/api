@@ -48,6 +48,7 @@ class OrganizationVoter extends ResourceVoter
             },
             'edit' => $owner,
             'view-groups' => $member,
+            'view-vaults' => $member,
             'delete' => $owner,
         ];
     }
