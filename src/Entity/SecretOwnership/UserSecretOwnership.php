@@ -12,7 +12,7 @@ class UserSecretOwnership extends SecretOwnership
 {
     /**
      * @var User
-     * @ORM\OneToOne(targetEntity="App\Entity\User", inversedBy="secretOwnership")
+     * @ORM\OneToOne(targetEntity="App\Entity\User", inversedBy="secretOwnership", cascade={"persist"})
      * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
      */
     private $user;

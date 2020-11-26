@@ -46,7 +46,7 @@ class Vault implements SecretOwnerInterface, EncryptionKeyInterface
 
     /**
      * @var VaultOwnership
-     * @ORM\ManyToOne(targetEntity="App\Entity\VaultOwnership\VaultOwnership", inversedBy="vaults")
+     * @ORM\ManyToOne(targetEntity="App\Entity\VaultOwnership\VaultOwnership", inversedBy="vaults", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      * @Assert\NotNull()
      */

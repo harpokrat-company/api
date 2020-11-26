@@ -13,7 +13,7 @@ class OrganizationGroupVaultOwnership extends VaultOwnership
 {
     /**
      * @var OrganizationGroup
-     * @ORM\OneToOne(targetEntity="App\Entity\OrganizationGroup", inversedBy="vaultOwnership")
+     * @ORM\OneToOne(targetEntity="App\Entity\OrganizationGroup", inversedBy="vaultOwnership", cascade={"persist"})
      * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
      */
     private $group;

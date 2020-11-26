@@ -12,7 +12,7 @@ class VaultSecretOwnership extends SecretOwnership
 {
     /**
      * @var Vault
-     * @ORM\OneToOne(targetEntity="App\Entity\Vault", inversedBy="secretOwnership")
+     * @ORM\OneToOne(targetEntity="App\Entity\Vault", inversedBy="secretOwnership", cascade={"persist"})
      * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
      */
     private $vault;

@@ -30,7 +30,7 @@ class Secret
 
     /**
      * @var SecretOwnership
-     * @ORM\ManyToOne(targetEntity="App\Entity\SecretOwnership\SecretOwnership", inversedBy="secrets")
+     * @ORM\ManyToOne(targetEntity="App\Entity\SecretOwnership\SecretOwnership", inversedBy="secrets", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      * @Assert\NotNull()
      */
