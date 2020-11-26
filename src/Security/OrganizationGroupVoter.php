@@ -61,6 +61,7 @@ class OrganizationGroupVoter extends ResourceVoter
             'view' => $organizationMember,
             'view-secrets' => $members,
             'view-vaults' => $members,
+            'view-name' => $members,
         ];
     }
 
