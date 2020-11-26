@@ -25,6 +25,14 @@ class SecretVoter extends ResourceVoter
 
             return $this->isOwner($subject, $user);
         };
+        $member = function ($subject, TokenInterface $token) {
+            /** @var User $user */
+            if (!$user = $token->getUser()) {
+                return false;
+            }
+
+            return $this->isMember($subject, $user);
+        };
         $private = function ($subject, TokenInterface $token) {
             /** @var User $user */
             if (!$user = $token->getUser()) {
@@ -39,7 +47,7 @@ class SecretVoter extends ResourceVoter
                 return $token->getUser() instanceof User;
             }, /* TODO : fix this */
             'view' => $private,
-            'edit' => $owner,
+            'edit' => $member,
             'delete' => $owner,
         ];
     }
