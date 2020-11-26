@@ -49,6 +49,9 @@ class OrganizationGroupVoter extends ResourceVoter
 
             return $this->isOwner($subject, $user) || $this->isMember($subject, $user);
         };
+        $true = function ($subject, TokenInterface $token) {
+            return true;
+        };
 
         return [
             'create' => function ($subject, TokenInterface $token) {
@@ -60,7 +63,7 @@ class OrganizationGroupVoter extends ResourceVoter
             'delete' => $owner,
             'view' => $organizationMember,
             'view-secrets' => $members,
-            'view-vaults' => $members,
+            'view-vaults' => $true,
             'view-name' => $members,
         ];
     }
