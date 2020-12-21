@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e640908513a1213427d1bf7644182838",
+    "content-hash": "38918b34f3f725434243553f40c18c34",
     "packages": [
         {
             "name": "brick/math",
@@ -1352,6 +1352,7 @@
                 "reflection",
                 "static"
             ],
+            "abandoned": "roave/better-reflection",
             "time": "2020-03-27T11:06:43+00:00"
         },
         {
@@ -3547,30 +3548,26 @@
         },
         {
             "name": "symfony/dotenv",
-            "version": "v4.4.9",
+            "version": "v5.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dotenv.git",
-                "reference": "24d734ab97c7fb8b4fa10c64ee0c344f2badfcf0"
+                "reference": "204a9dc6f70a13d9d24ebbf2c5ce51be235f3d7b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dotenv/zipball/24d734ab97c7fb8b4fa10c64ee0c344f2badfcf0",
-                "reference": "24d734ab97c7fb8b4fa10c64ee0c344f2badfcf0",
+                "url": "https://api.github.com/repos/symfony/dotenv/zipball/204a9dc6f70a13d9d24ebbf2c5ce51be235f3d7b",
+                "reference": "204a9dc6f70a13d9d24ebbf2c5ce51be235f3d7b",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1.3"
+                "php": ">=7.2.5",
+                "symfony/deprecation-contracts": "^2.1"
             },
             "require-dev": {
-                "symfony/process": "^3.4.2|^4.0|^5.0"
+                "symfony/process": "^4.4|^5.0"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "4.4-dev"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\Dotenv\\": ""
@@ -3614,7 +3611,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-05-26T09:42:42+00:00"
+            "time": "2020-12-08T17:02:38+00:00"
         },
         {
             "name": "symfony/error-handler",
